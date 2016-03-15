@@ -55,7 +55,7 @@ import be.kuleuven.cs.som.annotate.Raw;
  *       | isValidExcperiencePoints(getExcperiencePoints())
  * @author Adriaan en Wout
  */
-public class Unit {
+public class Unit extends HillbilliesObject{
 
 /**
  * Initialize this new Unit with given xpos, ypos, zpos ,name, weight, strength, agility, toughness

@@ -195,4 +195,8 @@ public boolean Equals(Position other){
 	
 }
 
+public float getEstimatedTimeTo(Position other){
+	
+}
+
 }

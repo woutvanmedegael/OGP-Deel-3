@@ -6,7 +6,7 @@ import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
 
-public class Load {
+public class Load extends HillbilliesObject{
 	
 /**
  * Initialize this new load with given position and a random weight between 10 and 50.
@@ -56,6 +56,15 @@ public boolean canHaveAsWeight(int weight) {
  * Variable registering the weight of this load.
  */
 private final int weight;
+
+private static enum LoadState{
+	NEUTRAL,FALLING,CARRIED	
+}
+private CurrentState myState = CurrentState.NEUTRAL;
+@Override
+public void advanceTime(double dt) {
+	
+}
 }
 
 

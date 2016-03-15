@@ -5,7 +5,7 @@ package hillbillies.model;
 /**
  * A class for signaling errors for a unit.
  */
-public class UnitException extends Exception {
+public class UnitException extends WorldException {
 
 	/**
 	 * 
