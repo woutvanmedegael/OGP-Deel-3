@@ -22,6 +22,9 @@ static
 public Cube(int terrainNumber)  {
 	this.setTerrainType(terrainNumber);
 }
+public Cube (TerrainType type){
+	this.terrainType = type;
+}
 
 /**
  * Return the terrainType of this cube.
