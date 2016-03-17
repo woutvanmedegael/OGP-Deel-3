@@ -26,7 +26,6 @@ public class World {
 	private Map<int[],HillbilliesObject[]> objectsInMap = new HashMap();
 	private ArrayList<Faction> factions = new ArrayList<>();
 	private ArrayList<int[]> changedCubes = new ArrayList<int[]>();
-	private ArrayList<int[]> cubesToCaveIn = new ArrayList<int[]>();
 	private int cubesToJump;
 	final static double maxDT = 0.2;
 	final static int secondsToCaveIn = 5;
@@ -68,12 +67,15 @@ public class World {
 		throwWarningAround(x,y,z);
 		
 	}
-	
+	/**
+	 * notify's the neighbouring cubes.
+	 */
 	private void throwWarningAround(int xpos,int ypos,int zpos) throws UnitException{
-		for (int x = -this.cubesToJump;x<this.cubesToJump;x++){
-			for (int y = -this.cubesToJump;y<this.cubesToJump;y++){
-				for (int z = -this.cubesToJump;z<this.cubesToJump;z++){
+		for (int x = xpos -this.cubesToJump;x<=xpos+this.cubesToJump;x++){
+			for (int y = ypos -this.cubesToJump;y<=ypos+ this.cubesToJump;y++){
+				for (int z =zpos -this.cubesToJump;z<=zpos + this.cubesToJump;z++){
 					if (!world[x][y][z].isPassable()){
+						//the passable cubes are added to the possible changed 
 						changedCubes.add(new int[]{x,y,z});
 					}
 				}
@@ -111,21 +113,39 @@ public class World {
 	}
 	
 	private void updateCubes(){
+		ArrayList<int[]> cubesToCaveIn = new ArrayList<int[]>();
 		for (int[] p: changedCubes){
 			if (!connectedToBorder.isSolidConnectedToBorder(p[0],p[1],p[2])){
 				cubesToCaveIn.add(p);
 			}
-			changedCubes.remove(p);
+		}
+		this.changedCubes =new ArrayList<int[]>();
+	}
+	/**
+	 * resets the type of the given cubes to air and possibly adds a log
+	 * @param cubesToCaveIn
+	 */
+	private void caveIn(ArrayList<int[]> cubesToCaveIn){
+		for (int[] p: cubesToCaveIn){
+			 Cube cubeToReplace = getCube(p[0],p[1],p[2]);
+			 setCube(p[0],p[1],p[2],new Cube(TerrainType.AIR));
+			 maybeAddLogOrBoulder(p, getCube(p[0],p[1],p[2]).getTerrainType ());
+			
 		}
 	}
 	
-	private void caveIn(){
-		for (int[] p: cubesToCaveIn){
-			//TODO
+	private void maybeAddLogOrBoulder(int[] p, TerrainType type){
+		//TODO: add a log or boulder with probability 0.25
+		if (type == TerrainType.TREE){
+			
 		}
+		else {
+		
+		}
+		
 	}
+	
 	public void advanceTime(double dt) throws UnitException{
-		caveIn();
 		updateCubes();
 		for (HillbilliesObject[] objs : objectsInMap.values()){
 			for (HillbilliesObject obj : objs){
