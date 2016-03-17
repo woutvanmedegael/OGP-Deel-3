@@ -1,7 +1,10 @@
 package hillbillies.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
@@ -9,6 +12,10 @@ import be.kuleuven.cs.som.annotate.Raw;
 public class Cube {
 
 private static final Map<TerrainType,Integer> fuckdezeshit = new HashMap();
+private ArrayList<HillbilliesObject> objectsOnThisCube = new ArrayList<>();
+private Set<Unit> passingUnits = new HashSet<>();
+
+
 static
 {
 	fuckdezeshit.put(TerrainType.AIR, 0);
@@ -80,5 +87,29 @@ public boolean isPassable(){
  * Variable registering the terrainType of this cube.
  */
 private TerrainType terrainType;
+public boolean isWalkable(){
+	return false;
+}
 
+public void addObject(HillbilliesObject obj){
+	this.objectsOnThisCube.add(obj);
+}
+
+public void deleteObject(HillbilliesObject obj){
+	this.objectsOnThisCube.remove(obj);
+}
+
+public ArrayList<HillbilliesObject> getObjects(){
+	return this.objectsOnThisCube;
+}
+
+public void addPassingUnit(Unit unit){
+	this.passingUnits.add(unit);
+}
+
+public void warnPassingUnits(){
+	for (Unit unit : this.passingUnits){
+		unit.warnCubeHasChanged(this);
+	}
+}
 }

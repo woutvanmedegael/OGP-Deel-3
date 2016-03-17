@@ -25,6 +25,8 @@ public class Position {
 	private double xpos;
 	private double ypos;
 	private double zpos;
+	private double diagconst = Math.sqrt(2)-1;
+	
 	/**
 	 * A variable used to ease comparing two different numbers.
 	 */
@@ -195,7 +197,36 @@ public boolean Equals(Position other){
 	
 }
 
-public float getEstimatedTimeTo(Position other){
+public double getEstimatedTimeTo(Position other){
+	double time = 0;
+	double zConst = 0.5;
+	int deltaX = Math.abs((int)(other.getxpos()-this.getxpos()));
+	int deltaY = Math.abs((int)(other.getypos()-this.getypos()));
+	int deltaZ = (int)(other.getzpos()-this.getzpos());
+	if (deltaZ<0){
+		zConst = 1.2;
+		deltaZ*=-1;
+	}
+	time += deltaZ*zConst;
+	time += Math.max(deltaX, deltaY)+diagconst*Math.min(deltaY, deltaZ);
+	return time;
+	
+}
+
+public double getExactTimeToAdjacent(Position other){
+	double zConst = 1;
+	int deltaX = Math.abs((int)(other.getxpos()-this.getxpos()));
+	int deltaY = Math.abs((int)(other.getypos()-this.getypos()));
+	int deltaZ = (int)(other.getzpos()-this.getzpos());
+	if (deltaZ<0){
+		zConst = 1.2;
+		deltaZ*=-1;
+	}
+	else if (deltaZ>0){
+		zConst = 0.5;
+	}
+	return zConst*Math.sqrt(deltaX*deltaX+deltaY*deltaY+deltaZ*deltaZ);
+	
 	
 }
 

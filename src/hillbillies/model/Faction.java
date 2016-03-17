@@ -4,10 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Faction {
-	private final Set<Unit> units;
-	public Faction(){
-		units = new HashSet<Unit>();
-	}
+	private final Set<Unit> units = new HashSet<>();
 	public void addUnit(Unit unit){
 		units.add(unit);
 	}

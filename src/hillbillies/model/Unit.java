@@ -1352,10 +1352,10 @@ public void advanceTime(double dt) throws UnitException{
 	
 	switch (this.getMyState()){
 		case NEUTRAL:
-			if ((getGlobalTarget() != null && !getGlobalTarget().equals(this.getMyPosition()))){
+			if ((getGlobalTarget() != null && !getGlobalTarget().Equals(this.getMyPosition()))){
 				this.setMyState(CurrentState.MOVING);
 			} else {
-			this.executeDefaultBehaviour();
+				this.executeDefaultBehaviour();
 			}
 			break;
 		case MOVING:
@@ -1371,7 +1371,7 @@ public void advanceTime(double dt) throws UnitException{
 				this.rest(dt);
 			}
 			break;
-			//hier this.attacking
+			//TODO hier this.attacking
 		case ATTACKING:
 			if (this.getMyTimeState().getAttackTime()>1){
 				this.attack(this.getDefender());
@@ -1700,6 +1700,7 @@ public void defend(Unit attacker) throws UnitException{
 	else{
 		this.setExperiencePoints(this.getExperiencePoints()+20);
 	}
+	this.setGlobalTarget(null);
 	this.setMyState(CurrentState.NEUTRAL);
 }
 
@@ -2087,7 +2088,15 @@ public void setLoad(Load load){
  * Variable registering the load of this unit.
  */
 private Load load;
+
+
+public void warnCubeHasChanged(Cube cube){
+	
 }
+
+
+}
+
 
 
 

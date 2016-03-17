@@ -41,6 +41,7 @@ public class World {
 			for (int y=0;y<dimension;y++){
 				for (int z=0;z<dimension;z++){
 					this.setCube(x,y,z,new Cube(terrainTypes[x][y][z]));
+					
 					if (getCube(x,y,z).isPassable()){
 						connectedToBorder.changeSolidToPassable(x, y, z);
 					}
@@ -55,7 +56,7 @@ public class World {
 	}
 	private void setCube(int x,int y,int z,Cube cube){
 		world[x][y][z] = cube;
-		terrainChangeListener.notifyTerrainChanged(x, y, z);
+		//terrainChangeListener.notifyTerrainChanged(x, y, z);
 	}
 	
 	public void changeCubeType(int x, int y, int z, int value) throws UnitException{
