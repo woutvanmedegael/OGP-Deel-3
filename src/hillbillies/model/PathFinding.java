@@ -20,8 +20,9 @@ public class PathFinding {
 		}
 	});
 	private Map<Node,Node> parentposition = new HashMap<>();
-	public PathFinding(World world){
+	public PathFinding(World world, Position start, Position target) throws UnitException{
 		this.world = world;
+		this.calculateFastestPath(start, target);
 	}
 	
 	public class Node{
@@ -56,7 +57,7 @@ public class PathFinding {
 		}
 	}
 	
-	public void CalculateFastestPath(Position start, Position target){
+	public void calculateFastestPath(Position start, Position target) throws UnitException{
 		openset.add(new Node(start,0,start.getEstimatedTimeTo(target),null));
 		while (openset.size()>0){
 			Node current = openset.first();
@@ -85,20 +86,25 @@ public class PathFinding {
 		}
 	}
 	
-	private ArrayList<Position> getNeighbours(Position current){
+	private ArrayList<Position> getNeighbours(Position current) throws UnitException{
 		ArrayList<Position> neighbours = new ArrayList<>();
 		int[] pos = new int[]{-1,1};
 		for (int x: pos){
 			for (int y: pos){
 				for (int z: pos){
-					if (world.isWalkable(x,y,z)){
-						neighbours.add(current);
+					if (Position.isValidCoordinate(x+current.getxpos(),world.getDimension()) && Position.isValidCoordinate(y+current.getypos(),world.getDimension()) && Position.isValidCoordinate(z+current.getzpos(),world.getDimension())){
+						Position neighbour = new Position(current.getxpos()+x,current.getypos()+y,current.getzpos()+z);
+						if (world.getCube((int)neighbour.getxpos(),(int)neighbour.getypos(),(int)neighbour.getzpos()).isWalkable()){
+							neighbours.add(neighbour);
+						}
 					}
 				}
 			}
 		}
 		return neighbours;
 	}
+	
+	
 	
 	private Node getMatchingNodeFromOpenSet(Position pos){
 		for (Node node : openset){
@@ -114,9 +120,19 @@ public class PathFinding {
 	private void calculatePath(Node target){
 		Node currentNode = target;
 		while (currentNode!=null){
+			Position currentPos = currentNode.getPosition();
 			path.add(currentNode.getPosition());
 			currentNode = currentNode.getParent();
-			world.getCube(x, y, z)
+			world.getCube((int)(currentPos.getxpos()),(int)(currentPos.getypos()),(int)(currentPos.getzpos()));
 		}
+	}
+	
+	public Position moveToNextPos(){
+		if (this.path.size()==0){
+			return null;
+		}
+		Position nextPos = this.path.get(this.path.size()-1);
+		this.path.remove(nextPos);
+		return nextPos;
 	}
 }

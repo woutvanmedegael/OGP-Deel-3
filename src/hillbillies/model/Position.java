@@ -230,4 +230,8 @@ public double getExactTimeToAdjacent(Position other){
 	
 }
 
+public static boolean isValidCoordinate(double coo, int Dimension){
+	return (coo>=0 && coo<Dimension);
+}
+
 }

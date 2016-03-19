@@ -1121,7 +1121,7 @@ public void moveToAdjacent(int dx, int dy, int dz) throws UnitException{
 			throw new UnitException();
 		}
 		this.setGlobalTarget(new Position(this.getMyPosition().getxpos()+dx, this.getMyPosition().getypos()+dy, this.getMyPosition().getzpos()+dz));
-		setLocalTargetAndSpeed(dx,dy,dz);
+		setLocalTargetAndSpeed(this.getGlobalTarget());
 		}
 	
 }
@@ -1172,10 +1172,16 @@ public void setMyPosition(Position pos){
  *       | && isValidPos(this.getCubeZpos()+dz+0.5) && isValidSpeed(calculateVelocity()))
  * @note This exception won't be thrown.
  */
-private void setLocalTargetAndSpeed(int dx, int dy, int dz) throws UnitException{
-	this.setLocalTarget(new Position(this.getCubeXpos()+dx+0.5,this.getCubeYpos()+dy+0.5,this.getCubeZpos()+dz+0.5));
+private void setLocalTargetAndSpeed(Position nextPos) throws UnitException{
+	this.setLocalTarget(nextPos);
+	int dz = (int)(this.getLocalTarget().getzpos()-this.getMyPosition().getzpos());
 	calculateVelocity(dz);
+}
 
+//TODO commentaar hier
+
+private void startFalling(){
+	this.setMyState(CurrentState.FALLING);
 }
 
 
@@ -1274,9 +1280,23 @@ public void moveTo(int cubeX, int cubeY, int cubeZ) throws UnitException{
 			throw new UnitException();
 		}
 		this.setGlobalTarget(new Position(cubeX+0.5, cubeY+0.5, cubeZ+0.5));
+		if (myWorld != null){
+			myPath = new PathFinding(myWorld, this.getMyPosition(),this.getGlobalTarget());
+		}
 		calculateLocalTarget();
 	}
 }
+
+
+//TODO formeel commentaar 'pathfinding' referentie
+
+public void setWorld(World world){
+	myWorld = world;
+}
+
+private PathFinding myPath;
+
+private World myWorld;
 /**
  * This methods calculates the local target - the neighbouring cube to which the unit will move next - based on the global target: the neighbouring cube to which the unit will move next.
  * @effect  The local target gets set to the neighbouring cube closest to the global target.
@@ -1301,25 +1321,8 @@ public void moveTo(int cubeX, int cubeY, int cubeZ) throws UnitException{
  * @note UnitException will never be thrown. The parameters dx, dy and dz will always be valid.
  */
 private void calculateLocalTarget() throws UnitException{
-	int dx = 0;
-	int dy = 0;
-	int dz = 0;
-	if (nbComp.isBigger(this.getCubeXpos()+0.5, this.getGlobalTarget().getxpos())){
-		dx = -1;
-	} else if (nbComp.isSmaller(this.getCubeXpos()+0.5,this.getGlobalTarget().getxpos())){
-		dx = 1;
-	}
-	if (nbComp.isBigger(this.getCubeYpos()+0.5, this.getGlobalTarget().getypos())){
-		dy = -1;
-	} else if (nbComp.isSmaller(this.getCubeYpos()+0.5,this.getGlobalTarget().getypos())){
-		dy = 1;
-	}
-	if (nbComp.isBigger(this.getCubeZpos()+0.5, this.getGlobalTarget().getzpos())){
-		dz = -1;
-	} else if (nbComp.isSmaller(this.getCubeZpos()+0.5,this.getGlobalTarget().getzpos())){
-		dz = 1;
-	}
-	setLocalTargetAndSpeed(dx,dy,dz);
+	Position nextPos = this.myPath.moveToNextPos();
+	setLocalTargetAndSpeed(nextPos);
 }
 //TODO:commentaar
 
@@ -1389,7 +1392,7 @@ public void advanceTime(double dt) throws UnitException{
 				this.startAttacking();
 				break;
 			}
-			
+		case FALLING:
 	default:
 		break;
 			
@@ -1524,11 +1527,13 @@ private void reduceSPForSprint(double timeSprinted) throws UnitException {
  * 
  */
 private void determineLocalTarget() throws UnitException{
+	System.out.println(this.getLocalTarget());
 	if ((this.getGlobalTarget() == null && this.getMyPosition().Equals(this.getLocalTarget())) ||
 			((this.getGlobalTarget() != null) && this.getMyPosition().Equals(this.getGlobalTarget()))){
 		this.setGlobalTarget(null);
 		this.setMyState(CurrentState.NEUTRAL);
 		this.setSpeed(0);
+		
 	} else if (this.getGlobalTarget() != null && this.getMyPosition().Equals(this.getLocalTarget())){
 		calculateLocalTarget();
 	}
@@ -2093,6 +2098,18 @@ private Load load;
 public void warnCubeHasChanged(Cube cube){
 	
 }
+
+private Faction myFaction;
+
+public void setFaction(Faction faction){
+	myFaction = faction;
+}
+
+public Faction getFaction(){
+	return this.myFaction;
+}
+
+
 
 
 }

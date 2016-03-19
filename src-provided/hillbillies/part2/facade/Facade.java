@@ -303,38 +303,33 @@ public class Facade implements IFacade{
 
 	@Override
 	public boolean isCarryingLog(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return false;
+		return unit.isCarryingLog();
 	}
 
 	@Override
 	public boolean isCarryingBoulder(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return false;
+		return unit.isCarryingBoulder();
 	}
 
 	@Override
 	public boolean isAlive(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public int getExperiencePoints(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return 0;
+		return 8;
 	}
 
 	@Override
 	public void workAt(Unit unit, int x, int y, int z) throws ModelException {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public Faction getFaction(Unit unit) throws ModelException {
-		// TODO Auto-generated method stub
-		return null;
+		return unit.getFaction();
 	}
 
 	@Override

@@ -127,5 +127,14 @@ public ArrayList<HillbilliesObject> getObjectsOnThisCube(){
 	return objectsOnThisCube;
 }
 
+private boolean walkable = false;
+
+public void setWalkable(boolean bool){
+	this.walkable = bool;
+}
+
+public boolean isWalkable(){
+	return this.walkable;
+}
 
 }

@@ -77,10 +77,28 @@ public class World {
 					world[x][y][z] = new Cube(terrainTypes[x][y][z],this);
 					if (getCube(x,y,z).isPassable()){
 						connectedToBorder.changeSolidToPassable(x, y, z);
-					}
+					} 
 				}	
 				}
 			}
+		for (int x=0;x<dimension;x++){
+			for (int y=0;y<dimension;y++){
+				for (int z=0;z<dimension;z++){
+					if (!getCube(x,y,z).isPassable()){
+						int[] pos = new int[]{-1,0,1};
+						for (int xpos: pos){
+							for (int ypos: pos){
+								for (int zpos: pos){
+									if(Position.isValidCoordinate(x+xpos,this.getDimension()) && Position.isValidCoordinate(y+ypos,this.getDimension()) && Position.isValidCoordinate(z+zpos,this.getDimension()) && getCube(x+xpos,y+ypos,z+zpos).isPassable()){
+										getCube(x+xpos,y+ypos,z+zpos).setWalkable(true);
+									}
+								}
+							}
+					}
+				}
+			}
+		}
+		}
 		terrainChangeListener = modelListener;
 		cubesToJump = (int) Math.ceil(dimension*maxDT/secondsToCaveIn);
 		}
@@ -110,7 +128,7 @@ public class World {
 	}
 	
 	public Set<Unit> getUnits(){
-		Set<Unit> units = Collections.<Unit>emptySet();
+		Set<Unit> units = new HashSet<>();
 		for (Faction f : factions){
 			units.addAll(f.getUnits());
 		}
@@ -258,7 +276,7 @@ public class World {
 			int y = random.nextInt(this.getDimension()-1);
 			int z = random.nextInt(this.getDimension()-1);
 			int looper = z;
-			while ((!this.getCube(x, y, looper).isPassable() || this.getCube(x, y, looper-1).isPassable()) && looper !=z-1){
+			while ((!this.getCube(x, y, looper).isPassable() || (looper != 0 && this.getCube(x, y, looper-1).isPassable())) && looper !=z-1){
 				looper+=1;
 				looper %= 49;
 			}
@@ -273,6 +291,7 @@ public class World {
 			Unit unit = new Unit(x,y,looper,name,weight,strength,agility,toughness,enableDefaultBehavior);
 			unit.setWorld(this);
 			assignFaction(unit);
+			return unit;
 	}
 	
 	private static void assignFaction(Unit unit){
