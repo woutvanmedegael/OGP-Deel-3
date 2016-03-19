@@ -91,7 +91,7 @@ public class PathFinding {
 		for (int x: pos){
 			for (int y: pos){
 				for (int z: pos){
-					if (world.getCube(x, y, z).isWalkable()){
+					if (world.isWalkable(x,y,z)){
 						neighbours.add(current);
 					}
 				}

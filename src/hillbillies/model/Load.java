@@ -7,16 +7,20 @@ import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
 
 public class Load extends HillbilliesObject{
-	
+
+private final World world;
 /**
  * Initialize this new load with given position and a random weight between 10 and 50.
 */
-public Load(Position position) throws WorldException {
+public Load(Position position,World world) throws WorldException {
 	if (! canHaveAsPosition(position))
 		throw new WorldException();
 	this.position = position;
 	Random rand = new Random();
 	this.weight = rand.nextInt(40)+10;
+	//ADDED
+	setParentCube(position,world);
+	this.world = world;
 }
 /**
  * Return the position of this load.
@@ -33,10 +37,12 @@ public Position getPosition() {
 public boolean canHaveAsPosition(Position position) {
 	return true;
 }
+
+
 /**
  * Variable registering the position of this load.
  */
-private final Position position;
+private Position position;
 /**
  * Return the weight of this load.
  */
@@ -63,6 +69,12 @@ private static enum LoadState{
 private CurrentState myState = CurrentState.NEUTRAL;
 @Override
 public void advanceTime(double dt) {
+	
+}
+//ADDED: position niet meer final gemaakt ? Waarom was die final? 
+public void setPosition(Position position){
+	this.position = position;
+	setParentCube(this.getPosition(),this.world);
 	
 }
 }

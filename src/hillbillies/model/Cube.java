@@ -16,6 +16,7 @@ private ArrayList<HillbilliesObject> objectsOnThisCube = new ArrayList<>();
 private Set<Unit> passingUnits = new HashSet<>();
 
 
+private final World world;
 static
 {
 	fuckdezeshit.put(TerrainType.AIR, 0);
@@ -24,12 +25,14 @@ static
 	fuckdezeshit.put(TerrainType.WORKSHOP, 3);
 }
 /**
- * Initialize this new cube with given terrainType.
+ * Initialize this new cube with given terrainType without given hillbillies objects.
  */
-public Cube(int terrainNumber)  {
+public Cube(int terrainNumber,World world)  {
+	this.world = world;
 	this.setTerrainType(terrainNumber);
 }
-public Cube (TerrainType type){
+public Cube (TerrainType type,World world){
+	this.world = world;
 	this.terrainType = type;
 }
 
@@ -90,13 +93,12 @@ public boolean isPassable(){
  * Variable registering the terrainType of this cube.
  */
 private TerrainType terrainType;
-public boolean isWalkable(){
-	return false;
-}
+
 
 public void addObject(HillbilliesObject obj){
 	this.objectsOnThisCube.add(obj);
 }
+
 
 public void deleteObject(HillbilliesObject obj){
 	this.objectsOnThisCube.remove(obj);
@@ -113,6 +115,16 @@ public void addPassingUnit(Unit unit){
 public void warnPassingUnits(){
 	for (Unit unit : this.passingUnits){
 		unit.warnCubeHasChanged(this);
+		}
 	}
+
+
+/**
+ * returns the objects that are currentely occupying this cube
+ */
+public ArrayList<HillbilliesObject> getObjectsOnThisCube(){
+	return objectsOnThisCube;
 }
+
+
 }
