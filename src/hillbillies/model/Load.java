@@ -29,6 +29,12 @@ public Load(Position position,World world) throws WorldException {
 public Position getPosition() {
 	return this.position;
 }
+
+//TODO commentaar hier
+
+public double[] getDoublePosition(){
+	return new double[]{position.getxpos(),position.getypos(),position.getzpos()};
+}
 /**
  * Check whether this load can have the given position as its position.
  * @note A Positiontype will always be a valid position

@@ -31,6 +31,7 @@ public Cube(int terrainNumber,World world)  {
 	this.world = world;
 	this.setTerrainType(terrainNumber);
 }
+
 public Cube (TerrainType type,World world){
 	this.world = world;
 	this.terrainType = type;

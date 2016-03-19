@@ -9,6 +9,7 @@ import hillbillies.util.ConnectedToBorder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 public class World {
 	/**
 	 * variables registering the dimensions of the game world
@@ -24,17 +25,34 @@ public class World {
 	 */
 	private Cube[][][] world;
 	private ConnectedToBorder connectedToBorder;
+	
+	public boolean isSolidConnectedToBorder(int x,int y,int z){
+		return ((!this.getCube(x, y, z).isPassable())&& this.connectedToBorder.isSolidConnectedToBorder(x, y, z));
+	}
 	private final TerrainChangeListener terrainChangeListener;
 	/**
 	 * A list containing all the different boudlers in this world.
 	 */
-	private ArrayList<Boulder> boulders = new ArrayList<>();
+	private Set<Boulder> boulders = new HashSet<>();
 	/**
 	 * A list containing all the different logs in this world
 	 */
-	private ArrayList<Log> logs = new ArrayList<>();
+	private Set<Log> logs = new HashSet<>();
 	//private Map<int[],HillbilliesObject[]> objectsInMap = new HashMap();
-	private ArrayList<Faction> factions = new ArrayList<>();
+	private static ArrayList<Faction> factions = new ArrayList<>();
+	static{
+		Faction Targaryen = new Faction();
+		Faction Lannister = new Faction();
+		Faction Stark = new Faction();
+		Faction Martell = new Faction();
+		Faction Tyrell = new Faction();
+		factions.add(Targaryen);
+		factions.add(Lannister);
+		factions.add(Stark);
+		factions.add(Martell);
+		factions.add(Tyrell);
+		
+	}
 	private ArrayList<int[]> cubesToCheck = new ArrayList<int[]>();
 	
 	
@@ -56,7 +74,7 @@ public class World {
 		for (int x=0;x<dimension;x++){
 			for (int y=0;y<dimension;y++){
 				for (int z=0;z<dimension;z++){
-					this.setCube(x,y,z,new Cube(terrainTypes[x][y][z],this));
+					world[x][y][z] = new Cube(terrainTypes[x][y][z],this);
 					if (getCube(x,y,z).isPassable()){
 						connectedToBorder.changeSolidToPassable(x, y, z);
 					}
@@ -69,19 +87,17 @@ public class World {
 	public Cube getCube(int x,int y,int z){
 		return world[x][y][z];
 	}
-	private void setCube(int x,int y,int z,Cube cube){
-		world[x][y][z] = cube;
-		//terrainChangeListener.notifyTerrainChanged(x, y, z);
-	}
+	
+
 	public ArrayList<Faction> getFactions(){
 		return factions;
 	}
 	
-	public ArrayList<Boulder> getBoulders(){
+	public Set<Boulder> getBoulders(){
 		return boulders;
 	}
 	
-	public ArrayList<Log> getLogs(){
+	public Set<Log> getLogs(){
 		return logs;
 	}
 	
@@ -201,7 +217,7 @@ public class World {
 	// opvragen van alle cubes?
 	
 	
-	public void advanceTime(double dt) throws UnitException{
+	public void advanceTime(double dt) throws WorldException{
 		updateCubes();
 		for (Log log: this.logs){
 			log.advanceTime(dt);
@@ -210,7 +226,7 @@ public class World {
 			boulder.advanceTime(dt);
 		}
 		for (Unit unit: this.getUnits()){
-			unit.ad
+			unit.advanceTime(dt);
 		}
 		
 		}
@@ -232,7 +248,70 @@ public class World {
 		}
 		return false;
 	}
-
+	//#BOELAANSE LOGICA BITCH
+	final static String alphabet = "abcdefghijklmnopqrstuvxyzABCDEFHIJKLMNOPQRSTUVWXYZ '\"";
+	final static String ALPHABET = "ABCDEFHIJKLMNOPQRSTUVWXYZ";
+	
+	public Unit spawnUnit(boolean enableDefaultBehavior) throws UnitException{
+			Random random = new Random();
+			int x = random.nextInt(this.getDimension()-1);
+			int y = random.nextInt(this.getDimension()-1);
+			int z = random.nextInt(this.getDimension()-1);
+			int looper = z;
+			while ((!this.getCube(x, y, looper).isPassable() || this.getCube(x, y, looper-1).isPassable()) && looper !=z-1){
+				looper+=1;
+				looper %= 49;
+			}
+			if (!this.getCube(x, y, looper).isPassable() || this.getCube(x, y, looper-1).isPassable()){
+				return spawnUnit(enableDefaultBehavior);
+			}
+			int strength = random.nextInt(75)+25;
+			int agility = random.nextInt(75)+25;
+			int toughness = random.nextInt(75)+25;
+			int weight = random.nextInt(75)+25;
+			String name = createRandomName();
+			Unit unit = new Unit(x,y,looper,name,weight,strength,agility,toughness,enableDefaultBehavior);
+			unit.setWorld(this);
+			assignFaction(unit);
+	}
+	
+	private static void assignFaction(Unit unit){
+		for (int i = 4;i>0; i--){
+			if (factions.get(i).getUnits().size()<factions.get(i-1).getUnits().size()){
+				factions.get(i).addUnit(unit);
+				unit.setFaction(factions.get(i));
+				return;
+			}
+		}
+		factions.get(0).addUnit(unit);
+		unit.setFaction(factions.get(0));
+		
+	}
+	private static String createRandomName(){
+		Random random = new Random();
+		String name = new String();
+		int length = random.nextInt(20)+2;
+		name += ALPHABET.charAt(random.nextInt(ALPHABET.length()));
+		for (int i = 0; i<length;i++){
+			name +=  alphabet.charAt(random.nextInt(alphabet.length()));
+		}
+		
+		return name;
+	}
+	public void addUnit(Unit unit){
+		assignFaction(unit);
+		unit.setWorld(this);
+	}
+	public Set getActiveFactions(){
+		Set<Faction> activeFactions = new HashSet<>();
+		for (Faction f: this.getFactions()){
+			if (f.getUnits().size()>0){
+				activeFactions.add(f);
+			}
+		}
+		return activeFactions;
+		
+	}
 	
 	
 
