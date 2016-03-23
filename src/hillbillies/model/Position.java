@@ -54,21 +54,26 @@ public class Position {
 	 * 			
 	 */
 	public Position(double xpos, double ypos, double zpos) throws UnitException{
-		if (!isValidPos(xpos)){
+		if (!isValidPos(xpos,ypos,zpos)){
 			throw new UnitException();
 			
 		}
-		if (!isValidPos(ypos)){
+		this.xpos = xpos;
+		this.ypos = ypos;
+		this.zpos = zpos;
+	}
+	
+	public Position(double xpos, double ypos, double zpos, World world) throws UnitException{
+		if (!isValidPos(xpos,ypos,zpos)){
 			throw new UnitException();
 			
 		}
-		if (!isValidPos(zpos)){
-			throw new UnitException();
-			
+		this.xpos = xpos;
+		this.ypos = ypos;
+		this.zpos = zpos;
+		if (world!=null){
+			this.world = world;
 		}
-		this.setxpos(xpos);
-		this.setypos(ypos);
-		this.setzpos(zpos);
 	}
 
 /**
@@ -94,7 +99,7 @@ public double getxpos() {
 @Raw
 public void setxpos(double xpos) 
 		throws UnitException {
-	if (! isValidPos(xpos))
+	if (!isValidPos(xpos,this.ypos,this.zpos))
 		throw new UnitException();
 	this.xpos = xpos;
 }
@@ -122,7 +127,7 @@ public double getypos() {
 @Raw
 public void setypos(double ypos) 
 		throws UnitException {
-	if (! isValidPos(ypos))
+	if (! isValidPos(this.xpos,ypos,this.zpos))
 		throw new UnitException();
 	this.ypos = ypos;
 }
@@ -150,7 +155,7 @@ public double getzpos() {
 @Raw
 public void setzpos(double zpos) 
 		throws UnitException {
-	if (! isValidPos(zpos))
+	if (! isValidPos(this.xpos,this.ypos,zpos))
 		throw new UnitException();
 	this.zpos = zpos;
 }
@@ -164,8 +169,30 @@ public void setzpos(double zpos)
  * @return 
  *       | result == (0<=pos && pos<50)
 */
-public static boolean isValidPos(double pos) {
-	return (0<=pos && pos<50);
+public static boolean isValidPos(double xpos, double ypos, double zpos) {
+	if (world == null){
+		return true;
+	}
+	if (xpos<0 || xpos >= world.getDimensionx()){
+		return false;
+	}
+	if (ypos<0 || ypos >= world.getDimensiony()){
+		return false;
+	}
+	if (zpos<0 || zpos >= world.getDimensionz()){
+		return false;
+	}
+	if (world == null){
+		return true;
+	} 
+	if (world.getCube((int)xpos, (int)ypos, (int)zpos).isPassable()){
+		return true;
+	}
+	System.out.println("not passable");
+	System.out.println(xpos);
+	System.out.println(ypos);
+	System.out.println(zpos);
+	return false;
 }
 /**
  *Calculates the distance between this position and another position
@@ -194,7 +221,6 @@ public boolean Equals(Position other){
 		return false;
 	} else
 		return true;
-	
 }
 
 public double getEstimatedTimeTo(Position other){
@@ -207,8 +233,7 @@ public double getEstimatedTimeTo(Position other){
 		zConst = 1.2;
 		deltaZ*=-1;
 	}
-	time += deltaZ*zConst;
-	time += Math.max(deltaX, deltaY)+diagconst*Math.min(deltaY, deltaZ);
+	time += deltaZ*zConst+deltaX+deltaY;
 	return time;
 	
 }
@@ -232,6 +257,43 @@ public double getExactTimeToAdjacent(Position other){
 
 public static boolean isValidCoordinate(double coo, int Dimension){
 	return (coo>=0 && coo<Dimension);
+}
+
+
+@Override
+public String toString(){
+	String str = "[("+String.valueOf(xpos)+"),("+String.valueOf(ypos)+"),("+String.valueOf(zpos)+")]";
+	return str;
+}
+
+public Double[] toDoubles(){
+	return new Double[]{this.getxpos(),this.getypos(),this.getzpos()};
+}
+
+private static World world;
+
+
+public void setWorld(World world){
+	this.world = world;
+}
+
+public static boolean isValidPos(double xpos, double ypos, double zpos, World world){
+	if (world == null){
+		return true;
+	}
+	if (xpos<0 || xpos >= world.getDimensionx()){
+		return false;
+	}
+	if (ypos<0 || ypos >= world.getDimensiony()){
+		return false;
+	}
+	if (zpos<0 || zpos >= world.getDimensionz()){
+		return false;
+	}
+	if (world.getCube((int)xpos, (int)ypos, (int)zpos).isPassable()){
+		return true;
+	}
+	return false;
 }
 
 }

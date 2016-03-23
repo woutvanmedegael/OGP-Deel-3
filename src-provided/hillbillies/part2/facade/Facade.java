@@ -240,17 +240,17 @@ public class Facade implements IFacade{
 
 	@Override
 	public int getNbCubesX(World world) throws ModelException {
-		return world.getDimension();
+		return world.getDimensionx();
 	}
 
 	@Override
 	public int getNbCubesY(World world) throws ModelException {
-		return world.getDimension();
+		return world.getDimensiony();
 	}
 
 	@Override
 	public int getNbCubesZ(World world) throws ModelException {
-		return world.getDimension();
+		return world.getDimensionz();
 	}
 
 	@Override
@@ -318,7 +318,7 @@ public class Facade implements IFacade{
 
 	@Override
 	public int getExperiencePoints(Unit unit) throws ModelException {
-		return 8;
+		return unit.getExperiencePoints();
 	}
 
 	@Override

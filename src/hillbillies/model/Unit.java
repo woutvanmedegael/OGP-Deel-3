@@ -1,5 +1,7 @@
 package hillbillies.model;
 
+import java.util.ArrayList;
+
 /**
  * @author Wout Van Medegael - 2de bach B. Ir. CW-ESAT
  * @author Adriaan Van Gerven - 2de bach B. Ir. CW-ESAT
@@ -395,7 +397,9 @@ private static char[] validcharacters = "abcdefghijklmnopqrstuvwxyz' \"".toCharA
  *          | else result == true
 */
 public static boolean isValidName(String name) {
-	if (name.length()<2){
+	if (name == null){
+		return false;
+	} if (name.length()<2){
 		return false;
 	} else if (!Character.isUpperCase(name.charAt(0))){
 		return false;
@@ -1120,7 +1124,7 @@ public void moveToAdjacent(int dx, int dy, int dz) throws UnitException{
 		if (!isValidMove(new int[]{dx,dy,dz})){
 			throw new UnitException();
 		}
-		this.setGlobalTarget(new Position(this.getMyPosition().getxpos()+dx, this.getMyPosition().getypos()+dy, this.getMyPosition().getzpos()+dz));
+		this.setGlobalTarget(new Position(this.getMyPosition().getxpos()+dx, this.getMyPosition().getypos()+dy, this.getMyPosition().getzpos()+dz, this.myWorld));
 		setLocalTargetAndSpeed(this.getGlobalTarget());
 		}
 	
@@ -1234,13 +1238,7 @@ private boolean isValidMove(int[] move){
 			return false;
 		}
 	}
-	if (!Position.isValidPos(this.getCubeXpos()+move[0])){
-		return false;
-	}
-	if (!Position.isValidPos(this.getCubeYpos()+move[1])){
-		return false;
-	}
-	if (!Position.isValidPos(this.getCubeZpos()+move[2])){
+	if (!Position.isValidPos(this.getCubeXpos()+move[0],this.getCubeYpos()+move[1],this.getCubeZpos()+move[2])){
 		return false;
 	}
 	return true;
@@ -1270,16 +1268,10 @@ private boolean isValidMove(int[] move){
 public void moveTo(int cubeX, int cubeY, int cubeZ) throws UnitException{
 	if (!(this.getMyState()==CurrentState.DEFENDING || this.getMyState() == CurrentState.ATTACKING) && this.getHasRested()){
 		this.setMyState(CurrentState.MOVING);
-		if (!Position.isValidPos(cubeX)){
+		if (!Position.isValidPos(cubeX, cubeY, cubeZ)){
 			throw new UnitException();
 		}
-		if (!Position.isValidPos(cubeY)){
-			throw new UnitException();
-		}
-		if (!Position.isValidPos(cubeZ)){
-			throw new UnitException();
-		}
-		this.setGlobalTarget(new Position(cubeX+0.5, cubeY+0.5, cubeZ+0.5));
+		this.setGlobalTarget(new Position(cubeX+0.5, cubeY+0.5, cubeZ+0.5, this.myWorld));
 		if (myWorld != null){
 			myPath = new PathFinding(myWorld, this.getMyPosition(),this.getGlobalTarget());
 		}
@@ -1292,6 +1284,8 @@ public void moveTo(int cubeX, int cubeY, int cubeZ) throws UnitException{
 
 public void setWorld(World world){
 	myWorld = world;
+	this.getMyPosition().setWorld(world);
+	this.getLocalTarget().setWorld(world);
 }
 
 private PathFinding myPath;
@@ -1322,7 +1316,13 @@ private World myWorld;
  */
 private void calculateLocalTarget() throws UnitException{
 	Position nextPos = this.myPath.moveToNextPos();
-	setLocalTargetAndSpeed(nextPos);
+	if (nextPos == null){
+		this.setMyState(CurrentState.NEUTRAL);
+		this.setGlobalTarget(null);
+	} else {
+		setLocalTargetAndSpeed(nextPos);
+	}
+	
 }
 //TODO:commentaar
 
@@ -1466,9 +1466,9 @@ private void updateLocationAndOrientation(double dt) throws UnitException {
 		this.setzpos(this.getLocalTarget().getzpos());
 	} else {
 		double velocity = this.getSpeed();
-		float velocityx = (float) (velocity*(this.getLocalTarget().getxpos()-this.getxpos())/distance);
-		float velocityy = (float) (velocity*(this.getLocalTarget().getypos()-this.getypos())/distance);
-		float velocityz = (float) (velocity*(this.getLocalTarget().getzpos()-this.getzpos())/distance);
+		double velocityx = velocity*(this.getLocalTarget().getxpos()-this.getxpos())/distance;
+		double velocityy = velocity*(this.getLocalTarget().getypos()-this.getypos())/distance;
+		double velocityz = velocity*(this.getLocalTarget().getzpos()-this.getzpos())/distance;
 		this.setxpos(this.getxpos()+velocityx*dt);
 		this.setypos(this.getypos()+velocityy*dt);
 		this.setzpos(this.getzpos()+velocityz*dt);
@@ -1527,14 +1527,17 @@ private void reduceSPForSprint(double timeSprinted) throws UnitException {
  * 
  */
 private void determineLocalTarget() throws UnitException{
-	System.out.println(this.getLocalTarget());
 	if ((this.getGlobalTarget() == null && this.getMyPosition().Equals(this.getLocalTarget())) ||
 			((this.getGlobalTarget() != null) && this.getMyPosition().Equals(this.getGlobalTarget()))){
+		System.out.println("adding xp");
+		this.setExperiencePoints(this.getExperiencePoints()+1);
 		this.setGlobalTarget(null);
 		this.setMyState(CurrentState.NEUTRAL);
 		this.setSpeed(0);
 		
 	} else if (this.getGlobalTarget() != null && this.getMyPosition().Equals(this.getLocalTarget())){
+		System.out.println("adding xp");
+		this.setExperiencePoints(this.getExperiencePoints()+1);
 		calculateLocalTarget();
 	}
 	
@@ -1605,7 +1608,7 @@ public void startResting(){
 		
 	}
 }
-
+//TODO methode weg dan?
 /**
  * Initiates this units defense against the attacker.
  * @param attacker
@@ -1637,7 +1640,6 @@ private void startAttacking(){
 		this.setMyState(CurrentState.ATTACKING);
 		this.setOrientation((float) Math.atan2(this.getDefender().getypos()-this.getypos(), this.getDefender().getxpos()-this.getxpos()));
 		this.getMyTimeState().setAttackTime(0);
-		this.getDefender().startDefending(this);
 	} else {
 		this.setMyState(CurrentState.MOVING);
 	}
@@ -1696,6 +1698,7 @@ public boolean targetWithinReach(Unit defender){
  * @note	UnitException can't be thrown. jumpAway() will never throw an exception.
  */
 public void defend(Unit attacker) throws UnitException{
+	this.setOrientation((float) Math.atan2(attacker.getypos()-this.getypos(),attacker.getxpos()-this.getxpos()));
 	if (dodge(attacker)){
 		this.setExperiencePoints(this.getExperiencePoints()+20);
 		jumpAway();
@@ -1705,6 +1708,7 @@ public void defend(Unit attacker) throws UnitException{
 	else{
 		this.setExperiencePoints(this.getExperiencePoints()+20);
 	}
+	this.setLocalTarget(this.getMyPosition());
 	this.setGlobalTarget(null);
 	this.setMyState(CurrentState.NEUTRAL);
 }
@@ -1948,7 +1952,7 @@ public void executeDefaultBehaviour() throws UnitException{
 		
 		if (this.getMyState() == CurrentState.MOVING){
 			this.setGlobalTarget(new Position(random.nextInt(50)+0.5,
-					random.nextInt(50)+0.5,random.nextInt(50)+0.5));
+					random.nextInt(50)+0.5,random.nextInt(50)+0.5, this.myWorld));
 	}
 	}
 }
@@ -2027,9 +2031,33 @@ public void setExperiencePoints(int experiencePoints)
  */
 private int experiencePoints =0;
 
-//TODO: improveProperty
+//TODO: improveProperty 
 public void improveProperty(){
-		
+		ArrayList<Integer> props = new ArrayList<>();
+		if (this.getAgility()<200){
+			props.add(0);
+		}
+		if (this.getStrength()<200){
+			props.add(1);
+		}
+		if (this.getToughness()<200){
+			props.add(2);
+		}
+		Random random = new Random();
+		int nb = random.nextInt(props.size());
+		System.out.println(nb);
+		switch (nb){
+			case 0:
+				System.out.println("check 0");
+				this.setAgility(this.getAgility()+1);
+			case 1:
+				System.out.println("check 1");
+				this.setStrength(this.getStrength()+1);
+			case 2:
+				System.out.println("check 2");
+				this.setToughness(this.getToughness()+1);
+		}
+				
 	}
 
 /** TO BE ADDED TO CLASS HEADING

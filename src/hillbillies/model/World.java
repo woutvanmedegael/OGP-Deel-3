@@ -14,7 +14,9 @@ public class World {
 	/**
 	 * variables registering the dimensions of the game world
 	 */
-	private final int dimension;
+	private final int dimensionx;
+	private final int dimensiony;
+	private final int dimensionz;
 	/**
 	 * variable registering the length of 1 cube
 	 */
@@ -24,6 +26,9 @@ public class World {
 	 * A list to keep track of the different cubes in the world
 	 */
 	private Cube[][][] world;
+	/**
+	 * TODO: class conncted to border aanpassen
+	 */
 	private ConnectedToBorder connectedToBorder;
 	
 	public boolean isSolidConnectedToBorder(int x,int y,int z){
@@ -31,15 +36,22 @@ public class World {
 	}
 	private final TerrainChangeListener terrainChangeListener;
 	/**
-	 * A list containing all the different boudlers in this world.
+	 * A set containing all the different boudlers in this world.
 	 */
 	private Set<Boulder> boulders = new HashSet<>();
 	/**
-	 * A list containing all the different logs in this world
+	 * A set containing all the different logs in this world.
 	 */
 	private Set<Log> logs = new HashSet<>();
+	
 	//private Map<int[],HillbilliesObject[]> objectsInMap = new HashMap();
+	/**
+	 * An arrayList containing all the factions of this world.
+	 */
 	private static ArrayList<Faction> factions = new ArrayList<>();
+	/**
+	 * The 5 different factions are created.
+	 */
 	static{
 		Faction Targaryen = new Faction();
 		Faction Lannister = new Faction();
@@ -53,11 +65,22 @@ public class World {
 		factions.add(Tyrell);
 		
 	}
+	/**
+	 * A variable used to keep track of the cubes who might have to cave in.
+	 */
 	private ArrayList<int[]> cubesToCheck = new ArrayList<int[]>();
 	
-	
-	private int cubesToJump;
+	/**
+	 * A variable registering the number of cubes to jump when checking which cubes have to cave in
+	 */
+	private final int cubesToJump;
+	/**
+	 * the longest possible time step
+	 */
 	final static double maxDT = 0.2;
+	/**
+	 * the longest period that it may take untill all the cubes have caved in
+	 */
 	final static int secondsToCaveIn = 5;
 	
 	
@@ -68,12 +91,18 @@ public class World {
 	 * @throws WorldException
 	 */
 	public World(int[][][] terrainTypes, TerrainChangeListener modelListener) throws WorldException{
-		dimension= terrainTypes.length;
-		world = new Cube[dimension][dimension][dimension];
-		connectedToBorder = new ConnectedToBorder(dimension,dimension,dimension);
-		for (int x=0;x<dimension;x++){
-			for (int y=0;y<dimension;y++){
-				for (int z=0;z<dimension;z++){
+		dimensionx = terrainTypes.length;
+		dimensiony = terrainTypes[1].length;
+		dimensionz = terrainTypes[0][1].length;
+		System.out.println(dimensionx);
+		System.out.println(dimensiony);
+		System.out.println(dimensionz);
+
+		world = new Cube[dimensionx][dimensiony][dimensionz];
+		connectedToBorder = new ConnectedToBorder(dimensionx,dimensiony,dimensionz);
+		for (int x=0;x<dimensionx;x++){
+			for (int y=0;y<dimensiony;y++){
+				for (int z=0;z<dimensionz;z++){
 					world[x][y][z] = new Cube(terrainTypes[x][y][z],this);
 					if (getCube(x,y,z).isPassable()){
 						connectedToBorder.changeSolidToPassable(x, y, z);
@@ -81,15 +110,24 @@ public class World {
 				}	
 				}
 			}
-		for (int x=0;x<dimension;x++){
-			for (int y=0;y<dimension;y++){
-				for (int z=0;z<dimension;z++){
+		fixWalkableCubes();
+		terrainChangeListener = modelListener;
+		int dimensionMax = Math.max(dimensionx,Math.max(dimensiony, dimensionz));
+		cubesToJump = (int) Math.ceil(dimensionMax*maxDT/secondsToCaveIn);
+		}
+	/**
+	 * returns all the cubes that are walkable.
+	 */
+	private void fixWalkableCubes() {
+		for (int x=0;x<dimensionx;x++){
+			for (int y=0;y<dimensiony;y++){
+				for (int z=0;z<dimensionz;z++){
 					if (!getCube(x,y,z).isPassable()){
 						int[] pos = new int[]{-1,0,1};
 						for (int xpos: pos){
 							for (int ypos: pos){
 								for (int zpos: pos){
-									if(Position.isValidCoordinate(x+xpos,this.getDimension()) && Position.isValidCoordinate(y+ypos,this.getDimension()) && Position.isValidCoordinate(z+zpos,this.getDimension()) && getCube(x+xpos,y+ypos,z+zpos).isPassable()){
+									if(Position.isValidCoordinate(x+xpos,this.getDimensionx()) && Position.isValidCoordinate(y+ypos,this.getDimensiony()) && Position.isValidCoordinate(z+zpos,this.getDimensionz()) && getCube(x+xpos,y+ypos,z+zpos).isPassable()){
 										getCube(x+xpos,y+ypos,z+zpos).setWalkable(true);
 									}
 								}
@@ -99,34 +137,60 @@ public class World {
 			}
 		}
 		}
-		terrainChangeListener = modelListener;
-		cubesToJump = (int) Math.ceil(dimension*maxDT/secondsToCaveIn);
-		}
+	}
+	/**
+	 *returns the cube at the given position
+	 */
 	public Cube getCube(int x,int y,int z){
-		return world[x][y][z];
+		return this.world[x][y][z];
 	}
 	
-
-	public ArrayList<Faction> getFactions(){
-		return factions;
+	/**
+	 * returns an arraylist of the fractions in this world
+	 */
+	public static ArrayList<Faction> getFactions(){
+		return World.factions;
 	}
-	
+	/**
+	 * returns a set of all the boulders in this world
+	 */
 	public Set<Boulder> getBoulders(){
-		return boulders;
+		return this.boulders;
 	}
 	
+	/**
+	 * returns a set of all the logs in this world
+	 */
 	public Set<Log> getLogs(){
 		return logs;
 	}
-	
-	public int getDimension(){
-		return this.dimension;
+	/**
+	 * returns the dimension in the x direction
+	 */
+	public int getDimensionx(){
+		return this.dimensionx;
 	}
-	
+	/**
+	 * returns the dimension in the y direction
+	 */
+	public int getDimensiony(){
+		return this.dimensiony;
+	}
+	/**
+	 * returns the dimension in the z direction
+	 */
+	public int getDimensionz(){
+		return this.dimensionz;
+	}
+	/**
+	 * returns the units of the given facition
+	 */
 	public Set<Unit> getUnitsOfFaction(Faction faction){
 		return faction.getUnits();
 	}
-	
+	/**
+	 * returns a set of all the units in this world
+	 */
 	public Set<Unit> getUnits(){
 		Set<Unit> units = new HashSet<>();
 		for (Faction f : factions){
@@ -142,16 +206,35 @@ public class World {
 	//The caving-in process starts with a call of changeCubeType. 
 	// next if the cube is changed to an passable type, the connected to border is informed
 	// a warning is thrown towards the neighbouring cubes
-	
+	/**
+	 * Changes the type of the cube on the given coordinates to the given value
+	 */
 	public void changeCubeType(int x, int y, int z, int value) throws UnitException{	
+		TerrainType oldTerrainType = this.getCube(x,y,z).getTerrainType();
 		this.getCube(x, y, z).setTerrainType(value);
 		terrainChangeListener.notifyTerrainChanged(x, y, z);
-		if (this.getCube(x, y, z).isPassable()){
-			doSomethingIfObjectIsDependent(x,y,z);
-			connectedToBorder.changeSolidToPassable(x, y, z);
-		}
-		throwWarningAround(x,y,z);
+		if (this.getCube(x,y,z).getTerrainType() != oldTerrainType){
+			if (changedFromSolidToPassable(x,y,z,oldTerrainType)){
+				doSomethingIfObjectIsDependent(x,y,z);
+				connectedToBorder.changeSolidToPassable(x, y, z);
+				throwWarningAround(x,y,z);
+				}
+			else if  (changedFromPassableToSolid(x, y, z, oldTerrainType)){
+				
+			}
+				
+			
 		
+		}
+		
+	}
+	private boolean changedFromSolidToPassable(int x, int y, int z,TerrainType oldTerrainType){
+		return (this.getCube(x, y, z).isPassable() && (oldTerrainType == TerrainType.ROCK || oldTerrainType == TerrainType.TREE));
+	}
+	//TODO: hoe zit het hier met workshop ? 
+	
+	private boolean changedFromPassableToSolid(int x, int y, int z,TerrainType oldTerrainType ){
+		return (!this.getCube(x, y, z).isPassable() && (oldTerrainType == TerrainType.AIR  ));
 	}
 	
 	//Misschien niet bij unit?
@@ -272,13 +355,13 @@ public class World {
 	
 	public Unit spawnUnit(boolean enableDefaultBehavior) throws UnitException{
 			Random random = new Random();
-			int x = random.nextInt(this.getDimension()-1);
-			int y = random.nextInt(this.getDimension()-1);
-			int z = random.nextInt(this.getDimension()-1);
+			int x = random.nextInt(this.getDimensionx()-1);
+			int y = random.nextInt(this.getDimensiony()-1);
+			int z = random.nextInt(this.getDimensionz()-1);
 			int looper = z;
 			while ((!this.getCube(x, y, looper).isPassable() || (looper != 0 && this.getCube(x, y, looper-1).isPassable())) && looper !=z-1){
 				looper+=1;
-				looper %= 49;
+				looper %= dimensionz-1;
 			}
 			if (!this.getCube(x, y, looper).isPassable() || this.getCube(x, y, looper-1).isPassable()){
 				return spawnUnit(enableDefaultBehavior);
@@ -335,7 +418,3 @@ public class World {
 	
 
 }
-	
-	
-	
-
