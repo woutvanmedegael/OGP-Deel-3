@@ -130,7 +130,7 @@ public class World {
 			for (int xpos: pos){
 				for (int ypos: pos){
 					for (int zpos: pos){
-						if(Position.isValidPos(x+xpos, y+ypos, z+zpos,this)&& getCube(x+xpos,y+ypos,z+zpos).isPassable()){
+						if(Position.posWithinWorld(x+xpos, y+ypos, z+zpos,this)&& getCube(x+xpos,y+ypos,z+zpos).isPassable()){
 							getCube(x+xpos,y+ypos,z+zpos).setWalkable(true);
 						}
 					}
@@ -266,7 +266,8 @@ public class World {
 		for (int xpos: pos){
 			for (int ypos: pos){
 				for (int zpos: pos){
-					this.getCube(xpos, ypos, zpos).setWalkable(isWalkable(xpos,ypos,zpos));					
+					if (Position.posWithinWorld(x+xpos, x+ ypos, z+zpos, this)){
+					this.getCube(x+xpos, y+ypos, z+zpos).setWalkable(isWalkable(x+xpos,y+ypos,z+zpos));	}				
 				}
 			}
 		
@@ -360,14 +361,14 @@ public class World {
 	
 	public void addLog(int[] p) throws WorldException{
 		//TODO: wat met vallen
-		Position pos = new Position(p[0]+lc/2,p[1]+lc/2,p[2]+lc/2);
+		Position pos = new Position(p[0]+lc/2,p[1]+lc/2,p[2]+lc/2,this);
 		Log newLog = new Log(pos,this);
 		logs.add(newLog);
 		
 	}
 	public void addBoulder(int[] p ) throws WorldException{
 		//wat met vallen
-		Position pos = new Position(p[0]+lc/2,p[1]+lc/2,p[2]+lc/2);
+		Position pos = new Position(p[0]+lc/2,p[1]+lc/2,p[2]+lc/2,this);
 		Boulder newBoulder = new Boulder(pos,this);
 		boulders.add(newBoulder);
 	}
@@ -392,13 +393,16 @@ public class World {
 	 * returns true if the cube at the given position is walkable
 	 */
 	public boolean isWalkable(int xpos, int ypos, int zpos){
+		
 		if (!this.getCube(xpos, ypos, zpos).isPassable()){
 			return false;
 		}
+		
 		for (int x = -1;x<=1;x++){
 			for (int y = -1;y<=1;y++){
 				for (int z = -1;z<=1;z++){
-					if (!this.getCube(xpos+x,ypos+y,ypos+z).isPassable()){
+					
+					if (Position.posWithinWorld(xpos+x, ypos+y, zpos+z, this) && !this.getCube(xpos+x,ypos+y,ypos+z).isPassable()){
 						return true;
 					}
 				}

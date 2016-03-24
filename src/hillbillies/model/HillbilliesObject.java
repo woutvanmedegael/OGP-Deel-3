@@ -17,7 +17,8 @@ public abstract class HillbilliesObject {
 		return this.parentCube;
 	}
 	public void removeObjectFromOldParent(){
-		this.parentCube.deleteObject(this);
+		if (parentCube != null){
+		this.parentCube.deleteObject(this);}
 	}
 	//TODO: officieel via terminated enzo ?
 	

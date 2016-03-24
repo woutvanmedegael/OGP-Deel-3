@@ -135,7 +135,7 @@ public class Facade implements IFacade{
 	public void advanceTime(Unit unit, double dt) throws ModelException {
 		try {
 			unit.advanceTime(dt);
-		} catch (UnitException e) {
+		} catch (WorldException e) {
 			throw new ModelException();
 		}
 	}
