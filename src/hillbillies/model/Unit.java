@@ -1326,8 +1326,9 @@ private void calculateLocalTarget() throws UnitException{
  * If the unit is attacking and has already been attacking for a second, it will execute it's attack.
  * 	if it hasn't been attacking for a second yet, it will wait to attack.
  * If the unit is waiting to attack, it will move on to the middle of a cube before starting an attack
+ * @throws WorldException 
  */
-public void advanceTime(double dt) throws UnitException{
+public void advanceTime(double dt) throws WorldException{
 	if (this.getExperiencePoints()>=10){
 		this.setExperiencePoints(this.getExperiencePoints()-10);
 		improveProperty();
@@ -1562,13 +1563,13 @@ private Position workPosition;
  * Makes the unit work for dt seconds
  * @param dt
  * 		The number of seconds.
- * @throws UnitException 
+ * @throws WorldException 
  * @post If the total time of work done by unit was bigger than 500/strength, the unit finished one unit of work.
  * 		| if ((dt+this.getMyTimeState())>500/this.getStrength())
  * 		| then finishwork() and new.getMyTimeState().getTrackTimeWork() == 0
  * 		| otherwise new.getMyTimeState().getTrackTimeWork() == dt+this.getMyTimeState().getTrackTimeWork()
  */
-private void work(double dt) throws UnitException{
+private void work(double dt) throws WorldException{
 	double prev = this.getMyTimeState().getTrackTimeWork();
 	prev += dt;
 	if (prev>(float)500/this.getStrength()){
@@ -1583,11 +1584,11 @@ private void work(double dt) throws UnitException{
 
 /**
  * Finished work.
- * @throws UnitException 
+ * @throws WorldException 
  * @post Finished work and units state is back to neutral.
  * 		| new.getMyState == CurrentState.NEUTRAL
  */
-private void finishWork() throws UnitException{
+private void finishWork() throws WorldException{
 	this.setExperiencePoints(this.getExperiencePoints()+10);
 	this.setMyState(CurrentState.NEUTRAL);
 	Cube workCube = this.workPosition.getCube();
@@ -1596,18 +1597,18 @@ private void finishWork() throws UnitException{
 			this.load = null;
 		}
 		else if (workCube.getTerrainType() == TerrainType.WORKSHOP && workCube.containsBoulder() && workCube.containsLog()){
-			Log log = workCube.getLog();
+			Log log = workCube.getALog();
 			workCube.deleteObject(log);
-			Boulder boulder = workCube.getBoulder();
+			Boulder boulder = workCube.getABoulder();
 			workCube.deleteObject(boulder);
 			this.setWeight(this.getWeight()+1);
 			this.setToughness(this.getToughness()+1);
 		} else if (workCube.containsBoulder()){
-			Boulder boulder = workCube.getBoulder();
+			Boulder boulder = workCube.getABoulder();
 			workCube.deleteObject(boulder);
 			this.setLoad(boulder);
 		} else if (workCube.containsLog()){
-			Log log = workCube.getLog();
+			Log log = workCube.getALog();
 			workCube.deleteObject(log);
 			this.setLoad(log);
 		} else if (!workCube.isPassable()){
