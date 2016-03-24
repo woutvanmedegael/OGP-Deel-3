@@ -224,7 +224,6 @@ public class World {
 	public void changeCubeType(int x, int y, int z, int value) throws UnitException{	
 		TerrainType oldTerrainType = this.getCube(x,y,z).getTerrainType();
 		this.getCube(x, y, z).setTerrainType(value);
-		terrainChangeListener.notifyTerrainChanged(x, y, z);
 		if (this.getCube(x,y,z).getTerrainType() != oldTerrainType){
 			if (changedFromSolidToPassable(x,y,z,oldTerrainType)){
 				doSomethingIfObjectIsDependent(x,y,z);
@@ -236,9 +235,7 @@ public class World {
 				//TODO: ignore or throw exception?
 				if (!isOccupied(x,y,z)){
 					connectedToBorder.changePassableToSolid(x, y, z);
-					if (!maybeStartFalling(x,y,z)){
-						setSurroundingCubesToWalkable(x,y,z);
-						}
+					cubesToCheck.add(new int[]{x,y,z});
 					}
 				//i know tis lelijk ma ja
 				else {
@@ -248,6 +245,8 @@ public class World {
 				
 			
 			}
+			terrainChangeListener.notifyTerrainChanged(x, y, z);
+
 		}
 		
 	}
@@ -257,18 +256,6 @@ public class World {
 	private boolean isOccupied(int x, int y, int z){
 		return this.getCube(x, y, z).getObjectsOnThisCube().size()>0;
 		}
-	/**
-	 * if the freshly made cube is not connected to the border it's starts falling
-	 */
-	private boolean maybeStartFalling(int x,int y,int z){
-		if (!connectedToBorder.isSolidConnectedToBorder(x, y, z)){
-			//TODO:call iets dat de cube gaat vallen of hoe pakken we dit aan ? Gewoon staat op falling zetten en dan in advance time
-			// steeds alles checken of ene lijstje maken ? 
-			// idem voor de units zou efficienter kunnen 
-			return true;
-		}
-		return false;
-	}
 	
 	/**
 	 * changes the surrounding cubes to not walkable if needed

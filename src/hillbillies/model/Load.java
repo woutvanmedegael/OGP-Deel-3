@@ -72,7 +72,7 @@ private final int weight;
 private static enum LoadState{
 	NEUTRAL,FALLING,CARRIED	
 }
-private CurrentState myState = CurrentState.NEUTRAL;
+private LoadState myState = LoadState.NEUTRAL;
 @Override
 public void advanceTime(double dt) {
 	
