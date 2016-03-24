@@ -113,11 +113,11 @@ public void addPassingUnit(Unit unit){
 	this.passingUnits.add(unit);
 }
 
-//public void warnPassingUnits(){
-//	for (Unit unit : this.passingUnits){
-//		unit.warnCubeHasChanged(this);
-//		}
-//	}
+public void warnPassingUnits(){
+	for (Unit unit : this.passingUnits){
+		unit.warnCubeHasChanged(this);
+		}
+	}
 
 
 /**
@@ -135,6 +135,40 @@ public void setWalkable(boolean bool){
 
 public boolean isWalkable(){
 	return this.walkable;
+}
+public boolean containsBoulder(){
+	for (HillbilliesObject b: this.getObjectsOnThisCube()){
+		if (b instanceof Boulder){
+			return true;
+		}
+	}
+	return false;
+}
+public boolean containsLog(){
+	for (HillbilliesObject l: this.getObjectsOnThisCube()){
+		if (l instanceof Log){
+			return true;
+		}
+	}
+	return false;
+}
+public Log getALog() throws UnitException{
+	for (HillbilliesObject l: this.getObjectsOnThisCube()){
+		if (l instanceof Log){
+			return (Log) l;
+		}
+	}
+	throw new UnitException();
+	
+	
+}
+public Boulder getABoulder() throws UnitException{
+	for (HillbilliesObject b: this.getObjectsOnThisCube()){
+		if (b instanceof Boulder){
+			return (Boulder) b;
+		}
+	}
+	throw new UnitException();
 }
 
 }

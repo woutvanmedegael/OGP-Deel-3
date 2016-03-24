@@ -236,6 +236,7 @@ public class World {
 				if (!isOccupied(x,y,z)){
 					connectedToBorder.changePassableToSolid(x, y, z);
 					cubesToCheck.add(new int[]{x,y,z});
+					this.setSurroundingCubesToWalkable(x, y, z);
 					}
 				//i know tis lelijk ma ja
 				else {
@@ -319,7 +320,6 @@ public class World {
 	private void updateCubes() throws WorldException{
 		ArrayList<int[]> cubesToCaveIn = new ArrayList<int[]>();
 		for (int[] p: cubesToCheck){
-			
 			if (!connectedToBorder.isSolidConnectedToBorder(p[0],p[1],p[2]) && (!this.getCube(p[0],p[1],p[2]).isPassable())){
 				cubesToCaveIn.add(p);
 			}
@@ -360,14 +360,14 @@ public class World {
 	
 	public void addLog(int[] p) throws WorldException{
 		//TODO: wat met vallen
-		Position pos = new Position(p[0],p[1],p[2]);
+		Position pos = new Position(p[0]+lc/2,p[1]+lc/2,p[2]+lc/2);
 		Log newLog = new Log(pos,this);
 		logs.add(newLog);
 		
 	}
 	public void addBoulder(int[] p ) throws WorldException{
 		//wat met vallen
-		Position pos = new Position(p[0],p[1],p[2]);
+		Position pos = new Position(p[0]+lc/2,p[1]+lc/2,p[2]+lc/2);
 		Boulder newBoulder = new Boulder(pos,this);
 		boulders.add(newBoulder);
 	}
@@ -436,14 +436,15 @@ public class World {
 	
 	private static void assignFaction(Unit unit) throws UnitException{
 		for (int i = 4;i>0; i--){
-			if (factions.get(i).getUnits().size()<factions.get(i-1).getUnits().size()){
+			if (factions.get(i).getUnits().size()<factions.get(i-1).getUnits().size() && factions.get(i).getUnits().size()<50){
 				factions.get(i).addUnit(unit);
 				unit.setFaction(factions.get(i));
 				return;
 			}
 		}
-		factions.get(0).addUnit(unit);
-		unit.setFaction(factions.get(0));
+		if (factions.get(0).getUnits().size()<50){
+			factions.get(0).addUnit(unit);
+			unit.setFaction(factions.get(0));}
 		
 	}
 	private static String createRandomName(){
@@ -477,6 +478,42 @@ public class World {
 			}
 		}
 		return activeFactions;
+		
+	}
+	
+	public boolean dropLoad(Load load,Position workPosition){
+		if (workPosition.getCube().isPassable()){
+			if (load instanceof Log){
+			logs.add((Log) load);
+			}
+			else if (load instanceof Boulder){
+				boulders.add((Boulder) load);
+			}
+			load.setParentCube(workPosition, this);
+			return true;		}
+	
+		
+	  return false;
+		
+	}
+	
+	public void collapseCube( Position position) throws WorldException{
+		//ADD LOG OR BOULDER
+		//START CAVE IN PROCES
+		TerrainType oldTerrainType = position.getCube().getTerrainType();
+		changeCubeType(position.getCubexpos(),position.getCubeypos(),position.getCubezpos(),0);
+		if (oldTerrainType == TerrainType.TREE){
+			addLog(new int [] {position.getCubexpos(),position.getCubeypos(),position.getCubezpos()});
+			terrainChangeListener.notifyTerrainChanged(position.getCubexpos(), position.getCubeypos(), position.getCubezpos());
+			
+					}
+		else if (oldTerrainType== TerrainType.ROCK){
+			addBoulder(new int [] {position.getCubexpos(),position.getCubeypos(),position.getCubezpos()});
+			terrainChangeListener.notifyTerrainChanged(position.getCubexpos(), position.getCubeypos(), position.getCubezpos());
+
+		}
+		
+		
 		
 	}
 	
