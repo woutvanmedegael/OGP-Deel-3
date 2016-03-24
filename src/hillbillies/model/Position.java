@@ -232,6 +232,14 @@ public boolean isValidPos(){
 	return false;
 }
 
+public static boolean posWithinWorld(int x, int y, int z, World world){
+	try{
+		world.getCube(x, y, z);
+		return true;
+	} catch (ArrayIndexOutOfBoundsException e){
+		return false;
+	}
+}
 
 public static boolean isValidPos(double xpos, double ypos, double zpos, World world){
 	if (world == null){

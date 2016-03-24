@@ -113,11 +113,11 @@ public void addPassingUnit(Unit unit){
 	this.passingUnits.add(unit);
 }
 
-public void warnPassingUnits(){
-	for (Unit unit : this.passingUnits){
-		unit.warnCubeHasChanged(this);
-		}
-	}
+//public void warnPassingUnits(){
+//	for (Unit unit : this.passingUnits){
+//		unit.warnCubeHasChanged(this);
+//		}
+//	}
 
 
 /**

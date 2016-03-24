@@ -1516,14 +1516,12 @@ private void reduceSPForSprint(double timeSprinted) throws UnitException {
 private void determineLocalTarget() throws UnitException{
 	if ((this.getGlobalTarget() == null && this.getMyPosition().Equals(this.getLocalTarget())) ||
 			((this.getGlobalTarget() != null) && this.getMyPosition().Equals(this.getGlobalTarget()))){
-		System.out.println("adding xp");
 		this.setExperiencePoints(this.getExperiencePoints()+1);
 		this.setGlobalTarget(null);
 		this.setMyState(CurrentState.NEUTRAL);
 		this.setSpeed(0);
 		
 	} else if (this.getGlobalTarget() != null && this.getMyPosition().Equals(this.getLocalTarget())){
-		System.out.println("adding xp");
 		this.setExperiencePoints(this.getExperiencePoints()+1);
 		calculateLocalTarget();
 	}
@@ -1541,7 +1539,7 @@ private void determineLocalTarget() throws UnitException{
 public void workAt(int x, int y, int z){
 	if ((this.getMyState() == CurrentState.RESTING && this.getHasRested()) || this.getMyState() == CurrentState.NEUTRAL){
 		try{
-			this.workPosition = new Position(x,y,z);
+			this.workPosition = new Position(x,y,z,myWorld);
 			if (!this.workPosition.isAdjacent(this.getMyPosition())){
 				throw new UnitException();
 			}
@@ -1550,9 +1548,6 @@ public void workAt(int x, int y, int z){
 		}
 		this.setMyState(CurrentState.WORKING);
 		this.getMyTimeState().setTrackTimeWork(0);
-		System.out.println(y-this.getMyPosition().getypos());
-		System.out.println(x-this.getMyPosition().getxpos());
-		System.out.println(Math.atan2(y-this.getMyPosition().getypos(), x-this.getMyPosition().getxpos()));
 		this.setOrientation((float) Math.atan2(y-this.getMyPosition().getypos()+0.5, x-this.getMyPosition().getxpos()+0.5));
 	}
 }
@@ -1592,31 +1587,38 @@ private void finishWork() throws WorldException{
 	this.setExperiencePoints(this.getExperiencePoints()+10);
 	this.setMyState(CurrentState.NEUTRAL);
 	Cube workCube = this.workPosition.getCube();
+	System.out.println("finished work");
+	System.out.println(workPosition);
 	if (this.isCarryingBoulder() || this.isCarryingLog()){
 		if (this.myWorld.dropLoad(this.load, this.workPosition)){
+			System.out.println("dropping load");
 			this.load = null;
 		}
-		else if (workCube.getTerrainType() == TerrainType.WORKSHOP && workCube.containsBoulder() && workCube.containsLog()){
+	}
+	else if (workCube.getTerrainType() == TerrainType.WORKSHOP && workCube.containsBoulder() && workCube.containsLog()){
+			System.out.println("improving equipment");
 			Log log = workCube.getALog();
 			workCube.deleteObject(log);
 			Boulder boulder = workCube.getABoulder();
 			workCube.deleteObject(boulder);
 			this.setWeight(this.getWeight()+1);
 			this.setToughness(this.getToughness()+1);
-		} else if (workCube.containsBoulder()){
+	} else if (workCube.containsBoulder()){
+			System.out.println("picking up boulder");
 			Boulder boulder = workCube.getABoulder();
 			workCube.deleteObject(boulder);
 			this.setLoad(boulder);
-		} else if (workCube.containsLog()){
+	} else if (workCube.containsLog()){
+			System.out.println("picking up log");
 			Log log = workCube.getALog();
 			workCube.deleteObject(log);
 			this.setLoad(log);
-		} else if (!workCube.isPassable()){
+	} else if (!workCube.isPassable()){
+			System.out.println("collapsing cube");
 			this.myWorld.collapseCube(this.workPosition);
-		} else {
+	} else {
+			System.out.println("no action");
 			this.setExperiencePoints(this.getExperiencePoints()-10);
-		}
-		
 	}
 }
 
@@ -2074,16 +2076,12 @@ public void improveProperty(){
 		}
 		Random random = new Random();
 		int nb = random.nextInt(props.size());
-		System.out.println(nb);
 		switch (nb){
 			case 0:
-				System.out.println("check 0");
 				this.setAgility(this.getAgility()+1);
 			case 1:
-				System.out.println("check 1");
 				this.setStrength(this.getStrength()+1);
 			case 2:
-				System.out.println("check 2");
 				this.setToughness(this.getToughness()+1);
 		}
 		this.setCurrentHP(this.getMaxHP()-prevMaxHP+this.getCurrentHP());
