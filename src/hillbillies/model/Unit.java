@@ -1182,12 +1182,6 @@ private void setLocalTargetAndSpeed(Position nextPos) throws UnitException{
 	calculateVelocity(dz);
 }
 
-//TODO commentaar hier
-
-private void startFalling(){
-	this.setMyState(CurrentState.FALLING);
-}
-
 
 /**
  * The velocity is calculated and set.
@@ -1393,6 +1387,7 @@ public void advanceTime(double dt) throws UnitException{
 				break;
 			}
 		case FALLING:
+			this.fall(dt);
 	default:
 		break;
 			
@@ -1667,7 +1662,7 @@ private void startAttacking(){
  * 		 | then new.getMyState()==CurrentState.ATTACK_PENDING and new.getDefender()==defender
  */
 public void initiateAttack(Unit defender){
-	if (!(this.getMyState() == CurrentState.DEFENDING || this.getMyState() == CurrentState.ATTACKING)){
+	if (!(this.getMyState() == CurrentState.DEFENDING || this.getMyState() == CurrentState.ATTACKING || this.getFaction()==defender.getFaction())){
 		this.setMyState(CurrentState.ATTACK_PENDING);
 		this.setDefender(defender);
 	}
@@ -1808,6 +1803,7 @@ public void takeDamage(Unit attacker) throws UnitException{
 	int damage = (int) attacker.getStrength()/10;
 	if (damage>this.getCurrentHP()){
 		this.setCurrentHP(0);
+		this.die();
 	} else {
 		this.setCurrentHP(this.getCurrentHP()-damage);
 	}
@@ -2044,6 +2040,8 @@ private int experiencePoints =0;
 
 //TODO: improveProperty 
 public void improveProperty(){
+		int prevMaxHP = this.getMaxHP();
+		int prevMaxSP = this.getMaxSP();
 		ArrayList<Integer> props = new ArrayList<>();
 		if (this.getAgility()<200){
 			props.add(0);
@@ -2068,6 +2066,8 @@ public void improveProperty(){
 				System.out.println("check 2");
 				this.setToughness(this.getToughness()+1);
 		}
+		this.setCurrentHP(this.getMaxHP()-prevMaxHP+this.getCurrentHP());
+		this.setCurrentSP(this.getMaxSP()-prevMaxSP+this.getCurrentSP());
 				
 	}
 
@@ -2148,8 +2148,35 @@ public Faction getFaction(){
 	return this.myFaction;
 }
 
+public void die(){
+	this.getFaction().removeUnit(this);
+}
 
+public void fall(double dt) throws UnitException{
+	double distance = this.getMyPosition().calculateDistance(this.getLocalTarget());
+	boolean hasArrivedAtLocalTarget = this.getSpeed()*dt>distance;
+	if (hasArrivedAtLocalTarget){
+		this.getMyPosition().setPositionAt(this.getLocalTarget());
+		if (!this.getMyPosition().getCube().isWalkable()){
+			startFalling();
+		}
+	} else {
+		double velocity = this.getSpeed();
+		double velocityx = velocity*(this.getLocalTarget().getxpos()-this.getxpos())/distance;
+		double velocityy = velocity*(this.getLocalTarget().getypos()-this.getypos())/distance;
+		double velocityz = velocity*(this.getLocalTarget().getzpos()-this.getzpos())/distance;
+		this.getMyPosition().incrPosition(velocityx*dt, velocityy*dt, velocityz*dt);
+		this.setOrientation((float) Math.atan2(velocityy,velocityx));
+	}
+}
 
+public void startFalling() throws UnitException{
+	this.setMyState(CurrentState.FALLING);
+	this.getLocalTarget().setPositionAt(this.getMyPosition());
+	this.getLocalTarget().incrPosition(0, 0, -1);
+	this.setGlobalTarget(null);
+	this.setSpeed(3);
+}
 
 }
 
