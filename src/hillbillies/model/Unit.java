@@ -374,11 +374,6 @@ public String getName() {
 }
 
 /**
- * Registers all valid characters for in name.
- */
-private static char[] validcharacters = "abcdefghijklmnopqrstuvwxyz' \"".toCharArray();
-
-/**
  * Check whether the given name is a valid name for
  * any unit.
  *  
