@@ -10,7 +10,7 @@ public abstract class HillbilliesObject {
 	 */
 	public void setParentCube(Position position,World world){
 		removeObjectFromOldParent();
-		this.parentCube = world.getCube((int) position.getxpos(),(int) position.getypos(),(int) position.getzpos());
+		this.parentCube = position.getCube();
 		this.parentCube.addObject(this);
 	}
 	public Cube getParentCube(){

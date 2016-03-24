@@ -1119,7 +1119,7 @@ public void setSpeed(double speed)
  *        | !isValidMove(new in([]{dx,dy,dz}))
  */	
 public void moveToAdjacent(int dx, int dy, int dz) throws UnitException{
-	if (!(this.getMyState()==CurrentState.ATTACKING || this.getMyState()==CurrentState.MOVING || this.getMyState() == CurrentState.DEFENDING) && this.getHasRested()){
+	if (!(this.getMyState()==CurrentState.ATTACKING || this.getMyState()==CurrentState.MOVING || this.getMyState() == CurrentState.DEFENDING) && this.getHasRested() && (dx!=0 || dy!=0 || dz!=0)){
 		this.setMyState(CurrentState.MOVING);
 		if (!isValidMove(new int[]{dx,dy,dz})){
 			throw new UnitException();
@@ -1545,10 +1545,8 @@ private void determineLocalTarget() throws UnitException{
 public void workAt(int x, int y, int z){
 	if ((this.getMyState() == CurrentState.RESTING && this.getHasRested()) || this.getMyState() == CurrentState.NEUTRAL){
 		try{
-			this.workCube = new Position(x,y,z);
-			System.out.println("check adjacnet");
-			if (!this.workCube.isAdjacent(this.getMyPosition())){
-				System.out.println("not adjacent");
+			this.workPosition = new Position(x,y,z);
+			if (!this.workPosition.isAdjacent(this.getMyPosition())){
 				throw new UnitException();
 			}
 		} catch (UnitException e){
@@ -1563,7 +1561,7 @@ public void workAt(int x, int y, int z){
 	}
 }
 
-private Position workCube;
+private Position workPosition;
 
 /**
  * Makes the unit work for dt seconds
@@ -1597,7 +1595,33 @@ private void work(double dt) throws UnitException{
 private void finishWork() throws UnitException{
 	this.setExperiencePoints(this.getExperiencePoints()+10);
 	this.setMyState(CurrentState.NEUTRAL);
-	// Fill in later
+	Cube workCube = this.workPosition.getCube();
+	if (this.isCarryingBoulder() || this.isCarryingLog()){
+		if (this.myWorld.dropLoad(this.load, this.workPosition)){
+			this.load = null;
+		}
+		else if (workCube.getTerrainType() == TerrainType.WORKSHOP && workCube.containsBoulder() && workCube.containsLog()){
+			Log log = workCube.getLog();
+			workCube.deleteObject(log);
+			Boulder boulder = workCube.getBoulder();
+			workCube.deleteObject(boulder);
+			this.setWeight(this.getWeight()+1);
+			this.setToughness(this.getToughness()+1);
+		} else if (workCube.containsBoulder()){
+			Boulder boulder = workCube.getBoulder();
+			workCube.deleteObject(boulder);
+			this.setLoad(boulder);
+		} else if (workCube.containsLog()){
+			Log log = workCube.getLog();
+			workCube.deleteObject(log);
+			this.setLoad(log);
+		} else if (!workCube.isPassable()){
+			this.myWorld.collapseCube(this.workPosition);
+		} else {
+			this.setExperiencePoints(this.getExperiencePoints()-10);
+		}
+		
+	}
 }
 
 /**
@@ -2125,6 +2149,12 @@ public boolean isCarryingBoulder(){
  */
 @Raw
 public void setLoad(Load load){
+	if (load instanceof Log){
+		this.myWorld.getLogs().remove(load);
+	}
+	if (load instanceof Boulder){
+		this.myWorld.getBoulders().remove(load);
+	}
 	this.load = load;
 }
 
@@ -2132,11 +2162,6 @@ public void setLoad(Load load){
  * Variable registering the load of this unit.
  */
 private Load load;
-
-
-public void warnCubeHasChanged(Cube cube){
-	
-}
 
 private Faction myFaction;
 
