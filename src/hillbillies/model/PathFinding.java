@@ -52,7 +52,7 @@ public class PathFinding {
 		}
 		@Override
 		public String toString(){
-			return myPos.toString();
+			return "("+myPos.toString()+","+gvalue+","+fvalue;
 		}
 
 		@Override
@@ -75,44 +75,22 @@ public class PathFinding {
 				calculatePath(current);
 				break;
 			}
-			for (Position pos : getNeighbours(current.getPosition())){
-				if (setContains(closedset,pos)){
+			for (Position pos : current.getPosition().getNeighbours()){
+				if (closedset.contains(pos)){
 					continue;
 				}
 				double tempGscore = current.getGValue()+current.getPosition().getExactTimeToAdjacent(pos);
 				Node matchingNode = getMatchingNodeFromOpenSet(pos);
 				if (matchingNode!=null && tempGscore >= matchingNode.getGValue()){
 					continue;
-				} else if (matchingNode == null){
-					matchingNode = new Node(pos, tempGscore, tempGscore, current);
-					openset.add(matchingNode);
+				} else if (matchingNode != null){
+					openset.remove(matchingNode);
 				}
-				matchingNode.setParent(current);
-				matchingNode.setGValue(tempGscore);
-				matchingNode.setFValue(tempGscore+pos.getEstimatedTimeTo(target));
+				matchingNode = new Node(pos, tempGscore, tempGscore+pos.getEstimatedTimeTo(target), current);
+				openset.add(matchingNode);
 			}
 		}
 	}
-	
-	private ArrayList<Position> getNeighbours(Position current) throws UnitException{
-		ArrayList<Position> neighbours = new ArrayList<>();
-		int[] pos = new int[]{-1,0,1};
-		for (int x: pos){
-			for (int y: pos){
-				for (int z: pos){
-					if (Position.isValidPos(x+current.getxpos(), y+current.getypos(), z+current.getzpos(), this.world) && (x!=0 || y!=0 || z!=0)){
-						Position neighbour = new Position(current.getxpos()+x,current.getypos()+y,current.getzpos()+z, this.world);
-						if (neighbour.getCube().isWalkable()){
-							neighbours.add(neighbour);
-						}
-					}
-				}
-			}
-		}
-		return neighbours;
-	}
-	
-	
 	
 	private Node getMatchingNodeFromOpenSet(Position pos){
 		for (Node node : openset){
@@ -128,10 +106,11 @@ public class PathFinding {
 	private void calculatePath(Node target){
 		Node currentNode = target;
 		while (currentNode.getParent()!=null){
-			path.add(currentNode.getPosition());
+			Position pos = currentNode.getPosition();
+			path.add(pos);
+			pos.getCube().registerPath(this,pos);
 			currentNode = currentNode.getParent();
 		}
-		System.out.println(path);
 	}
 	
 	public Position moveToNextPos(){
@@ -139,6 +118,7 @@ public class PathFinding {
 			return null;
 		}
 		Position nextPos = this.path.get(this.path.size()-1);
+		nextPos.getCube().unregisterPath(this);
 		this.path.remove(nextPos);
 		return nextPos;
 	}
@@ -149,6 +129,10 @@ public class PathFinding {
 			}
 		}
 		return false;
+	}
+	
+	public ArrayList<Position> getPath(){
+		return this.path;
 	}
 	
 }

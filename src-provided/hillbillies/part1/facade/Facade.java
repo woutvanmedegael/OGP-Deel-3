@@ -4,6 +4,7 @@ package hillbillies.part1.facade;
 import hillbillies.model.IllegalNameException;
 import hillbillies.model.Unit;
 import hillbillies.model.UnitException;
+import hillbillies.model.WorldException;
 import hillbillies.model.CurrentState;
 import ogp.framework.util.ModelException;
 
@@ -130,7 +131,7 @@ public class Facade implements IFacade{
 	public void advanceTime(Unit unit, double dt) throws ModelException {
 		try {
 			unit.advanceTime(dt);
-		} catch (UnitException e) {
+		} catch (WorldException e) {
 			throw new ModelException();
 		}
 	}

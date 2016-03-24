@@ -1195,8 +1195,11 @@ private void setLocalTargetAndSpeed(Position nextPos) throws UnitException{
  * @note UnitException will never be thrown. Velocity is always positive.
  */
 private void calculateVelocity(int dz) throws UnitException {
-	
-	float velocity = (float) ((float)1.5*(this.getStrength()+this.getAgility())/((float)2.0*this.getWeight()));
+	int weight = this.getWeight();
+	if (this.load!=null){
+		weight+=load.getWeight();
+	}
+	float velocity = (float) ((float)1.5*(this.getStrength()+this.getAgility())/((float)2.0*weight));
 	if (dz == 1){
 		velocity *= 0.5;
 	}
@@ -1220,14 +1223,21 @@ private void calculateVelocity(int dz) throws UnitException {
  * 		   |				isValidPos(this.getCubeXpos()+move[0]) &&
  * 		   |					isValidPos(this.getCubeYpos()+move[1]) && 
  * 		   | 						isValidPos(this.getCubeZpos()+move[2])) 								
+ * @throws UnitException 
  */
-private boolean isValidMove(int[] move){
+private boolean isValidMove(int[] move) throws UnitException{
 	for (int el:move){
 		if (el<-1 || el>1){
 			return false;
 		}
 	}
 	if (!Position.isValidPos(this.getxpos()+move[0],this.getypos()+move[1],this.getzpos()+move[2],this.myWorld)){
+		return false;
+	}
+	this.getLocalTarget().incrPosition(move[0], move[1], move[2]);
+	this.getLocalTarget().setToMiddleOfCube();
+	if (this.getLocalTarget().getCube().isWalkable()){
+		this.setLocalTarget(this.getMyPosition());
 		return false;
 	}
 	return true;
@@ -1264,6 +1274,11 @@ public void moveTo(int cubeX, int cubeY, int cubeZ) throws UnitException{
 		if (myWorld != null){
 			myPath = new PathFinding(myWorld, this.getMyPosition(),this.getGlobalTarget());
 		}
+		if (myPath.getPath().isEmpty()){
+			this.setMyState(CurrentState.NEUTRAL);
+			this.setGlobalTarget(null);
+			return;
+		}
 		calculateLocalTarget();
 	}
 }
@@ -1272,9 +1287,10 @@ public void moveTo(int cubeX, int cubeY, int cubeZ) throws UnitException{
 //TODO formeel commentaar 'pathfinding' referentie
 
 public void setWorld(World world) throws UnitException{
-	myWorld = world;
+	this.myWorld = world;
 	this.getMyPosition().setWorld(world);
 	this.getLocalTarget().setWorld(world);
+	this.setParentCube(this.getMyPosition(), world);
 }
 
 private PathFinding myPath;
@@ -1366,7 +1382,10 @@ public void advanceTime(double dt) throws WorldException{
 			break;
 			//TODO hier this.attacking
 		case ATTACKING:
+			System.out.println(this.getDefender());
 			if (this.getMyTimeState().getAttackTime()>1){
+				System.out.println("defender:");
+				System.out.println(this.getDefender());
 				this.attack(this.getDefender());
 				break;
 			} else {
@@ -1461,6 +1480,9 @@ private void updateLocationAndOrientation(double dt) throws UnitException {
 		this.getMyPosition().incrPosition(velocityx*dt, velocityy*dt, velocityz*dt);
 		this.setOrientation((float) Math.atan2(velocityy,velocityx));
 	}
+	if (this.getMyPosition().getCube()!=this.getParentCube()){
+		this.setParentCube(this.getMyPosition(), myWorld);
+	}
 }
 
 /**
@@ -1539,10 +1561,12 @@ private void determineLocalTarget() throws UnitException{
 public void workAt(int x, int y, int z){
 	if ((this.getMyState() == CurrentState.RESTING && this.getHasRested()) || this.getMyState() == CurrentState.NEUTRAL){
 		try{
+			System.out.println("setting workposition");
 			this.workPosition = new Position(x,y,z,myWorld);
 			if (!this.workPosition.isAdjacent(this.getMyPosition())){
 				throw new UnitException();
 			}
+			System.out.println("workposition set");
 		} catch (UnitException e){
 			return;
 		}
@@ -1578,7 +1602,7 @@ private void work(double dt) throws WorldException{
 //TODO:Commentaar
 
 /**
- * Finished work.
+ * Finished work.f
  * @throws WorldException 
  * @post Finished work and units state is back to neutral.
  * 		| new.getMyState == CurrentState.NEUTRAL
@@ -1586,17 +1610,14 @@ private void work(double dt) throws WorldException{
 private void finishWork() throws WorldException{
 	this.setExperiencePoints(this.getExperiencePoints()+10);
 	this.setMyState(CurrentState.NEUTRAL);
+	this.getMyTimeState().setTrackTimeWork(0);
 	Cube workCube = this.workPosition.getCube();
-	System.out.println("finished work");
-	System.out.println(workPosition);
 	if (this.isCarryingBoulder() || this.isCarryingLog()){
 		if (this.myWorld.dropLoad(this.load, this.workPosition)){
-			System.out.println("dropping load");
 			this.load = null;
 		}
 	}
 	else if (workCube.getTerrainType() == TerrainType.WORKSHOP && workCube.containsBoulder() && workCube.containsLog()){
-			System.out.println("improving equipment");
 			Log log = workCube.getALog();
 			workCube.deleteObject(log);
 			Boulder boulder = workCube.getABoulder();
@@ -1604,20 +1625,16 @@ private void finishWork() throws WorldException{
 			this.setWeight(this.getWeight()+1);
 			this.setToughness(this.getToughness()+1);
 	} else if (workCube.containsBoulder()){
-			System.out.println("picking up boulder");
 			Boulder boulder = workCube.getABoulder();
 			workCube.deleteObject(boulder);
 			this.setLoad(boulder);
 	} else if (workCube.containsLog()){
-			System.out.println("picking up log");
 			Log log = workCube.getALog();
 			workCube.deleteObject(log);
 			this.setLoad(log);
 	} else if (!workCube.isPassable()){
-			System.out.println("collapsing cube");
 			this.myWorld.collapseCube(this.workPosition);
 	} else {
-			System.out.println("no action");
 			this.setExperiencePoints(this.getExperiencePoints()-10);
 	}
 }
@@ -1781,6 +1798,9 @@ public void jumpAway(){
 	float yrand = (random.nextFloat())*2-1;
 	try{
 		this.getMyPosition().incrPosition(xrand, yrand, 0);
+		if (this.getMyPosition().getCube()!=this.getParentCube()){
+			this.setParentCube(this.getMyPosition(), myWorld);
+		}
 	} catch (UnitException e) {
 		jumpAway();
 	}
@@ -1977,13 +1997,65 @@ private static final int SIZE = DEFAULTSTATES.size();
  */
 public void executeDefaultBehaviour() throws UnitException{
 	if (this.getDefaultBehaviourEnabled()){
-		this.setMyState(DEFAULTSTATES.get(random.nextInt(SIZE)));
+		Unit enemy=null;
+		for (Position neighbour : this.getMyPosition().getNeighbours()){
+			for (HillbilliesObject o : neighbour.getCube().getObjects()){
+				if (o instanceof Unit && ((Unit) o).getFaction()!=this.getFaction()){
+					enemy = (Unit) o;
+				}
+			}
+		}
 		
-		if (this.getMyState() == CurrentState.MOVING){
-			this.setGlobalTarget(new Position(random.nextInt(50)+0.5,
-					random.nextInt(50)+0.5,random.nextInt(50)+0.5, this.myWorld));
+		List<CurrentState> states = new ArrayList<>();
+		states.addAll(0, DEFAULTSTATES);
+		
+		if (enemy!=null){
+			states.add(CurrentState.ATTACKING);
+		}
+		
+		CurrentState state = states.get(random.nextInt(states.size()));
+		System.out.println(state);
+		System.out.println(enemy);
+		
+		if (state == CurrentState.MOVING){
+			System.out.println("moving");
+			Position target = generateRandomPos();
+			this.moveTo(target.getCubexpos(),target.getCubeypos(),target.getCubezpos());
+		}	
+		else if (state == CurrentState.WORKING){
+			System.out.println("working");
+			Random random = new Random();
+			int x = random.nextInt(3)-1;
+			int y = random.nextInt(3)-1;
+			int z = random.nextInt(3)-1;
+			if (!Position.posWithinWorld(x, y, z, this.myWorld)){
+				x*=-1;
+				y*=-1;
+				z*=-1;
+			}
+			System.out.println("workAt");
+			this.workAt(this.getCubeXpos()+x, this.getCubeYpos()+y, this.getCubeZpos()+z);
+		} else if (state == CurrentState.ATTACKING){
+			System.out.println("attacking");
+			this.initiateAttack(enemy);
+		}
 	}
+}
+
+private Position generateRandomPos() throws UnitException{
+	Random random = new Random();
+	int x = random.nextInt(this.myWorld.getDimensionx()-1);
+	int y = random.nextInt(this.myWorld.getDimensiony()-1);
+	int z = random.nextInt(this.myWorld.getDimensionz()-1);
+	int looper = z;
+	while ((!this.myWorld.getCube(x, y, looper).isPassable() || (looper != 0 && this.myWorld.getCube(x, y, looper-1).isPassable())) && looper !=z-1){
+		looper+=1;
+		looper %= this.myWorld.getDimensionz()-1;
 	}
+	if (!this.myWorld.getCube(x, y, looper).isPassable() || this.myWorld.getCube(x, y, looper-1).isPassable()){
+		return generateRandomPos();
+	}
+	return new Position(x,y,looper);
 }
 
 /**
@@ -2175,9 +2247,17 @@ public void fall(double dt) throws UnitException{
 	double distance = this.getMyPosition().calculateDistance(this.getLocalTarget());
 	boolean hasArrivedAtLocalTarget = this.getSpeed()*dt>distance;
 	if (hasArrivedAtLocalTarget){
+		this.setMyState(CurrentState.NEUTRAL);
+		this.setSpeed(0);
 		this.getMyPosition().setPositionAt(this.getLocalTarget());
 		if (!this.getMyPosition().getCube().isWalkable()){
 			startFalling();
+		}
+		if (this.getCurrentHP()<=10){
+			this.setCurrentHP(0);
+			this.die();
+		} else {
+			this.setCurrentHP(this.getCurrentHP()-10);
 		}
 	} else {
 		double velocity = this.getSpeed();
@@ -2186,6 +2266,9 @@ public void fall(double dt) throws UnitException{
 		double velocityz = velocity*(this.getLocalTarget().getzpos()-this.getzpos())/distance;
 		this.getMyPosition().incrPosition(velocityx*dt, velocityy*dt, velocityz*dt);
 		this.setOrientation((float) Math.atan2(velocityy,velocityx));
+	}
+	if (this.getMyPosition().getCube()!=this.getParentCube()){
+		this.setParentCube(this.getMyPosition(), myWorld);
 	}
 }
 

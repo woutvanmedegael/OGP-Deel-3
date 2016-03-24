@@ -71,7 +71,7 @@ public boolean canHaveAsWeight(int weight) {
 private final int weight;
 
 private static enum LoadState{
-	NEUTRAL,FALLING,CARRIED	
+	FALLING,NEUTRAL
 }
 private LoadState myState = LoadState.NEUTRAL;
 @Override
@@ -81,8 +81,6 @@ public void advanceTime(double dt) throws UnitException {
 			break;
 		case FALLING:
 			this.fall(dt);
-			break;
-		case CARRIED:
 			break;
 	}
 	

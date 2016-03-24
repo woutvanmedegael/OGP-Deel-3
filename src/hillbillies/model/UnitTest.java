@@ -139,10 +139,10 @@ public class UnitTest {
 	
 	/**
 	 * Tests whether the advance time method returns exceptions if invalid arguments are given.
-	 * @throws UnitException
+	 * @throws WorldException 
 	 */
 	@Test
-	public void testAdvanceTime() throws UnitException{
+	public void testAdvanceTime() throws WorldException{
 		Unit test = new Unit(5,5,5,"Adri'aan en W\"out", 50, 50, 50, 50, false);
 		test.advanceTime(0.1);
 		try{
@@ -167,10 +167,10 @@ public class UnitTest {
 	
 	/**
 	 * Tests whether all restrictions on MoveToAdjacent work.
-	 * @throws UnitException
+	 * @throws WorldException 
 	 */
 	@Test
-	public void testMoveToAdjacent() throws UnitException{
+	public void testMoveToAdjacent() throws WorldException{
 		Unit test = new Unit(5,5,5,"Adri'aan en W\"out", 50, 50, 50, 50, false);
 		assert (test.getMyState() == CurrentState.NEUTRAL);
 		test.moveToAdjacent(1, 1, 1);
@@ -229,10 +229,10 @@ public class UnitTest {
 	
 	/**
 	 * Tests the method moveTo on its restrictions.
-	 * @throws UnitException
+	 * @throws WorldException 
 	 */
 	@Test
-	public void testMoveTo() throws UnitException{
+	public void testMoveTo() throws WorldException{
 		Unit test = new Unit(5,5,5,"Adri'aan en W\"out", 50, 50, 50, 50, false);
 		test.moveTo(0, 0, 0);
 		assert (test.getMyState() == CurrentState.MOVING);
@@ -271,10 +271,10 @@ public class UnitTest {
 	
 	/**
 	 * Tests the method work() on all restrictions.
-	 * @throws UnitException
+	 * @throws WorldException 
 	 */
 	@Test
-	public void testWork() throws UnitException{
+	public void testWork() throws WorldException{
 		Unit test = new Unit(5,5,5,"Adri'aan en W\"out", 50, 50, 50, 50, false);
 		test.workAt(0,0,0);
 		assert (test.getMyState()==CurrentState.WORKING);
@@ -286,10 +286,10 @@ public class UnitTest {
 	
 	/**
 	 * Checks whether fighting units satisfy the conditions.
-	 * @throws UnitException
+	 * @throws WorldException 
 	 */
 	@Test
-	public void testFighting() throws UnitException{
+	public void testFighting() throws WorldException{
 		Unit defender = new Unit(5,5,5,"Adri'aan en W\"out", 50, 50, 50, 50, false);
 		Unit attacker = new Unit(6,6,5,"Adri'aan en W\"out", 50, 50, 50, 50, false);
 		defender.startDefending(attacker);
@@ -324,10 +324,10 @@ public class UnitTest {
 	
 	/**
 	 * Tests whether units satisfy all conditions concerning resting.
-	 * @throws UnitException
+	 * @throws WorldException 
 	 */
 	@Test
-	public void testResting() throws UnitException{
+	public void testResting() throws WorldException{
 		Unit test = new Unit(5,5,5,"Adri'aan en W\"out", 50, 50, 50, 50, false);
 		test.setCurrentHP(10);
 		test.setCurrentSP(10);
@@ -352,10 +352,10 @@ public class UnitTest {
 	
 	/**
 	 * Tests a units default behaviour.
-	 * @throws UnitException
+	 * @throws WorldException 
 	 */
 	@Test
-	public void testDefaultBehaviour() throws UnitException{
+	public void testDefaultBehaviour() throws WorldException{
 		Unit test = new Unit(5,5,5,"Adri'aan en W\"out", 50, 50, 50, 50, false);
 		test.setStrength(200);
 		test.setDefaultBehaviourEnabled(true);
@@ -368,10 +368,10 @@ public class UnitTest {
 	
 	/**
 	 * Tests a units sprinting mode.
-	 * @throws UnitException
+	 * @throws WorldException 
 	 */
 	@Test
-	public void testSprint() throws UnitException{
+	public void testSprint() throws WorldException{
 		Unit test = new Unit(5,5,5,"Adri'aan en W\"out", 50, 50, 50, 50, false);
 		assert (test.getToggledSprint() == false);
 		test.setToggledSprint(true);
@@ -409,9 +409,9 @@ public class UnitTest {
 	 * 			The unit which advancetime has to be called on.
 	 * @param time
 	 * 			The time to be advanced.
-	 * @throws UnitException
+	 * @throws WorldException 
 	 */
-	public void advanceSeconds(Unit unit, double time) throws UnitException{
+	public void advanceSeconds(Unit unit, double time) throws WorldException{
 		int steps = (int) (time/0.01);
 		for (int i = 0; i<steps;i++){
 			unit.advanceTime(0.01);

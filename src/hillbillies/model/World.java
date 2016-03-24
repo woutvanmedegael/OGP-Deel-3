@@ -1,5 +1,4 @@
 package hillbillies.model;
-import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -7,8 +6,6 @@ import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.util.ConnectedToBorder;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 public class World {
 	/**
@@ -226,10 +223,10 @@ public class World {
 		this.getCube(x, y, z).setTerrainType(value);
 		if (this.getCube(x,y,z).getTerrainType() != oldTerrainType){
 			if (changedFromSolidToPassable(x,y,z,oldTerrainType)){
-				doSomethingIfObjectIsDependent(x,y,z);
 				connectedToBorder.changeSolidToPassable(x, y, z);
 				throwWarningAround(x,y,z);
 				changeWalkable(x,y,z);
+				doSomethingIfObjectIsDependent(x,y,z);
 				}
 			else if  (changedFromPassableToSolid(x, y, z, oldTerrainType)){
 				//TODO: ignore or throw exception?
@@ -290,10 +287,24 @@ public class World {
 	}
 	
 	//Misschien niet bij unit?
-	private void doSomethingIfObjectIsDependent(int x, int y, int z) {
+	private void doSomethingIfObjectIsDependent(int x, int y, int z) throws UnitException {
 		// TODO aanvullen
-		for (HillbilliesObject obj :this.getCube(x, y, z+1).getObjects()){
-			
+		for (int xpos = x-1; xpos<=x+1;xpos++){
+			for (int ypos = y-1; ypos<=y+1;ypos++){
+				for (int zpos = z-1; zpos<=z+1;zpos++){
+					if (Position.posWithinWorld(xpos, ypos, zpos, this) && this.getCube(xpos,ypos,zpos).isPassable()){
+						for (HillbilliesObject o : this.getCube(xpos, ypos, zpos).getObjects()){
+							if (o instanceof Unit && !this.getCube(xpos, ypos, zpos).isWalkable()){
+								Unit u = (Unit) o;
+								u.startFalling();
+							} else if (o instanceof Load && xpos==x && ypos==y && zpos==z+1){
+								Load l = (Load) o;
+								l.startFalling();
+							}
+						}
+					}
+				}
+			}
 		}
 		
 		
@@ -306,7 +317,7 @@ public class World {
 		for (int x = xpos -this.cubesToJump;x<=xpos+this.cubesToJump;x++){
 			for (int y = ypos -this.cubesToJump;y<=ypos+ this.cubesToJump;y++){
 				for (int z =zpos -this.cubesToJump;z<=zpos + this.cubesToJump;z++){
-					if (!world[x][y][z].isPassable()){
+					if (Position.posWithinWorld(x, y, z, this) && !world[x][y][z].isPassable()){
 						//the passable cubes are added to the cubes to check
 						cubesToCheck.add(new int[]{x,y,z});
 					}
@@ -363,6 +374,9 @@ public class World {
 		//TODO: wat met vallen
 		Position pos = new Position(p[0]+lc/2,p[1]+lc/2,p[2]+lc/2,this);
 		Log newLog = new Log(pos,this);
+		if (this.getCube(p[0], p[1], p[2]-1).isPassable()){
+			newLog.startFalling();
+		}
 		logs.add(newLog);
 		
 	}
@@ -370,6 +384,9 @@ public class World {
 		//wat met vallen
 		Position pos = new Position(p[0]+lc/2,p[1]+lc/2,p[2]+lc/2,this);
 		Boulder newBoulder = new Boulder(pos,this);
+		if (this.getCube(p[0], p[1], p[2]-1).isPassable()){
+			newBoulder.startFalling();
+		}
 		boulders.add(newBoulder);
 	}
 	
@@ -401,8 +418,7 @@ public class World {
 		for (int x = -1;x<=1;x++){
 			for (int y = -1;y<=1;y++){
 				for (int z = -1;z<=1;z++){
-					
-					if (Position.posWithinWorld(xpos+x, ypos+y, zpos+z, this) && !this.getCube(xpos+x,ypos+y,ypos+z).isPassable()){
+					if (Position.posWithinWorld(xpos+x, ypos+y, zpos+z, this) && !this.getCube(xpos+x,ypos+y,zpos+z).isPassable()){
 						return true;
 					}
 				}
@@ -424,7 +440,7 @@ public class World {
 				looper+=1;
 				looper %= dimensionz-1;
 			}
-			if (!this.getCube(x, y, looper).isPassable() || this.getCube(x, y, looper-1).isPassable()){
+			if (!this.getCube(x, y, looper).isPassable() || (looper!=0 && this.getCube(x, y, looper-1).isPassable())){
 				return spawnUnit(enableDefaultBehavior);
 			}
 			int strength = random.nextInt(75)+25;
@@ -485,8 +501,10 @@ public class World {
 		
 	}
 	
-	public boolean dropLoad(Load load,Position workPosition){
+	public boolean dropLoad(Load load,Position workPosition) throws UnitException{
 		if (workPosition.getCube().isPassable()){
+			workPosition.setToMiddleOfCube();
+			load.setPosition(workPosition);
 			if (load instanceof Log){
 			logs.add((Log) load);
 			}
@@ -494,6 +512,10 @@ public class World {
 				boulders.add((Boulder) load);
 			}
 			load.setParentCube(workPosition, this);
+			workPosition.incrPosition(0, 0, -1);
+			if (workPosition.getCube().isPassable()){
+				load.startFalling();
+			}
 			return true;		}
 	
 		
@@ -519,6 +541,14 @@ public class World {
 		
 		
 		
+	}
+	
+	public void removeLog(Log log){
+		this.logs.remove(log);
+	}
+	
+	public void removeBoulder(Boulder boulder){
+		this.boulders.remove(boulder);
 	}
 	
 	

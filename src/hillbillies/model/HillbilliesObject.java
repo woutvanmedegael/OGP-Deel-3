@@ -4,7 +4,7 @@ public abstract class HillbilliesObject {
 	public abstract void advanceTime(double dt) throws UnitException, WorldException;
 	
 	
-	private Cube parentCube;
+	private Cube parentCube=null;
 	/**
 	 * notify's the cube that an  hillbillie object is currently occupying it. Removes the old parent cube
 	 */

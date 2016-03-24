@@ -14,7 +14,7 @@ public class Cube {
 private static final Map<TerrainType,Integer> fuckdezeshit = new HashMap();
 private ArrayList<HillbilliesObject> objectsOnThisCube = new ArrayList<>();
 private Set<Unit> passingUnits = new HashSet<>();
-
+private Map<PathFinding,Position> passingPaths = new HashMap<>();
 
 private final World world;
 static
@@ -113,6 +113,8 @@ public void addPassingUnit(Unit unit){
 	this.passingUnits.add(unit);
 }
 
+
+
 //public void warnPassingUnits(){
 //	for (Unit unit : this.passingUnits){
 //		unit.warnCubeHasChanged(this);
@@ -169,6 +171,14 @@ public Boulder getABoulder() throws UnitException{
 		}
 	}
 	throw new UnitException();
+}
+
+public void registerPath(PathFinding path, Position pos){
+	this.passingPaths.put(path, pos);
+}
+
+public void unregisterPath(PathFinding path){
+	this.passingPaths.remove(path);
 }
 
 }

@@ -1,5 +1,7 @@
 package hillbillies.model;
 
+import java.util.ArrayList;
+
 /**
  * @value
  */
@@ -91,7 +93,8 @@ public class Position {
 	}
 	
 	public Position(double xpos, double ypos, double zpos, World world) throws UnitException{
-		if (!isValidPos(xpos,ypos,zpos)){
+		
+		if (!Position.isValidPos(xpos,ypos,zpos,world)){
 			throw new UnitException();
 			
 		}
@@ -126,10 +129,7 @@ public boolean isValidPos(double xpos, double ypos, double zpos) {
 	if (zpos<0 || zpos >= world.getDimensionz()){
 		return false;
 	} 
-	if (world.getCube((int)xpos, (int)ypos, (int)zpos).isPassable()){
-		return true;
-	}
-	return false;
+	return true;
 }
 /**
  *Calculates the distance between this position and another position
@@ -171,7 +171,7 @@ public double getEstimatedTimeTo(Position other){
 		zConst = 1.2;
 		deltaZ*=-1;
 	}
-	time += deltaZ*zConst+deltaX+deltaY;
+	time += deltaZ/zConst+deltaX+deltaY;
 	return time;
 }
 
@@ -187,7 +187,7 @@ public double getExactTimeToAdjacent(Position other){
 	else if (deltaZ>0){
 		zConst = 0.5;
 	}
-	return zConst*Math.sqrt(deltaX*deltaX+deltaY*deltaY+deltaZ*deltaZ);
+	return Math.sqrt(deltaX*deltaX+deltaY*deltaY+deltaZ*deltaZ)/zConst;
 }
 
 public void setPositionAt(Position position) throws UnitException{
@@ -205,7 +205,7 @@ public void incrPosition(double dx, double dy, double dz) throws UnitException{
 }
 
 public void setWorld(World world) throws UnitException{
-	if (world == null){
+	if (world != null){
 		this.world = world;
 	}
 	if (!isValidPos(this.getxpos(),this.getypos(),this.getzpos())){
@@ -225,11 +225,8 @@ public boolean isValidPos(){
 	}
 	if (this.getzpos()<0 || this.getzpos() >= this.world.getDimensionz()){
 		return false;
-	} 
-	if (this.getCube().isPassable()){
-		return true;
 	}
-	return false;
+	return true;
 }
 
 public static boolean posWithinWorld(int x, int y, int z, World world){
@@ -254,10 +251,7 @@ public static boolean isValidPos(double xpos, double ypos, double zpos, World wo
 	if (zpos<0 || zpos >= world.getDimensionz()){
 		return false;
 	}
-	if (world.getCube((int)xpos, (int)ypos, (int)zpos).isPassable()){
-		return true;
-	}
-	return false;
+	return true;
 }
 	
 public boolean isAdjacent(Position other){
@@ -288,6 +282,19 @@ public int hashCode() {
 	return result;
 }
 
+public boolean isPassablePos(){
+	if (!Position.posWithinWorld(getCubexpos(), getCubexpos(), getCubeypos(), getWorld())){
+		return false;
+	} if (!this.getCube().isPassable()){
+		return false;
+	}
+	return true;
+}
+
+
+
+
+
 
 @Override
 public boolean equals(Object obj) {
@@ -305,5 +312,35 @@ public boolean equals(Object obj) {
 	if (Double.doubleToLongBits(zpos) != Double.doubleToLongBits(other.zpos))
 		return false;
 	return true;
+}
+
+ArrayList<Position> getNeighbours() throws UnitException{
+	ArrayList<Position> neighbours = new ArrayList<>();
+	int[] pos = new int[]{-1,0,1};
+	for (int x: pos){
+		for (int y: pos){
+			for (int z: pos){
+				if (Position.isValidPos(x+this.getxpos(), y+this.getypos(), z+this.getzpos(), this.world) && (x!=0 || y!=0 || z!=0)){
+					Position neighbour = new Position(this.getxpos()+x,this.getypos()+y,this.getzpos()+z, this.world);
+					if (neighbour.getCube().isWalkable()){
+						neighbours.add(neighbour);
+					}
+				}
+			}
+		}
+	}
+	return neighbours;
+}
+
+
+public World getWorld(){
+	return this.world;
+}
+
+public String toString(){
+	String str1 = Double.toString(this.getxpos());
+	String str2 = Double.toString(this.getypos());
+	String str3 = Double.toString(this.getzpos());
+	return "["+str1+","+str2+","+str3+"]";
 }
 }
