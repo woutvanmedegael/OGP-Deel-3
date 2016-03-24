@@ -186,7 +186,7 @@ public class Facade implements IFacade{
 
 	@Override
 	public void work(Unit unit) throws ModelException {
-		unit.startWorking();
+		unit.workAt(0,0,0);
 	}
 
 	@Override

@@ -1,28 +1,20 @@
 package hillbillies.model;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
 public class PathFinding {
 	
 	private World world;
-	private NbCompare nbcomp = new NbCompare();
 	private ArrayList<Position> path = new ArrayList<>();
 	private Set<Position> closedset = new HashSet<>();
 	private TreeSet<Node> openset = new TreeSet<Node>();
-	private Map<Node,Node> parentposition = new HashMap<>();
 	public PathFinding(World world, Position start, Position target) throws UnitException{
 		this.world = world;
-		start.setxpos((int)start.getxpos()+0.5);
-		start.setypos((int)start.getypos()+0.5);
-		start.setzpos((int)start.getzpos()+0.5);
+		start.setToMiddleOfCube();
 		this.calculateFastestPath(start, target);
-		
 	}
 	
 	public class Node implements Comparable<Node>{
@@ -83,7 +75,6 @@ public class PathFinding {
 				calculatePath(current);
 				break;
 			}
-			ArrayList<Position> neighbours = this.getNeighbours(current.getPosition());
 			for (Position pos : getNeighbours(current.getPosition())){
 				if (setContains(closedset,pos)){
 					continue;
@@ -111,7 +102,7 @@ public class PathFinding {
 				for (int z: pos){
 					if (Position.isValidPos(x+current.getxpos(), y+current.getypos(), z+current.getzpos(), this.world) && (x!=0 || y!=0 || z!=0)){
 						Position neighbour = new Position(current.getxpos()+x,current.getypos()+y,current.getzpos()+z, this.world);
-						if (world.getCube((int)neighbour.getxpos(),(int)neighbour.getypos(),(int)neighbour.getzpos()).isWalkable()){
+						if (neighbour.getCube().isWalkable()){
 							neighbours.add(neighbour);
 						}
 					}

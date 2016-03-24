@@ -197,7 +197,7 @@ public class UnitTest {
 		assert (comp.equals(test.getSpeed(),1));
 		this.advanceSeconds(test, 0.1);
 		assert (comp.equals(test.getOrientation(), Math.PI/4));
-		test.startWorking();
+		test.workAt(0,0,0);
 		assert (test.getMyState() == CurrentState.MOVING);
 		test.startResting();
 		assert(!test.isResting());
@@ -276,7 +276,7 @@ public class UnitTest {
 	@Test
 	public void testWork() throws UnitException{
 		Unit test = new Unit(5,5,5,"Adri'aan en W\"out", 50, 50, 50, 50, false);
-		test.startWorking();
+		test.workAt(0,0,0);
 		assert (test.getMyState()==CurrentState.WORKING);
 		this.advanceSeconds(test, 9);
 		assert (test.getMyState()==CurrentState.WORKING);
@@ -307,8 +307,7 @@ public class UnitTest {
 		assert (!(attacker.getMyState() == CurrentState.ATTACKING));
 		attacker.setAgility(1);
 		defender.setAgility(5);
-		defender.setxpos(5.5);
-		defender.setypos(5.5);
+		defender.setMyPosition(new Position(5.5,5.5,5.5));
 		assert (defender.getxpos()==5.5);
 		assert (defender.getypos()==5.5);
 		assert (defender.getzpos()==5.5);

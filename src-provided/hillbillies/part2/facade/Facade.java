@@ -191,7 +191,7 @@ public class Facade implements IFacade{
 
 	@Override
 	public void work(Unit unit) throws ModelException {
-		unit.startWorking();
+		unit.workAt(0,0,0);
 	}
 
 	@Override
@@ -293,7 +293,11 @@ public class Facade implements IFacade{
 
 	@Override
 	public void addUnit(Unit unit, World world) throws ModelException {
-		world.addUnit(unit);
+		try {
+			world.addUnit(unit);
+		} catch (UnitException e) {
+			throw new ModelException();
+		}
 	}
 
 	@Override
@@ -323,7 +327,7 @@ public class Facade implements IFacade{
 
 	@Override
 	public void workAt(Unit unit, int x, int y, int z) throws ModelException {
-		
+		unit.workAt(x,y,z);
 		
 	}
 

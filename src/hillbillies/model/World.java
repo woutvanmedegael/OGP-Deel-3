@@ -86,17 +86,11 @@ public class World {
 	
 	/**
 	 * initialize the world
-	 * @param terrainTypes
-	 * @param modelListener
-	 * @throws WorldException
 	 */
 	public World(int[][][] terrainTypes, TerrainChangeListener modelListener) throws WorldException{
 		dimensionx = terrainTypes.length;
 		dimensiony = terrainTypes[1].length;
 		dimensionz = terrainTypes[0][1].length;
-		System.out.println(dimensionx);
-		System.out.println(dimensiony);
-		System.out.println(dimensionz);
 
 		world = new Cube[dimensionx][dimensiony][dimensionz];
 		connectedToBorder = new ConnectedToBorder(dimensionx,dimensiony,dimensionz);
@@ -116,27 +110,33 @@ public class World {
 		cubesToJump = (int) Math.ceil(dimensionMax*maxDT/secondsToCaveIn);
 		}
 	/**
-	 * returns all the cubes that are walkable.
+	 * sets all the cubes that are walkable in world to walkable
 	 */
 	private void fixWalkableCubes() {
 		for (int x=0;x<dimensionx;x++){
 			for (int y=0;y<dimensiony;y++){
 				for (int z=0;z<dimensionz;z++){
-					if (!getCube(x,y,z).isPassable()){
-						int[] pos = new int[]{-1,0,1};
-						for (int xpos: pos){
-							for (int ypos: pos){
-								for (int zpos: pos){
-									if(Position.isValidCoordinate(x+xpos,this.getDimensionx()) && Position.isValidCoordinate(y+ypos,this.getDimensiony()) && Position.isValidCoordinate(z+zpos,this.getDimensionz()) && getCube(x+xpos,y+ypos,z+zpos).isPassable()){
-										getCube(x+xpos,y+ypos,z+zpos).setWalkable(true);
-									}
-								}
-							}
-					}
-				}
+					setSurroundingCubesToWalkable(x, y, z);
 			}
 		}
 		}
+	}
+	/**
+     * If the given cube is a solid, the passable cubes arround it are put to walkable
+	 */
+	private void setSurroundingCubesToWalkable(int x, int y, int z) {
+		if (!getCube(x,y,z).isPassable()){
+			int[] pos = new int[]{-1,0,1};
+			for (int xpos: pos){
+				for (int ypos: pos){
+					for (int zpos: pos){
+						if(Position.isValidPos(x+xpos, y+ypos, z+zpos,this)&& getCube(x+xpos,y+ypos,z+zpos).isPassable()){
+							getCube(x+xpos,y+ypos,z+zpos).setWalkable(true);
+						}
+					}
+				}
+		}
+}
 	}
 	/**
 	 *returns the cube at the given position
@@ -146,7 +146,7 @@ public class World {
 	}
 	
 	/**
-	 * returns an arraylist of the fractions in this world
+	 * returns an arraylist of the factions in this world
 	 */
 	public static ArrayList<Faction> getFactions(){
 		return World.factions;
@@ -183,11 +183,12 @@ public class World {
 		return this.dimensionz;
 	}
 	/**
-	 * returns the units of the given facition
+	 * returns the units of the given faction
 	 */
 	public Set<Unit> getUnitsOfFaction(Faction faction){
 		return faction.getUnits();
 	}
+	
 	/**
 	 * returns a set of all the units in this world
 	 */
@@ -208,6 +209,17 @@ public class World {
 	// a warning is thrown towards the neighbouring cubes
 	/**
 	 * Changes the type of the cube on the given coordinates to the given value
+	 * if the type stays the same, nothing happens
+	 * if the type changes from solid to passable, we first check if there were objects dependent of this cube
+	 * 	next we notify the connected to border that something has changed
+	 * 	next we throw a warning arround towards the surrounding cubes in this world 
+	 * 	we also change the surrounding cubes to not walkable if needed
+	 * else if the type changes from passable to solid
+	 * 		if the cube was ocuppied by an object nothing happens, we ignore the given command
+	 * 		else the connectedToBorder is notified, then we check if the cube needs to fall if that isn't the case we set the surrounding cubes 
+	 * 		to walkable 
+	 * 		
+	 * 		
 	 */
 	public void changeCubeType(int x, int y, int z, int value) throws UnitException{	
 		TerrainType oldTerrainType = this.getCube(x,y,z).getTerrainType();
@@ -218,21 +230,72 @@ public class World {
 				doSomethingIfObjectIsDependent(x,y,z);
 				connectedToBorder.changeSolidToPassable(x, y, z);
 				throwWarningAround(x,y,z);
+				changeWalkable(x,y,z);
 				}
 			else if  (changedFromPassableToSolid(x, y, z, oldTerrainType)){
+				//TODO: ignore or throw exception?
+				if (!isOccupied(x,y,z)){
+					connectedToBorder.changePassableToSolid(x, y, z);
+					if (!maybeStartFalling(x,y,z)){
+						setSurroundingCubesToWalkable(x,y,z);
+						}
+					}
+				//i know tis lelijk ma ja
+				else {
+					this.getCube(x, y, z).setTerrainType(oldTerrainType);
+				}
 				
-			}
 				
 			
+			}
+		}
+		
+	}
+	/**
+	 * returns true if the cube with the given coordinates is occupied by an Hillbilieobject
+	 */
+	private boolean isOccupied(int x, int y, int z){
+		return this.getCube(x, y, z).getObjectsOnThisCube().size()>0;
+		}
+	/**
+	 * if the freshly made cube is not connected to the border it's starts falling
+	 */
+	private boolean maybeStartFalling(int x,int y,int z){
+		if (!connectedToBorder.isSolidConnectedToBorder(x, y, z)){
+			//TODO:call iets dat de cube gaat vallen of hoe pakken we dit aan ? Gewoon staat op falling zetten en dan in advance time
+			// steeds alles checken of ene lijstje maken ? 
+			// idem voor de units zou efficienter kunnen 
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * changes the surrounding cubes to not walkable if needed
+	 */
+	private void changeWalkable(int x,int y,int z){
+		int[] pos = new int[]{-1,0,1};
+		for (int xpos: pos){
+			for (int ypos: pos){
+				for (int zpos: pos){
+					this.getCube(xpos, ypos, zpos).setWalkable(isWalkable(xpos,ypos,zpos));					
+				}
+			}
 		
 		}
 		
 	}
+
+	/**
+	 * returns true if the cube with the given coordinates has changes from solid to passable (compared to the given old terrain type )
+	 */
 	private boolean changedFromSolidToPassable(int x, int y, int z,TerrainType oldTerrainType){
 		return (this.getCube(x, y, z).isPassable() && (oldTerrainType == TerrainType.ROCK || oldTerrainType == TerrainType.TREE));
 	}
 	//TODO: hoe zit het hier met workshop ? 
-	
+	/**
+	 * returns true if the cube with the given coordinates has changes from passable to solid (compared to the given old terrain type )
+	 */
 	private boolean changedFromPassableToSolid(int x, int y, int z,TerrainType oldTerrainType ){
 		return (!this.getCube(x, y, z).isPassable() && (oldTerrainType == TerrainType.AIR  ));
 	}
@@ -247,7 +310,6 @@ public class World {
 		
 	}
 	
-	//a warning is thrown arround in all directions, if we want to be smart
 	/**
 	 * notify's the neighbouring cubes.
 	 */
@@ -264,11 +326,14 @@ public class World {
 		}
 	}
 	
-
+	/**
+	 * the cubes to check are checked and they cave in if they are not connected to the worder
+	 */
 	private void updateCubes() throws WorldException{
 		ArrayList<int[]> cubesToCaveIn = new ArrayList<int[]>();
 		for (int[] p: cubesToCheck){
-			if (!connectedToBorder.isSolidConnectedToBorder(p[0],p[1],p[2])){
+			
+			if (!connectedToBorder.isSolidConnectedToBorder(p[0],p[1],p[2]) && (!this.getCube(p[0],p[1],p[2]).isPassable())){
 				cubesToCaveIn.add(p);
 			}
 		}
@@ -277,7 +342,7 @@ public class World {
 		
 	}
 	/**
-	 * resets the type of the given cubes to air and possibly adds a log
+	 * resets the type of the given cubes to air and possibly adds a log or a boulder
 	 * @param cubesToCaveIn
 	 * @throws WorldException 
 	 */
@@ -289,10 +354,13 @@ public class World {
 			 maybeAddLogOrBoulder(p, getCube(p[0],p[1],p[2]).getTerrainType ());
 			
 		}
+		
 	}
 	private final Random random = new Random();
+	/**
+	 * adds a log or a boulder with probability 0.25
+	 */
 	private void maybeAddLogOrBoulder(int[] p, TerrainType type) throws WorldException{
-		//TODO: add a log or boulder with probability 0.25
 		boolean succeeded = random.nextFloat()<0.25;
 		if ( succeeded && type == TerrainType.TREE){
 			addLog(p);
@@ -304,20 +372,20 @@ public class World {
 	}
 	
 	public void addLog(int[] p) throws WorldException{
+		//TODO: wat met vallen
 		Position pos = new Position(p[0],p[1],p[2]);
 		Log newLog = new Log(pos,this);
 		logs.add(newLog);
 		
 	}
 	public void addBoulder(int[] p ) throws WorldException{
+		//wat met vallen
 		Position pos = new Position(p[0],p[1],p[2]);
 		Boulder newBoulder = new Boulder(pos,this);
 		boulders.add(newBoulder);
 	}
-	//TODO:vermits we nu geen lijst meer hebben van alle objecten hoe doen we het dan ? Boulder, log en unit apart of 
-	// opvragen van alle cubes?
 	
-	
+	//TODO: Wat denkt gij, houden we eerder een lijst bij van de logs waarvoor effectief iets veranderd is ? 
 	public void advanceTime(double dt) throws WorldException{
 		updateCubes();
 		for (Log log: this.logs){
@@ -333,7 +401,9 @@ public class World {
 		}
 	
 	
-	
+	/**
+	 * returns true if the cube at the given position is walkable
+	 */
 	public boolean isWalkable(int xpos, int ypos, int zpos){
 		if (!this.getCube(xpos, ypos, zpos).isPassable()){
 			return false;
@@ -377,7 +447,7 @@ public class World {
 			return unit;
 	}
 	
-	private static void assignFaction(Unit unit){
+	private static void assignFaction(Unit unit) throws UnitException{
 		for (int i = 4;i>0; i--){
 			if (factions.get(i).getUnits().size()<factions.get(i-1).getUnits().size()){
 				factions.get(i).addUnit(unit);
@@ -400,10 +470,18 @@ public class World {
 		
 		return name;
 	}
-	public void addUnit(Unit unit){
-		assignFaction(unit);
-		unit.setWorld(this);
+	public void addUnit(Unit unit) throws UnitException{
+		if (!(countUnits()>=100)){
+			assignFaction(unit);
+			unit.setWorld(this);
+			}
 	}
+	//TODO: are they still alive ? do i need to check it
+	private int countUnits(){
+		return this.getUnits().size();
+	}
+	
+	
 	public Set getActiveFactions(){
 		Set<Faction> activeFactions = new HashSet<>();
 		for (Faction f: this.getFactions()){

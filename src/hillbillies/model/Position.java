@@ -19,18 +19,46 @@ import be.kuleuven.cs.som.annotate.Raw;
  */
 
 public class Position {
-	/**
-	 * variables registering the xpos, ypos and zpos this position
-	 */
-	private double xpos;
-	private double ypos;
-	private double zpos;
+	
 	private double diagconst = Math.sqrt(2)-1;
 	
 	/**
 	 * A variable used to ease comparing two different numbers.
 	 */
 	private static final NbCompare nbComp = new NbCompare();
+	public double xpos;
+	public double ypos;
+	public double zpos;
+	public double getxpos(){
+		return this.xpos;
+	}
+	public double getypos(){
+		return this.ypos;
+	}
+	public double getzpos(){
+		return this.zpos;
+	}
+	public int getCubexpos(){
+		return (int)this.xpos;
+	}
+	public int getCubeypos(){
+		return (int)this.ypos;
+	}
+	public int getCubezpos(){
+		return (int)this.zpos;
+	}
+	public Cube getCube(){
+		return this.world.getCube((int)xpos, (int)ypos, (int)zpos);
+	}
+	public void setPos(double xpos, double ypos, double zpos) throws UnitException{
+		if (!isValidPos(xpos, ypos, zpos)){
+			throw new UnitException();
+		}
+		this.xpos = xpos;
+		this.ypos = ypos;
+		this.zpos = zpos;
+	}
+	
 	/**
 	 * 
 	 * @param xpos
@@ -56,7 +84,6 @@ public class Position {
 	public Position(double xpos, double ypos, double zpos) throws UnitException{
 		if (!isValidPos(xpos,ypos,zpos)){
 			throw new UnitException();
-			
 		}
 		this.xpos = xpos;
 		this.ypos = ypos;
@@ -75,90 +102,7 @@ public class Position {
 			this.world = world;
 		}
 	}
-
-/**
- * Return the xpos of this position.
- */
-@Basic @Raw
-public double getxpos() {
-	return this.xpos;
-}
-/**
- * Set the xpos of this position to the given xpos.
- * 
- * @param  xpos
- *         The new xpos for this position
- * @post   The xpos of this new position is equal to
- *         the given xpos.
- *       | new.getxpos() == xpos
- * @throws UnitException
- *         The given xpos is not a valid xpos for any
- *         position.
- *       | ! isValidpos(getxpos())
- */
-@Raw
-public void setxpos(double xpos) 
-		throws UnitException {
-	if (!isValidPos(xpos,this.ypos,this.zpos))
-		throw new UnitException();
-	this.xpos = xpos;
-}
-
-/**
- * Return the ypos of this position.
- */
-@Basic @Raw
-public double getypos() {
-	return this.ypos;
-}
-/**
- * Set the ypos of this position to the given ypos.
- * 
- * @param  ypos
- *         The new ypos for this position.
- * @post   The ypos of this new position is equal to
- *         the given ypos.
- *       | new.getypos() == ypos
- * @throws UnitException
- *         The given ypos is not a valid ypos for any
- *         position.
- *       | ! isValidpos(getypos())
- */
-@Raw
-public void setypos(double ypos) 
-		throws UnitException {
-	if (! isValidPos(this.xpos,ypos,this.zpos))
-		throw new UnitException();
-	this.ypos = ypos;
-}
-
-/**
- * Return the zpos of this position.
- */
-@Basic @Raw
-public double getzpos() {
-	return this.zpos;
-}
-/**
- * Set the zpos of this position to the given zpos.
- * 
- * @param  zpos
- *         The new zpos for this position.
- * @post   The zpos of this new position is equal to
- *         the given zpos.
- *       | new.getzpos() == zpos
- * @throws UnitException
- *         The given zpos is not a valid zpos for any
- *         position.
- *       | ! isValidpos(getzpos())
- */
-@Raw
-public void setzpos(double zpos) 
-		throws UnitException {
-	if (! isValidPos(this.xpos,this.ypos,zpos))
-		throw new UnitException();
-	this.zpos = zpos;
-}
+	
 
 /**
 * Check whether the given pos is a valid pos for
@@ -169,9 +113,9 @@ public void setzpos(double zpos)
  * @return 
  *       | result == (0<=pos && pos<50)
 */
-public static boolean isValidPos(double xpos, double ypos, double zpos) {
+public boolean isValidPos(double xpos, double ypos, double zpos) {
 	if (world == null){
-		return true;
+		return (xpos>=0 && ypos>=0 && zpos>=0);
 	}
 	if (xpos<0 || xpos >= world.getDimensionx()){
 		return false;
@@ -181,17 +125,10 @@ public static boolean isValidPos(double xpos, double ypos, double zpos) {
 	}
 	if (zpos<0 || zpos >= world.getDimensionz()){
 		return false;
-	}
-	if (world == null){
-		return true;
 	} 
 	if (world.getCube((int)xpos, (int)ypos, (int)zpos).isPassable()){
 		return true;
 	}
-	System.out.println("not passable");
-	System.out.println(xpos);
-	System.out.println(ypos);
-	System.out.println(zpos);
 	return false;
 }
 /**
@@ -204,6 +141,7 @@ public static boolean isValidPos(double xpos, double ypos, double zpos) {
 public double calculateDistance(Position other){
 	return Math.sqrt(Math.pow(this.getxpos()-other.getxpos(), 2)+Math.pow(this.getypos()-other.getypos(),2)+Math.pow(this.getzpos()-other.getzpos(),2));
 }
+
 /**
  * checks if this position is equal to another position
  * @param other
@@ -235,7 +173,6 @@ public double getEstimatedTimeTo(Position other){
 	}
 	time += deltaZ*zConst+deltaX+deltaY;
 	return time;
-	
 }
 
 public double getExactTimeToAdjacent(Position other){
@@ -251,31 +188,50 @@ public double getExactTimeToAdjacent(Position other){
 		zConst = 0.5;
 	}
 	return zConst*Math.sqrt(deltaX*deltaX+deltaY*deltaY+deltaZ*deltaZ);
-	
-	
 }
 
-public static boolean isValidCoordinate(double coo, int Dimension){
-	return (coo>=0 && coo<Dimension);
+public void setPositionAt(Position position) throws UnitException{
+	this.setPos(position.getxpos(), position.getypos(), position.getzpos());
 }
 
+private World world;
 
-@Override
-public String toString(){
-	String str = "[("+String.valueOf(xpos)+"),("+String.valueOf(ypos)+"),("+String.valueOf(zpos)+")]";
-	return str;
+public void setToMiddleOfCube() throws UnitException{
+	this.setPos((int)this.getxpos()+0.5, (int)this.getypos()+0.5, (int)this.getzpos()+0.5);
 }
 
-public Double[] toDoubles(){
-	return new Double[]{this.getxpos(),this.getypos(),this.getzpos()};
+public void incrPosition(double dx, double dy, double dz) throws UnitException{
+	this.setPos(this.getxpos()+dx, this.getypos()+dy, this.getzpos()+dz);
 }
 
-private static World world;
-
-
-public void setWorld(World world){
-	this.world = world;
+public void setWorld(World world) throws UnitException{
+	if (world == null){
+		this.world = world;
+	}
+	if (!isValidPos(this.getxpos(),this.getypos(),this.getzpos())){
+		throw new UnitException();
+	}
 }
+
+public boolean isValidPos(){
+	if (this.world == null){
+		return (this.getxpos()>=0 && this.getypos()>=0 && this.getzpos()>=0);
+	}
+	if (this.getxpos()<0 || this.getxpos() >= this.world.getDimensionx()){
+		return false;
+	}
+	if (this.getypos()<0 || this.getypos() >= this.world.getDimensiony()){
+		return false;
+	}
+	if (this.getzpos()<0 || this.getzpos() >= this.world.getDimensionz()){
+		return false;
+	} 
+	if (this.getCube().isPassable()){
+		return true;
+	}
+	return false;
+}
+
 
 public static boolean isValidPos(double xpos, double ypos, double zpos, World world){
 	if (world == null){
@@ -295,5 +251,51 @@ public static boolean isValidPos(double xpos, double ypos, double zpos, World wo
 	}
 	return false;
 }
+	
+public boolean isAdjacent(Position other){
+	if (Math.abs(this.getCubexpos()-other.getCubexpos())>1){
+		return false;
+	}
+	if (Math.abs(this.getCubeypos()-other.getCubeypos())>1){
+		return false;
+	}
+	if (Math.abs(this.getCubezpos()-other.getCubezpos())>1){
+		return false;
+	}
+	return true;
+}
 
+
+@Override
+public int hashCode() {
+	final int prime = 31;
+	int result = 1;
+	long temp;
+	temp = Double.doubleToLongBits(xpos);
+	result = prime * result + (int) (temp ^ (temp >>> 32));
+	temp = Double.doubleToLongBits(ypos);
+	result = prime * result + (int) (temp ^ (temp >>> 32));
+	temp = Double.doubleToLongBits(zpos);
+	result = prime * result + (int) (temp ^ (temp >>> 32));
+	return result;
+}
+
+
+@Override
+public boolean equals(Object obj) {
+	if (this == obj)
+		return true;
+	if (obj == null)
+		return false;
+	if (getClass() != obj.getClass())
+		return false;
+	Position other = (Position) obj;
+	if (Double.doubleToLongBits(xpos) != Double.doubleToLongBits(other.xpos))
+		return false;
+	if (Double.doubleToLongBits(ypos) != Double.doubleToLongBits(other.ypos))
+		return false;
+	if (Double.doubleToLongBits(zpos) != Double.doubleToLongBits(other.zpos))
+		return false;
+	return true;
+}
 }

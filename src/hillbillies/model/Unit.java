@@ -285,24 +285,24 @@ public double getxpos() {
 	return this.getMyPosition().getxpos();
 }
 
-/**
- * Set the xpos of this Unit to the given xpos.
- * 
- * @param  xpos
- *         The new xpos for this Unit.
- * @post   The xpos of this new Unit is equal to
- *         the given xpos.
- *       | new.getxpos() == xpos
- * @throws UnitException
- *         The given xpos is not a valid xpos for the position of any
- *         Unit.
- *       | !this.getMyPosition().isValidPos(getxpos())
- */
-@Raw
-public void setxpos(double xpos) 
-		throws UnitException {
-	this.getMyPosition().setxpos(xpos);
-}
+///**
+// * Set the xpos of this Unit to the given xpos.
+// * 
+// * @param  xpos
+// *         The new xpos for this Unit.
+// * @post   The xpos of this new Unit is equal to
+// *         the given xpos.
+// *       | new.getxpos() == xpos
+// * @throws UnitException
+// *         The given xpos is not a valid xpos for the position of any
+// *         Unit.
+// *       | !this.getMyPosition().isValidPos(getxpos())
+// */
+//@Raw
+//public void setxpos(double xpos) 
+//		throws UnitException {
+//	this.getMyPosition().setxpos(xpos);
+//}
 
 
 
@@ -313,24 +313,24 @@ public void setxpos(double xpos)
 public double getypos() {
 	return this.getMyPosition().getypos();
 }
-/**
- * Set the ypos of this unit to the given ypos.
- * 
- * @param  ypos
- *         The new ypos for this unit.
- * @post   The ypos of this new unit is equal to
- *         the given ypos.
- *       | new.getypos() == ypos
- * @throws UnitException
- *         The given ypos is not a valid ypos for the position of any
- *         unit.
- *       | !this.getMyPosition().isValidPos(getypos())
- */
-@Raw
-public void setypos(double ypos) 
-		throws UnitException {
-	this.getMyPosition().setypos(ypos);
-}
+///**
+// * Set the ypos of this unit to the given ypos.
+// * 
+// * @param  ypos
+// *         The new ypos for this unit.
+// * @post   The ypos of this new unit is equal to
+// *         the given ypos.
+// *       | new.getypos() == ypos
+// * @throws UnitException
+// *         The given ypos is not a valid ypos for the position of any
+// *         unit.
+// *       | !this.getMyPosition().isValidPos(getypos())
+// */
+//@Raw
+//public void setypos(double ypos) 
+//		throws UnitException {
+//	this.getMyPosition().setypos(ypos);
+//}
 
 
 
@@ -341,24 +341,24 @@ public void setypos(double ypos)
 public double getzpos() {
 	return this.getMyPosition().getzpos();
 }
-/**
- * Set the zpos of this Unit to the given zpos.
- * 
- * @param  zpos
- *         The new zpos for this Unit.
- * @post   The zpos of this new Unit is equal to
- *         the given zpos.
- *       | new.getzpos() == zpos
- * @throws UnitException
- *         The given zpos is not a valid zpos for the position of any
- *         Unit.
- *       | !this.getMyPosition().isValidPos(getzpos())
- */
-@Raw
-public void setzpos(double zpos) 
-		throws UnitException {
-	this.getMyPosition().setzpos(zpos);
-}
+///**
+// * Set the zpos of this Unit to the given zpos.
+// * 
+// * @param  zpos
+// *         The new zpos for this Unit.
+// * @post   The zpos of this new Unit is equal to
+// *         the given zpos.
+// *       | new.getzpos() == zpos
+// * @throws UnitException
+// *         The given zpos is not a valid zpos for the position of any
+// *         Unit.
+// *       | !this.getMyPosition().isValidPos(getzpos())
+// */
+//@Raw
+//public void setzpos(double zpos) 
+//		throws UnitException {
+//	this.getMyPosition().setzpos(zpos);
+//}
 
 /**
  * Variable registering the name of this unit.
@@ -1238,7 +1238,7 @@ private boolean isValidMove(int[] move){
 			return false;
 		}
 	}
-	if (!Position.isValidPos(this.getCubeXpos()+move[0],this.getCubeYpos()+move[1],this.getCubeZpos()+move[2])){
+	if (!Position.isValidPos(this.getxpos()+move[0],this.getypos()+move[1],this.getzpos()+move[2],this.myWorld)){
 		return false;
 	}
 	return true;
@@ -1268,7 +1268,7 @@ private boolean isValidMove(int[] move){
 public void moveTo(int cubeX, int cubeY, int cubeZ) throws UnitException{
 	if (!(this.getMyState()==CurrentState.DEFENDING || this.getMyState() == CurrentState.ATTACKING) && this.getHasRested()){
 		this.setMyState(CurrentState.MOVING);
-		if (!Position.isValidPos(cubeX, cubeY, cubeZ)){
+		if (!Position.isValidPos(cubeX, cubeY, cubeZ, this.myWorld)){
 			throw new UnitException();
 		}
 		this.setGlobalTarget(new Position(cubeX+0.5, cubeY+0.5, cubeZ+0.5, this.myWorld));
@@ -1282,7 +1282,7 @@ public void moveTo(int cubeX, int cubeY, int cubeZ) throws UnitException{
 
 //TODO formeel commentaar 'pathfinding' referentie
 
-public void setWorld(World world){
+public void setWorld(World world) throws UnitException{
 	myWorld = world;
 	this.getMyPosition().setWorld(world);
 	this.getLocalTarget().setWorld(world);
@@ -1316,7 +1316,7 @@ private World myWorld;
  */
 private void calculateLocalTarget() throws UnitException{
 	Position nextPos = this.myPath.moveToNextPos();
-	if (nextPos == null){
+	if (nextPos == null || !nextPos.isValidPos()){
 		this.setMyState(CurrentState.NEUTRAL);
 		this.setGlobalTarget(null);
 	} else {
@@ -1461,17 +1461,13 @@ private void updateLocationAndOrientation(double dt) throws UnitException {
 	double distance = this.getMyPosition().calculateDistance(this.getLocalTarget());
 	boolean hasArrivedAtLocalTarget = this.getSpeed()*dt>distance;
 	if (hasArrivedAtLocalTarget){
-		this.setxpos(this.getLocalTarget().getxpos());
-		this.setypos(this.getLocalTarget().getypos());
-		this.setzpos(this.getLocalTarget().getzpos());
+		this.getMyPosition().setPositionAt(this.getLocalTarget());
 	} else {
 		double velocity = this.getSpeed();
 		double velocityx = velocity*(this.getLocalTarget().getxpos()-this.getxpos())/distance;
 		double velocityy = velocity*(this.getLocalTarget().getypos()-this.getypos())/distance;
 		double velocityz = velocity*(this.getLocalTarget().getzpos()-this.getzpos())/distance;
-		this.setxpos(this.getxpos()+velocityx*dt);
-		this.setypos(this.getypos()+velocityy*dt);
-		this.setzpos(this.getzpos()+velocityz*dt);
+		this.getMyPosition().incrPosition(velocityx*dt, velocityy*dt, velocityz*dt);
 		this.setOrientation((float) Math.atan2(velocityy,velocityx));
 	}
 }
@@ -1546,16 +1542,33 @@ private void determineLocalTarget() throws UnitException{
 
 /**
  * Sets the unit to work
+ * @throws UnitException 
  * @post If the unit was resting and the initial recovery time is fulfilled, or the unit wasn't doing anything, it started working.
  * 		 | if ((this.getMyState() == CurrentState.RESTING && this.getHasRested()) || this.getMyState()==CurrentState.NEUTRAL)
  * 		 | then new.getMyState() == CurrentState.WORKING and new.getMyTimeState().getTrackTimeWork() == 0
  */
-public void startWorking(){
+public void workAt(int x, int y, int z){
 	if ((this.getMyState() == CurrentState.RESTING && this.getHasRested()) || this.getMyState() == CurrentState.NEUTRAL){
+		try{
+			this.workCube = new Position(x,y,z);
+			System.out.println("check adjacnet");
+			if (!this.workCube.isAdjacent(this.getMyPosition())){
+				System.out.println("not adjacent");
+				throw new UnitException();
+			}
+		} catch (UnitException e){
+			return;
+		}
 		this.setMyState(CurrentState.WORKING);
 		this.getMyTimeState().setTrackTimeWork(0);
+		System.out.println(y-this.getMyPosition().getypos());
+		System.out.println(x-this.getMyPosition().getxpos());
+		System.out.println(Math.atan2(y-this.getMyPosition().getypos(), x-this.getMyPosition().getxpos()));
+		this.setOrientation((float) Math.atan2(y-this.getMyPosition().getypos()+0.5, x-this.getMyPosition().getxpos()+0.5));
 	}
 }
+
+private Position workCube;
 
 /**
  * Makes the unit work for dt seconds
@@ -1746,15 +1759,13 @@ public boolean dodge(Unit attacker){
  *  		Throws an exception if either setxpos() or setypos() throws an exception.
  * @note This exception will never be thrown.
  */
-public void jumpAway() throws UnitException{
+public void jumpAway(){
 	float xrand = (random.nextFloat())*2-1;
 	float yrand = (random.nextFloat())*2-1;
 	try{
-		this.setxpos(this.getxpos()+xrand);
-		this.setypos(this.getypos()+yrand);
+		this.getMyPosition().incrPosition(xrand, yrand, 0);
 	} catch (UnitException e) {
-		this.setxpos(this.getxpos()-xrand);
-		this.setypos(this.getypos()-yrand);
+		jumpAway();
 	}
 }
 /**
