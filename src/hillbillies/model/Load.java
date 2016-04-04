@@ -152,12 +152,7 @@ public void fall(double dt) throws WorldException{
 			this.setMyState(LoadState.NEUTRAL);
 		}
 	} else {
-		double velocity = this.speed;
-		double velocityx = velocity*(this.getLocalTarget().getxpos()-this.getPosition().getxpos())/distance;
-		double velocityy = velocity*(this.getLocalTarget().getypos()-this.getPosition().getypos())/distance;
-		double velocityz = velocity*(this.getLocalTarget().getzpos()-this.getPosition().getzpos())/distance;
-		this.getPosition().incrPosition(velocityx*dt, velocityy*dt, velocityz*dt);	
-		//this.getPosition().incrPosition(0, 0, speed*dt);
+		this.getPosition().incrPosition(0, 0, -speed*dt);
 	}
 	if (this.getPosition().getCube()!=this.getParentCube()){
 		this.setParentCube(this.getPosition(), this.world);

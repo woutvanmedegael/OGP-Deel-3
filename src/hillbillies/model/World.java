@@ -539,7 +539,6 @@ public class World {
 	 * 
 	 */
 	public boolean dropLoad(Load load,Position workPosition) throws WorldException{
-		System.out.println("drop load is called");
 		if (workPosition.getCube().isPassable()){
 			System.out.println("work position is passable: " + workPosition.toString() );
 			workPosition.setToMiddleOfCube();
