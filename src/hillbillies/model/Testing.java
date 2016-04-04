@@ -3,7 +3,10 @@ package hillbillies.model;
 import java.util.Comparator;
 import java.util.TreeSet;
 
-import hillbillies.model.PathFinding.Node;
+import hillbillies.model.hillbilliesobject.unit.Unit;
+import hillbillies.model.hillbilliesobject.unit.PathFinding.Node;
+import hillbillies.model.world.World;
+import hillbillies.model.world.WorldException;
 
 public class Testing {
 	 private static int[][][] ints = new int[5][5][5];

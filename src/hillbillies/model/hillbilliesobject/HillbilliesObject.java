@@ -1,4 +1,10 @@
-package hillbillies.model;
+package hillbillies.model.hillbilliesobject;
+
+import hillbillies.model.Position;
+import hillbillies.model.hillbilliesobject.unit.UnitException;
+import hillbillies.model.world.Cube;
+import hillbillies.model.world.World;
+import hillbillies.model.world.WorldException;
 
 public abstract class HillbilliesObject {
 	/**

@@ -1,11 +1,14 @@
 
-package hillbillies.model;
+package hillbillies.model.hillbilliesobject;
 
 import java.util.Random;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
+import hillbillies.model.Position;
+import hillbillies.model.world.World;
+import hillbillies.model.world.WorldException;
 
 public class Load extends HillbilliesObject{
 
@@ -14,7 +17,7 @@ private final World world;
  * Initialize this new load with given position and a random weight between 10 and 50.
 */
 public Load(Position position,World world) throws WorldException {
-	if (! canHaveAsPosition(position))
+	if (! position.isValidPos())
 		throw new WorldException();
 	this.position = position;
 	this.LocalTarget = position;
@@ -28,7 +31,7 @@ public Load(Position position,World world) throws WorldException {
  * Return the position of this load.
  */
 @Basic @Raw @Immutable
-public Position getPosition() {
+private Position getPosition() {
 	return this.position;
 }
 
@@ -38,15 +41,6 @@ public Position getPosition() {
 public double[] getDoublePosition(){
 	return new double[]{position.getxpos(),position.getypos(),position.getzpos()};
 }
-/**
- * Check whether this load can have the given position as its position.
- * @note A Positiontype will always be a valid position
-*/
-@Raw
-public boolean canHaveAsPosition(Position position) {
-	return position.isValidPos();
-}
-
 
 /**
  * Variable registering the position of this load.
@@ -64,7 +58,7 @@ public int getWeight() {
  * @note There won't be an invalid weight.
 */
 @Raw
-public boolean canHaveAsWeight(int weight) {
+private boolean canHaveAsWeight(int weight) {
 	return true;
 }
 /**
@@ -95,7 +89,6 @@ public void advanceTime(double dt) throws WorldException {
 	}
 	
 }
-//ADDED: position niet meer final gemaakt ? Waarom was die final? 
 /**
  * sets the position and parent cube of this load an
  */
@@ -118,7 +111,7 @@ private Position LocalTarget;
 /**
  * returns the local target of this loac
  */
-public Position getLocalTarget(){
+private Position getLocalTarget(){
 	return this.LocalTarget;
 }
 /**
@@ -134,18 +127,18 @@ public void setMyState(LoadState state){
 /**
  * returns the state of this load
  */
-public LoadState getMyState(){
+private LoadState getMyState(){
 	return this.myState;
 }
 /**
  * makes the load fall and stop when needed
  */
-public void fall(double dt) throws WorldException{
+private void fall(double dt) throws WorldException{
 	double distance = this.getPosition().calculateDistance(this.getLocalTarget());
 	boolean hasArrivedAtLocalTarget = this.speed*dt>distance;
 	if (hasArrivedAtLocalTarget){
 		this.getPosition().setPositionAt(this.getLocalTarget());
-		if (this.world.getCube(this.getPosition().getCubexpos(), this.getPosition().getCubeypos(), this.getPosition().getCubezpos()-1).isPassable()){
+		if (this.getPosition().getzpos()>=1 && this.world.getCube(this.getPosition().getCubexpos(), this.getPosition().getCubeypos(), this.getPosition().getCubezpos()-1).isPassable()){
 			startFalling();
 		}
 		else{

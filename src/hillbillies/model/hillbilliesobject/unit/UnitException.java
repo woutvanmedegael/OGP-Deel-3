@@ -1,4 +1,7 @@
-package hillbillies.model;
+package hillbillies.model.hillbilliesobject.unit;
+
+import hillbillies.model.world.WorldException;
+
 /**
  * @value
  */

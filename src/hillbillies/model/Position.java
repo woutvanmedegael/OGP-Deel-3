@@ -7,6 +7,9 @@ import java.util.ArrayList;
  */
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
+import hillbillies.model.hillbilliesobject.unit.UnitException;
+import hillbillies.model.world.Cube;
+import hillbillies.model.world.World;
 
 /**
  * @invar  The xpos of each Position must be a valid xpos for any
@@ -318,7 +321,7 @@ public boolean equals(Object obj) {
 	return true;
 }
 
-ArrayList<Position> getNeighbours() throws UnitException{
+public ArrayList<Position> getNeighbours() throws UnitException{
 	ArrayList<Position> neighbours = new ArrayList<>();
 	int[] pos = new int[]{-1,0,1};
 	for (int x: pos){

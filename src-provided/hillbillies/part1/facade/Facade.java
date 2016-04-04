@@ -1,11 +1,11 @@
 package hillbillies.part1.facade;
 
 
-import hillbillies.model.IllegalNameException;
-import hillbillies.model.Unit;
-import hillbillies.model.UnitException;
-import hillbillies.model.WorldException;
-import hillbillies.model.CurrentState;
+import hillbillies.model.hillbilliesobject.CurrentState;
+import hillbillies.model.hillbilliesobject.unit.IllegalNameException;
+import hillbillies.model.hillbilliesobject.unit.Unit;
+import hillbillies.model.hillbilliesobject.unit.UnitException;
+import hillbillies.model.world.WorldException;
 import ogp.framework.util.ModelException;
 
 
@@ -40,9 +40,9 @@ public class Facade implements IFacade{
 
 	@Override
 	public int[] getCubeCoordinate(Unit unit) throws ModelException {
-		int cubeX = unit.getCubeXpos();
-		int cubeY = unit.getCubeYpos();
-		int cubeZ = unit.getCubeZpos();
+		int cubeX = (int)unit.getxpos();
+		int cubeY = (int)unit.getypos();
+		int cubeZ = (int)unit.getzpos();
 		int[] pos = {cubeX,cubeY,cubeZ};
 		return pos;
 	}

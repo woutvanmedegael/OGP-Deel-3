@@ -1,7 +1,14 @@
-package hillbillies.model;
+package hillbillies.model.world;
 import java.util.Random;
 import java.util.Set;
 
+import hillbillies.model.Position;
+import hillbillies.model.hillbilliesobject.Boulder;
+import hillbillies.model.hillbilliesobject.HillbilliesObject;
+import hillbillies.model.hillbilliesobject.Load;
+import hillbillies.model.hillbilliesobject.Log;
+import hillbillies.model.hillbilliesobject.unit.Unit;
+import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.util.ConnectedToBorder;
 
@@ -115,7 +122,7 @@ public class World {
 		cubesToJump = (int) Math.ceil(dimensionMax*maxDT/secondsToCaveIn);
 		}
 	/**
-	 * sets all the cubes that are walkable in world to walkable
+	 * Sets all the cubes that are walkable in world to walkable.
 	 */
 	private void fixWalkableCubes() {
 		for (int x=0;x<dimensionx;x++){
@@ -206,12 +213,6 @@ public class World {
 		
 	}
 	
-	
-	
-	//Misschien ook nog checken of het type van cube ook effectief veranderd naar AIR ofzo
-	//The caving-in process starts with a call of changeCubeType. 
-	// next if the cube is changed to an passable type, the connected to border is informed
-	// a warning is thrown towards the neighbouring cubes
 	/**
 	 * Changes the type of the cube on the given coordinates to the given value
 	 * if the type stays the same, nothing happens
@@ -237,13 +238,11 @@ public class World {
 				doSomethingIfObjectIsDependent(x,y,z);
 				}
 			else if  (changedFromPassableToSolid(x, y, z, oldTerrainType)){
-				//TODO: ignore or throw exception?
 				if (!isOccupied(x,y,z)){
 					connectedToBorder.changePassableToSolid(x, y, z);
 					cubesToCheck.add(new int[]{x,y,z});
 					this.setSurroundingCubesToWalkable(x, y, z);
 					}
-				//i know tis lelijk ma ja
 				else {
 					this.getCube(x, y, z).setTerrainType(oldTerrainType);
 				}
@@ -355,9 +354,9 @@ public class World {
 	 * resets the type of the given cubes to air and possibly adds a log or a boulder
 	 */
 	private void caveIn(ArrayList<int[]> cubesToCaveIn) throws WorldException{
+		if (cubesToCaveIn.size()>0){
+		}
 		for (int[] p: cubesToCaveIn){
-			// Cube cubeToReplace = getCube(p[0],p[1],p[2]);
-			 //change the cube to air
 			 changeCubeType(p[0],p[1],p[2],0);
 			 maybeAddLogOrBoulder(p, getCube(p[0],p[1],p[2]).getTerrainType ());
 			
@@ -372,7 +371,7 @@ public class World {
 	 * adds a log or a boulder with probability 0.25
 	 */
 	private void maybeAddLogOrBoulder(int[] p, TerrainType type) throws WorldException{
-		boolean succeeded = random.nextFloat()<0.25;
+		boolean succeeded = random.nextFloat()<10000;
 		if ( succeeded && type == TerrainType.TREE){
 			addLog(p);
 		}
@@ -385,7 +384,7 @@ public class World {
 	 * adds a log to the middle of the cube with given coordinates.
 	 * If the log is not above solid terrain, the log starts falling.
 	 */
-	public void addLog(int[] p) throws WorldException{
+	private void addLog(int[] p) throws WorldException{
 		//TODO: wat met vallen
 		Position pos = new Position(p[0]+lc/2,p[1]+lc/2,p[2]+lc/2,this);
 		Log newLog = new Log(pos,this);
@@ -399,11 +398,12 @@ public class World {
 	 * adds a boulder to the middle of the cube with given coordinates.
 	 * If the boulder is not above solid terrain, the boulder starts falling.
 	 */
-	public void addBoulder(int[] p ) throws WorldException{
-		//wat met vallen
+	private void addBoulder(int[] p ) throws WorldException{
 		Position pos = new Position(p[0]+lc/2,p[1]+lc/2,p[2]+lc/2,this);
 		Boulder newBoulder = new Boulder(pos,this);
-		if (this.getCube(p[0], p[1], p[2]-1).isPassable()){
+		if (p[2]!=0 && this.getCube(p[0], p[1], p[2]-1).isPassable()){
+			System.out.println("start falling at");
+			System.out.println(pos);
 			newBoulder.startFalling();
 		}
 		boulders.add(newBoulder);
@@ -412,16 +412,21 @@ public class World {
 	 *advances the time for each object in this world
 	 */
 	public void advanceTime(double dt) throws WorldException{
+		System.out.println(this.getBoulders());
 		updateCubes();
+		System.out.println("1");
 		for (Log log: this.logs){
 			log.advanceTime(dt);
 			}
+		System.out.println("2");
 		for (Boulder boulder: this.boulders){
 			boulder.advanceTime(dt);
 		}
+		System.out.println("3");
 		for (Unit unit: this.getUnits()){
 			unit.advanceTime(dt);
 		}
+		System.out.println("4");
 		
 		}
 	
@@ -432,6 +437,10 @@ public class World {
 		
 		if (!this.getCube(xpos, ypos, zpos).isPassable()){
 			return false;
+		}
+		
+		if (xpos==0 || ypos==0 || zpos==0){
+			return true;
 		}
 		
 		for (int x = -1;x<=1;x++){
@@ -470,8 +479,6 @@ public class World {
 			int weight = random.nextInt(75)+25;
 			String name = createRandomName();
 			Unit unit = new Unit(x,y,looper,name,weight,strength,agility,toughness,enableDefaultBehavior);
-			//Unit unit = new Unit(x,y,looper,"Test unit",200,200,200,200,false);
-
 			unit.setWorld(this);
 			assignFaction(unit);
 			return unit;
@@ -540,7 +547,6 @@ public class World {
 	 */
 	public boolean dropLoad(Load load,Position workPosition) throws WorldException{
 		if (workPosition.getCube().isPassable()){
-			System.out.println("work position is passable: " + workPosition.toString() );
 			workPosition.setToMiddleOfCube();
 			load.setPosition(workPosition);
 			if (load instanceof Log){
@@ -563,8 +569,6 @@ public class World {
 	}
 	
 	public void collapseCube( Position position) throws WorldException{
-		//ADD LOG OR BOULDER
-		//START CAVE IN PROCES
 		TerrainType oldTerrainType = position.getCube().getTerrainType();
 		changeCubeType(position.getCubexpos(),position.getCubeypos(),position.getCubezpos(),0);
 		if (oldTerrainType == TerrainType.TREE){
@@ -589,8 +593,7 @@ public class World {
 	public void removeBoulder(Boulder boulder){
 		this.boulders.remove(boulder);
 	}
-	
-	//REMOVE
+
 	
 	
 	

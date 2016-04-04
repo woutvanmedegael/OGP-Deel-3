@@ -1,4 +1,4 @@
-package hillbillies.model;
+package hillbillies.model.world;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,20 +8,19 @@ import java.util.Set;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
+import hillbillies.model.Position;
+import hillbillies.model.hillbilliesobject.Boulder;
+import hillbillies.model.hillbilliesobject.HillbilliesObject;
+import hillbillies.model.hillbilliesobject.Log;
+import hillbillies.model.hillbilliesobject.unit.PathFinding;
+import hillbillies.model.hillbilliesobject.unit.Unit;
+import hillbillies.model.hillbilliesobject.unit.UnitException;
 
 public class Cube {
 /**
  * arrayList used to keep track of the objects on this cube
  */
 private ArrayList<HillbilliesObject> objectsOnThisCube = new ArrayList<>();
-/**
- * set containing the units currently passing this cube
- */
-private Set<Unit> passingUnits = new HashSet<>();
-/**
- * TODO
- */
-private Map<PathFinding,Position> passingPaths = new HashMap<>();
 /**
  * the world of this cube
  */
@@ -72,7 +71,7 @@ public int getIntTerrainType(){
  * Check whether the given terrainType is a valid terrainType for
  * any cube.
 */
-public static boolean isValidTerrainType(TerrainType terrainType) {
+private static boolean isValidTerrainType(TerrainType terrainType) {
 	return (terrainType != null);
 }
 
@@ -138,20 +137,6 @@ public void deleteObject(HillbilliesObject obj){
 public ArrayList<HillbilliesObject> getObjects(){
 	return this.objectsOnThisCube;
 }
-/**
- * adds a unit that is currently passing this cube. 
- */
-public void addPassingUnit(Unit unit){
-	this.passingUnits.add(unit);
-}
-
-
-
-//public void warnPassingUnits(){
-//	for (Unit unit : this.passingUnits){
-//		unit.warnCubeHasChanged(this);
-//		}
-//	}
 
 
 /**
@@ -221,14 +206,6 @@ public Boulder getABoulder() throws UnitException{
 		}
 	}
 	throw new UnitException();
-}
-
-public void registerPath(PathFinding path, Position pos){
-	this.passingPaths.put(path, pos);
-}
-
-public void unregisterPath(PathFinding path){
-	this.passingPaths.remove(path);
 }
 
 }

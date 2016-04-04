@@ -1,4 +1,5 @@
-package hillbillies.model;
+package hillbillies.model.hillbilliesobject.unit;
+
 /**
  * A class for signaling illegal names for a unit.
  */

@@ -1,9 +1,12 @@
-package hillbillies.model;
+package hillbillies.model.hillbilliesobject.unit;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
+
+import hillbillies.model.Position;
+import hillbillies.model.world.World;
 
 public class PathFinding {
 	
@@ -66,7 +69,7 @@ public class PathFinding {
 		}
 	}
 	
-	public void calculateFastestPath(Position start, Position target) throws UnitException{
+	void calculateFastestPath(Position start, Position target) throws UnitException{
 		openset.add(new Node(start,0,start.getEstimatedTimeTo(target),null));
 		while (openset.size()>0){
 			Node current = openset.pollFirst();
@@ -108,21 +111,19 @@ public class PathFinding {
 		while (currentNode.getParent()!=null){
 			Position pos = currentNode.getPosition();
 			path.add(pos);
-			pos.getCube().registerPath(this,pos);
 			currentNode = currentNode.getParent();
 		}
 	}
 	
-	public Position moveToNextPos(){
+	Position moveToNextPos(){
 		if (this.path.size()==0){
 			return null;
 		}
 		Position nextPos = this.path.get(this.path.size()-1);
-		nextPos.getCube().unregisterPath(this);
 		this.path.remove(nextPos);
 		return nextPos;
 	}
-	public boolean setContains(Set<Position> set, Position pos){
+	boolean setContains(Set<Position> set, Position pos){
 		for (Position position : set){
 			if (position.Equals(pos)){
 				return true;
@@ -131,7 +132,7 @@ public class PathFinding {
 		return false;
 	}
 	
-	public ArrayList<Position> getPath(){
+	ArrayList<Position> getPath(){
 		return this.path;
 	}
 	

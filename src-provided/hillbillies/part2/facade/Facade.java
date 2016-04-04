@@ -2,15 +2,15 @@ package hillbillies.part2.facade;
 
 import java.util.Set;
 
-import hillbillies.model.Boulder;
-import hillbillies.model.CurrentState;
-import hillbillies.model.Faction;
-import hillbillies.model.IllegalNameException;
-import hillbillies.model.Log;
-import hillbillies.model.Unit;
-import hillbillies.model.UnitException;
-import hillbillies.model.World;
-import hillbillies.model.WorldException;
+import hillbillies.model.hillbilliesobject.Boulder;
+import hillbillies.model.hillbilliesobject.CurrentState;
+import hillbillies.model.hillbilliesobject.Log;
+import hillbillies.model.hillbilliesobject.unit.IllegalNameException;
+import hillbillies.model.hillbilliesobject.unit.Unit;
+import hillbillies.model.hillbilliesobject.unit.UnitException;
+import hillbillies.model.world.Faction;
+import hillbillies.model.world.World;
+import hillbillies.model.world.WorldException;
 import hillbillies.part2.listener.TerrainChangeListener;
 import ogp.framework.util.ModelException;
 
@@ -44,9 +44,9 @@ public class Facade implements IFacade{
 
 	@Override
 	public int[] getCubeCoordinate(Unit unit) throws ModelException {
-		int cubeX = unit.getCubeXpos();
-		int cubeY = unit.getCubeYpos();
-		int cubeZ = unit.getCubeZpos();
+		int cubeX = (int)unit.getxpos();
+		int cubeY = (int)unit.getypos();
+		int cubeZ = (int)unit.getzpos();
 		int[] pos = {cubeX,cubeY,cubeZ};
 		return pos;
 	}
@@ -156,7 +156,7 @@ public class Facade implements IFacade{
 
 	@Override
 	public boolean isMoving(Unit unit) throws ModelException {
-		return (unit.getMyState()==CurrentState.MOVING || unit.getMyState()==CurrentState.ATTACK_PENDING);
+		return unit.isMoving();
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package hillbillies.model;
+package hillbillies.model.hillbilliesobject.unit;
 
 import java.util.ArrayList;
 
@@ -14,6 +14,18 @@ import java.util.Random;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
+import hillbillies.model.NbCompare;
+import hillbillies.model.Position;
+import hillbillies.model.hillbilliesobject.Boulder;
+import hillbillies.model.hillbilliesobject.CurrentState;
+import hillbillies.model.hillbilliesobject.HillbilliesObject;
+import hillbillies.model.hillbilliesobject.Load;
+import hillbillies.model.hillbilliesobject.Log;
+import hillbillies.model.world.Cube;
+import hillbillies.model.world.Faction;
+import hillbillies.model.world.TerrainType;
+import hillbillies.model.world.World;
+import hillbillies.model.world.WorldException;
 
 /**
  * @invar  The xpos of each Unit must be a valid xpos for any
@@ -391,7 +403,7 @@ public String getName() {
  *          |  then result == false
  *          | else result == true
 */
-public static boolean isValidName(String name) {
+private static boolean isValidName(String name) {
 	if (name == null){
 		return false;
 	} if (name.length()<2){
@@ -451,7 +463,7 @@ private int toughness;
  * @return 
  *       | result == (minFirst < param && param <= maxFirst)
 */
-public static boolean isValidParamFirstTime(int param){
+private static boolean isValidParamFirstTime(int param){
 	return (MINFIRST <= param && param <=MAXFIRST);
 }
 
@@ -471,7 +483,7 @@ public int getWeight() {
  * @return 
  *       | result == (min < weight && weight <= max)
 */
-public static boolean isValidWeight(int weight) {
+private static boolean isValidWeight(int weight) {
 	return (MIN <= weight && weight<=MAX);
 }
 /**
@@ -523,7 +535,7 @@ public int getStrength() {
  * @return 
  *       | result == (min <= strength && strength<=max);
 */
-public static boolean isValidStrength(int strength) {
+private static boolean isValidStrength(int strength) {
 	return (MIN <= strength && strength<=MAX);
 }
 
@@ -568,7 +580,7 @@ public void setStrength(int strength) {
  * 		| 	then new.getWeight = (this.getStrength()+this.getAgility()) /2
  */
 @Raw
-public void changeWeightIfNeeded(){
+private void changeWeightIfNeeded(){
 	if (!validStrengthAgilityWeight(this.getWeight(),this.getStrength(),this.getAgility())){
 		this.weight = (this.getStrength()+this.getAgility()) /2;
 	}
@@ -591,7 +603,7 @@ public int getAgility() {
 * @return Returns true if and only if the given agility is within the minimum and maximum (or equal to one of those).
 *       | result == (min <= agility && agility<=max);
 */
-public static boolean isValidAgility(int agility) {
+private static boolean isValidAgility(int agility) {
 	return (MIN <= agility && agility <=MAX);
 }
 
@@ -646,7 +658,7 @@ public int getToughness() {
 * @return Returns true if and only if the given agility is within the minimum and maximum (or equal to one of those).
 *         | result == (min <= toughness && toughness<=max);
 */
-public static boolean isValidToughness(int toughness) {
+private static boolean isValidToughness(int toughness) {
 	return (MIN <= toughness && toughness <=MAX);
 }
 
@@ -725,7 +737,7 @@ public int getCurrentHP() {
  * @return Returns true if and only if currentHP is bigger than or equal to 0 and smaller than or equal to the maximum number of hit points.
  *       | result == (0<=currentHP && currentHP<=this.getMaxHP())
 */
-public boolean isValidCurrentHP(int currentHP) {
+private boolean isValidCurrentHP(int currentHP) {
 	return (0<=currentHP && currentHP<=this.getMaxHP());
 }
 
@@ -765,7 +777,7 @@ public int getCurrentSP() {
  * @return Returns true if and only if currentSP is bigger than or equal to 0 and smaller than or equal to the maximum number of stamina points.
  *       | result == (0<=currentSP && currentSP<=this.getMaxSP())
 */
-public boolean isValidCurrentSP(int currentSP) {
+private boolean isValidCurrentSP(int currentSP) {
 	return (0<=currentSP && currentSP<=this.getMaxSP());
 }
 
@@ -809,7 +821,7 @@ public float getOrientation() {
  * @return Returns true if and only if the orientation is bigger than or equal to 0 and smaller than or equal to 2 times PI.
  *       | result ==  (0<= orientation && orientation<= 2*Math.PI)
 */
-public static boolean isValidOrientation(float orientation) {
+private static boolean isValidOrientation(float orientation) {
 	return (0<= orientation && orientation<= 2*Math.PI);
 }
 
@@ -860,7 +872,7 @@ public CurrentState getMyState() {
  *       | new.getMyState() == myState
  */
 @Raw
-public void setMyState(CurrentState myState)  {
+private void setMyState(CurrentState myState)  {
 	this.myState = myState;
 }
 
@@ -887,7 +899,7 @@ private Position localTarget;
  * Return the localTarget of this unit.
  */
 @Basic @Raw
-public Position getLocalTarget() {
+private Position getLocalTarget() {
 	return this.localTarget;
 }
 
@@ -901,7 +913,7 @@ public Position getLocalTarget() {
  *       | new.getLocalTarget() == localTarget
  */
 @Raw
-public void setLocalTarget(Position localTarget)  {
+private void setLocalTarget(Position localTarget)  {
 	this.localTarget = localTarget;
 }
 
@@ -915,7 +927,7 @@ private Position globalTarget = null;
  * Return the globalTarget of this unit.
  */
 @Basic @Raw
-public Position getGlobalTarget() {
+private Position getGlobalTarget() {
 	return this.globalTarget;
 }
 
@@ -929,7 +941,7 @@ public Position getGlobalTarget() {
  *       | new.getGlobalTarget() == globalTarget
  */
 @Raw
-public void setGlobalTarget(Position globalTarget)  {
+private void setGlobalTarget(Position globalTarget)  {
 	this.globalTarget = globalTarget;
 }
 
@@ -970,7 +982,7 @@ private Unit defender;
  * Return the defender of this unit.
  */
 @Basic @Raw
-public Unit getDefender() {
+private Unit getDefender() {
 	return this.defender;
 }
 
@@ -984,7 +996,7 @@ public Unit getDefender() {
  *       | new.getDefender() == defender
  */
 @Raw
-public void setDefender(Unit defender){
+private void setDefender(Unit defender){
 	this.defender = defender;
 }
 
@@ -997,7 +1009,7 @@ private boolean hasRested = true;
  * Return the hasRested of this unit.
  */
 @Basic @Raw
-public boolean getHasRested() {
+private boolean getHasRested() {
 	return this.hasRested;
 }
 
@@ -1011,7 +1023,7 @@ public boolean getHasRested() {
  *       | new.gethasRested() == hasRested
  */
 @Raw
-public void setHasRested(boolean hasRested)  {
+private void setHasRested(boolean hasRested)  {
 	this.hasRested = hasRested;
 }
 
@@ -1027,20 +1039,20 @@ public boolean isResting(){
 /**
  * Returns the xpos of the cube on which the unit is standing.
  */
-public int getCubeXpos(){
+private int getCubeXpos(){
 	return (int)this.getxpos();
 }
 /**
  * Returns the ypos of the cube on which the unit is standing.
  */
-public int getCubeYpos(){
+private int getCubeYpos(){
 	return (int)this.getypos();
 }
 
 /**
  * Returns the zpos of the cube on which the unit is standing.
  */
-public int getCubeZpos(){
+private int getCubeZpos(){
 	return (int) this.getzpos();
 }
 
@@ -1065,7 +1077,7 @@ public double getSpeed() {
  * @return Returns true if and only if the speed is greater than or equal
  *       | result == (speed>=0)
 */
-public static boolean isValidSpeed(double speed) {
+private static boolean isValidSpeed(double speed) {
 	return speed>=0;
 }
 /**
@@ -1082,7 +1094,7 @@ public static boolean isValidSpeed(double speed) {
  *       | !isValidSpeed(getSpeed())
  */
 @Raw
-public void setSpeed(double speed) 
+private void setSpeed(double speed) 
 		throws UnitException {
 	if (! isValidSpeed(speed))
 		throw new UnitException();
@@ -1114,13 +1126,9 @@ public void setSpeed(double speed)
  *        | !isValidMove(new in([]{dx,dy,dz}))
  */	
 public void moveToAdjacent(int dx, int dy, int dz) throws UnitException{
-	System.out.println("move to adjacent");
 	if (this.getWorld().isWalkable(this.getCubeXpos()+dx, this.getCubeYpos()+dy, getCubeZpos()+dz) && isValidMove(new int[]{dx,dy,dz})){
-		System.out.println("check 1");
 		if (!(this.getMyState()==CurrentState.ATTACKING || this.getMyState()==CurrentState.MOVING || this.getMyState() == CurrentState.DEFENDING) && this.getHasRested() && (dx!=0 || dy!=0 || dz!=0)){
-			System.out.println("check 2");
 			this.setMyState(CurrentState.MOVING);
-			System.out.println("state is moving");
 			//if (!isValidMove(new int[]{dx,dy,dz})){
 			//	System.out.println("is GEEN valid pos voor naar te moven, exception wordt gethrowed");
 
@@ -1157,7 +1165,7 @@ private Position getMyPosition() {
 * @note Doesn't throw an exception. Position pos has to be valid to exist. See Position class invariants.
 */
 @Raw
-public void setMyPosition(Position pos){
+private void setMyPosition(Position pos){
 	this.myPosition = pos;
 }
 
@@ -1311,7 +1319,7 @@ public void setWorld(World world) throws UnitException{
 	this.getLocalTarget().setWorld(world);
 	this.setParentCube(this.getMyPosition(), world);
 }
-public World getWorld(){
+private World getWorld(){
 	return this.myWorld;
 }
 
@@ -1343,9 +1351,11 @@ private World myWorld;
  */
 private void calculateLocalTarget() throws UnitException{
 	Position nextPos = this.myPath.moveToNextPos();
-	if (nextPos == null || !nextPos.isValidPos()){
+	if (nextPos == null){
 		this.setMyState(CurrentState.NEUTRAL);
 		this.setGlobalTarget(null);
+	} else if (!nextPos.isValidPos()){
+		this.myPath = new PathFinding(this.myWorld,this.getMyPosition(),this.getGlobalTarget());
 	} else {
 		setLocalTargetAndSpeed(nextPos);
 	}
@@ -1367,20 +1377,24 @@ private void calculateLocalTarget() throws UnitException{
  * @throws WorldException 
  */
 public void advanceTime(double dt) throws WorldException{
+	System.out.println("unit 1");
 	if (this.getExperiencePoints()>=10){
 		this.setExperiencePoints(this.getExperiencePoints()-10);
 		improveProperty();
 	}
-	if (dt<=0 || dt>0.2){
-		throw new UnitException();
-	}
+	System.out.println("slfdkjd");
+	System.out.println(dt);
+	//if (dt<=0 || dt>0.2){
+	//	throw new UnitException();
+	//}
+	System.out.println("lijlkj");
 	double timeSinceRest =  (this.getMyTimeState().getTimeSinceRest()+dt);
 	if (timeSinceRest>180){
 		this.setMyState(CurrentState.RESTING);
 		timeSinceRest -= 180;
 	}
 	this.getMyTimeState().setTimeSinceRest(timeSinceRest);
-	
+	System.out.println(this.getMyState());
 	switch (this.getMyState()){
 		case NEUTRAL:
 			if ((getGlobalTarget() != null && !getGlobalTarget().Equals(this.getMyPosition()))){
@@ -1404,10 +1418,7 @@ public void advanceTime(double dt) throws WorldException{
 			break;
 			//TODO hier this.attacking
 		case ATTACKING:
-			System.out.println(this.getDefender());
 			if (this.getMyTimeState().getAttackTime()>1){
-				System.out.println("defender:");
-				System.out.println(this.getDefender());
 				this.attack(this.getDefender());
 				break;
 			} else {
@@ -1428,8 +1439,8 @@ public void advanceTime(double dt) throws WorldException{
 	default:
 		break;
 			
-	
 	}
+	System.out.println("unit 1 finished");
 }
 
 /**
@@ -1583,12 +1594,10 @@ private void determineLocalTarget() throws UnitException{
 public void workAt(int x, int y, int z){
 	if ((this.getMyState() == CurrentState.RESTING && this.getHasRested()) || this.getMyState() == CurrentState.NEUTRAL){
 		try{
-			System.out.println("setting workposition");
 			this.workPosition = new Position(x,y,z,myWorld);
 			if (!this.workPosition.isAdjacent(this.getMyPosition())){
 				throw new UnitException();
 			}
-			System.out.println("workposition set");
 		} catch (UnitException e){
 			return;
 		}
@@ -1635,6 +1644,7 @@ private void finishWork() throws WorldException{
 	this.getMyTimeState().setTrackTimeWork(0);
 	Cube workCube = this.workPosition.getCube();
 	if (this.isCarryingBoulder() || this.isCarryingLog()){
+		
 		if (this.myWorld.dropLoad(this.load, this.workPosition)){
 			this.load = null;
 		}
@@ -1676,20 +1686,6 @@ public void startResting(){
 		this.getMyTimeState().setTimeRested(0);
 		
 	}
-}
-//TODO methode weg dan?
-/**
- * Initiates this units defense against the attacker.
- * @param attacker
- * 			The unit attacking this unit.
- * @post This unit starts defending against attacker.
- * 		| new.getMyState() == CurrentState.DEFENDING and 
- * 		| new.getOrientation() == Math.atan2(attacker.getypos()-this.getypos(),attacker.getxpos()-this.getxpos())
- * 
- */
-public void startDefending(Unit attacker){
-	this.setMyState(CurrentState.DEFENDING);
-	this.setOrientation((float) Math.atan2(attacker.getypos()-this.getypos(),attacker.getxpos()-this.getxpos()));
 }
 
 /**
@@ -1738,7 +1734,7 @@ public void initiateAttack(Unit defender){
  * 					 		!(Math.abs(this.getCubeYpos()-defender.getCubeYpos())>1)&&
  * 								!(Math.abs(this.getCubeZpos()-defender.getCubeZpos())>1))
  */
-public boolean targetWithinReach(Unit defender){
+private boolean targetWithinReach(Unit defender){
 	if (Math.abs(this.getCubeXpos()-defender.getCubeXpos())>1){
 		return false;
 	} else if (Math.abs(this.getCubeYpos()-defender.getCubeYpos())>1){
@@ -1766,7 +1762,7 @@ public boolean targetWithinReach(Unit defender){
  * 			Throws a UnitException if the unit tries to jump away and jumpAway() throws an exception.
  * @note	UnitException can't be thrown. jumpAway() will never throw an exception.
  */
-public void defend(Unit attacker) throws UnitException{
+private void defend(Unit attacker) throws UnitException{
 	this.setOrientation((float) Math.atan2(attacker.getypos()-this.getypos(),attacker.getxpos()-this.getxpos()));
 	if (dodge(attacker)){
 		this.setExperiencePoints(this.getExperiencePoints()+20);
@@ -1794,7 +1790,7 @@ private static final Random random = new Random();
  * @return True if and only the random generated number is smaller than this units chance of dodging the attackers attack.
  * 		   | result == random.nextFloat()<this.getAgility()/attacker.getAgility()/5
  */
-public boolean dodge(Unit attacker){
+private boolean dodge(Unit attacker){
 	float prob =  (float) ((float) this.getAgility()/attacker.getAgility()/5.0);
 	return random.nextFloat()<prob;
 }
@@ -1815,7 +1811,7 @@ public boolean dodge(Unit attacker){
  *  		Throws an exception if either setxpos() or setypos() throws an exception.
  * @note This exception will never be thrown.
  */
-public void jumpAway(){
+private void jumpAway(){
 	float xrand = (random.nextFloat())*2-1;
 	float yrand = (random.nextFloat())*2-1;
 	try{
@@ -1834,7 +1830,7 @@ public void jumpAway(){
  * @return returns true if the random generated float is smaller than the calculated probability
  * 		   | result == (randomNumberBetween(0..1)<calculateProbability(attacker))	
  */
-public boolean blocked(Unit attacker){
+private boolean blocked(Unit attacker){
 	float prob = calculateProbability(attacker);
 	return random.nextFloat()<prob;
 }
@@ -1862,7 +1858,7 @@ private float calculateProbability(Unit attacker) {
  * 		 |  then new.getCurrentHP() == 0
  * 		 | otherwise new.getCurrentHP()== this.getCurrentHP()-damage	
  */
-public void takeDamage(Unit attacker) throws UnitException{
+private void takeDamage(Unit attacker) throws UnitException{
 	attacker.attackSuccesfull();
 	int damage = (int) attacker.getStrength()/10;
 	if (damage>this.getCurrentHP()){
@@ -1874,7 +1870,7 @@ public void takeDamage(Unit attacker) throws UnitException{
 }
 
 //TODO: commentaar
-public void attackSuccesfull() throws UnitException{
+private void attackSuccesfull() throws UnitException{
 	this.setExperiencePoints(this.getExperiencePoints()+20);
 }
 /**
@@ -1902,7 +1898,7 @@ public void attackSuccesfull() throws UnitException{
  * 			| if (this.getCurrentHP() == this.getMaxHP() && this.getCurrentSP() == this.getMaxSP())
  * 			| then restingIsDone();
  */
-public void rest(double dt){
+private void rest(double dt){
 	this.getMyTimeState().setTimeRested(this.getMyTimeState().getTimeRested()+dt);
 	hasRestedMinimumTime(dt);
 	double notYetUsedRestTime = this.getMyTimeState().getTrackTimeRest();
@@ -2017,7 +2013,7 @@ private static final int SIZE = DEFAULTSTATES.size();
  *			Throws an exception if Position(...) throws an exception.
  * @note UnitException won't be thrown.
  */
-public void executeDefaultBehaviour() throws UnitException{
+private void executeDefaultBehaviour() throws UnitException{
 	if (this.getDefaultBehaviourEnabled()){
 		Unit enemy=null;
 		for (Position neighbour : this.getMyPosition().getNeighbours()){
@@ -2036,16 +2032,12 @@ public void executeDefaultBehaviour() throws UnitException{
 		}
 		
 		CurrentState state = states.get(random.nextInt(states.size()));
-		System.out.println(state);
-		System.out.println(enemy);
 		
 		if (state == CurrentState.MOVING){
-			System.out.println("moving");
 			Position target = generateRandomPos();
 			this.moveTo(target.getCubexpos(),target.getCubeypos(),target.getCubezpos());
 		}	
 		else if (state == CurrentState.WORKING){
-			System.out.println("working");
 			Random random = new Random();
 			int x = random.nextInt(3)-1;
 			int y = random.nextInt(3)-1;
@@ -2055,10 +2047,8 @@ public void executeDefaultBehaviour() throws UnitException{
 				y*=-1;
 				z*=-1;
 			}
-			System.out.println("workAt");
 			this.workAt(this.getCubeXpos()+x, this.getCubeYpos()+y, this.getCubeZpos()+z);
 		} else if (state == CurrentState.ATTACKING){
-			System.out.println("attacking");
 			this.initiateAttack(enemy);
 		}
 	}
@@ -2094,7 +2084,7 @@ private Position generateRandomPos() throws UnitException{
  * @throws UnitException
  *			Throws an exception if defend throws an exception.
  */
-public void attack(Unit defender) throws UnitException{
+private void attack(Unit defender) throws UnitException{
 	defender.defend(this);
 	this.setMyState(CurrentState.NEUTRAL);
 	this.getMyTimeState().setAttackTime(0);
@@ -2124,7 +2114,7 @@ public int getExperiencePoints() {
  * @return 
  *       | result == (experiencePoints>=0)
 */
-public static boolean isValidExperiencePoints(int experiencePoints) {
+private static boolean isValidExperiencePoints(int experiencePoints) {
 	return (experiencePoints>=0);
 }
 
@@ -2142,7 +2132,7 @@ public static boolean isValidExperiencePoints(int experiencePoints) {
  *       | ! isValidExperiencePoints(getExperiencePoints())
  */
 @Raw
-public void setExperiencePoints(int experiencePoints) 
+private void setExperiencePoints(int experiencePoints) 
 		throws UnitException {
 	if (! isValidExperiencePoints(experiencePoints))
 		throw new UnitException();
@@ -2155,7 +2145,7 @@ public void setExperiencePoints(int experiencePoints)
 private int experiencePoints =0;
 
 //TODO: improveProperty 
-public void improveProperty(){
+private void improveProperty(){
 		int prevMaxHP = this.getMaxHP();
 		int prevMaxSP = this.getMaxSP();
 		ArrayList<Integer> props = new ArrayList<>();
@@ -2183,33 +2173,11 @@ public void improveProperty(){
 				
 	}
 
-/** TO BE ADDED TO CLASS HEADING
- * @invar  The load of each unit must be a valid load for any
- *         unit.
- *       | isValidLoad(getLoad())
- */
-
-
-/**
- * Initialize this new unit with given load.
- *
- * @param  load
- *         The load for this new unit.
- * @effect The load of this new unit is set to
- *         the given load.
- *       | this.setLoad(load)
- */
-public Unit(Load load)
-		throws UnitException {
-	this.setLoad(load);
-}
-
-
 /**
  * Return the load of this unit.
  */
 @Basic @Raw
-public Load getLoad() {
+private Load getLoad() {
 	return this.load;
 }
 //TODO: commentaar
@@ -2236,7 +2204,7 @@ public boolean isCarryingBoulder(){
  *       | ! isValidLoad(getLoad())
  */
 @Raw
-public void setLoad(Load load){
+private void setLoad(Load load){
 	if (load instanceof Log){
 		this.myWorld.getLogs().remove(load);
 	}
@@ -2251,7 +2219,7 @@ public void setLoad(Load load){
  */
 private Load load;
 
-private Faction myFaction;
+private Faction myFaction = new Faction();
 
 public void setFaction(Faction faction){
 	myFaction = faction;
@@ -2261,11 +2229,11 @@ public Faction getFaction(){
 	return this.myFaction;
 }
 
-public void die(){
+private void die(){
 	this.getFaction().removeUnit(this);
 }
 
-public void fall(double dt) throws UnitException{
+private void fall(double dt) throws UnitException{
 	double distance = this.getMyPosition().calculateDistance(this.getLocalTarget());
 	boolean hasArrivedAtLocalTarget = this.getSpeed()*dt>distance;
 	if (hasArrivedAtLocalTarget){
@@ -2300,6 +2268,10 @@ public void startFalling() throws UnitException{
 	this.getLocalTarget().incrPosition(0, 0, -1);
 	this.setGlobalTarget(null);
 	this.setSpeed(3);
+}
+
+public boolean isMoving(){
+	return (this.getMyState()==CurrentState.MOVING || this.getMyState()==CurrentState.ATTACK_PENDING || (this.getMyState()==CurrentState.RESTING && !this.getMyPosition().Equals(localTarget)));
 }
 
 }
