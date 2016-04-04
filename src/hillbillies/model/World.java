@@ -7,6 +7,12 @@ import hillbillies.util.ConnectedToBorder;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+/**
+ * 
+ * @author Wout Van Medegael & Adriaan Van Gerven
+ *
+ */
+
 public class World {
 	/**
 	 * variables registering the dimensions of the game world
@@ -18,16 +24,17 @@ public class World {
 	 * variable registering the length of 1 cube
 	 */
 	private final double lc = 1;
-	//TERRAIN
 	/**
 	 * A list to keep track of the different cubes in the world
 	 */
 	private Cube[][][] world;
 	/**
-	 * TODO: class conncted to border aanpassen
+	 * variable of the ConnectedToBorder class used for checking if cubes are connected to the border
 	 */
 	private ConnectedToBorder connectedToBorder;
-	
+	/**
+	 * returns true if the cube with the given coordinates is solid and connected to the border
+	 */
 	public boolean isSolidConnectedToBorder(int x,int y,int z){
 		return ((!this.getCube(x, y, z).isPassable())&& this.connectedToBorder.isSolidConnectedToBorder(x, y, z));
 	}
@@ -82,7 +89,8 @@ public class World {
 	
 	
 	/**
-	 * initialize the world
+	 * initialize the world; creating and configuring the connected to border,
+	 * setting all the walkable cubes
 	 */
 	public World(int[][][] terrainTypes, TerrainChangeListener modelListener) throws WorldException{
 		dimensionx = terrainTypes.length;
@@ -218,7 +226,7 @@ public class World {
 	 * 		
 	 * 		
 	 */
-	public void changeCubeType(int x, int y, int z, int value) throws UnitException{	
+	public void changeCubeType(int x, int y, int z, int value) throws WorldException{	
 		TerrainType oldTerrainType = this.getCube(x,y,z).getTerrainType();
 		this.getCube(x, y, z).setTerrainType(value);
 		if (this.getCube(x,y,z).getTerrainType() != oldTerrainType){
@@ -287,7 +295,10 @@ public class World {
 	}
 	
 	//Misschien niet bij unit?
-	private void doSomethingIfObjectIsDependent(int x, int y, int z) throws UnitException {
+	/**
+	 * makes the  hillbillie object fall if it was somehow dependent of this cube.
+	 */
+	private void doSomethingIfObjectIsDependent(int x, int y, int z) throws UnitException,WorldException {
 		// TODO aanvullen
 		for (int xpos = x-1; xpos<=x+1;xpos++){
 			for (int ypos = y-1; ypos<=y+1;ypos++){
@@ -342,8 +353,6 @@ public class World {
 	}
 	/**
 	 * resets the type of the given cubes to air and possibly adds a log or a boulder
-	 * @param cubesToCaveIn
-	 * @throws WorldException 
 	 */
 	private void caveIn(ArrayList<int[]> cubesToCaveIn) throws WorldException{
 		for (int[] p: cubesToCaveIn){
@@ -355,6 +364,9 @@ public class World {
 		}
 		
 	}
+	/**
+	 * variable used te generate random numbers
+	 */
 	private final Random random = new Random();
 	/**
 	 * adds a log or a boulder with probability 0.25
@@ -369,7 +381,10 @@ public class World {
 		}
 		
 	}
-	
+	/**
+	 * adds a log to the middle of the cube with given coordinates.
+	 * If the log is not above solid terrain, the log starts falling.
+	 */
 	public void addLog(int[] p) throws WorldException{
 		//TODO: wat met vallen
 		Position pos = new Position(p[0]+lc/2,p[1]+lc/2,p[2]+lc/2,this);
@@ -380,6 +395,10 @@ public class World {
 		logs.add(newLog);
 		
 	}
+	/**
+	 * adds a boulder to the middle of the cube with given coordinates.
+	 * If the boulder is not above solid terrain, the boulder starts falling.
+	 */
 	public void addBoulder(int[] p ) throws WorldException{
 		//wat met vallen
 		Position pos = new Position(p[0]+lc/2,p[1]+lc/2,p[2]+lc/2,this);
@@ -389,8 +408,9 @@ public class World {
 		}
 		boulders.add(newBoulder);
 	}
-	
-	//TODO: Wat denkt gij, houden we eerder een lijst bij van de logs waarvoor effectief iets veranderd is ? 
+	/**
+	 *advances the time for each object in this world
+	 */
 	public void advanceTime(double dt) throws WorldException{
 		updateCubes();
 		for (Log log: this.logs){
@@ -405,9 +425,8 @@ public class World {
 		
 		}
 	
-	
 	/**
-	 * returns true if the cube at the given position is walkable
+	 * returns true if the cube at the given position is walkable.
 	 */
 	public boolean isWalkable(int xpos, int ypos, int zpos){
 		
@@ -429,7 +448,9 @@ public class World {
 	//#BOELAANSE LOGICA BITCH
 	final static String alphabet = "abcdefghijklmnopqrstuvxyzABCDEFHIJKLMNOPQRSTUVWXYZ '\"";
 	final static String ALPHABET = "ABCDEFHIJKLMNOPQRSTUVWXYZ";
-	
+	/**
+	 * returns a random unit with random attributes and a random position with the given enabledDefaultBehavior;
+	 */
 	public Unit spawnUnit(boolean enableDefaultBehavior) throws UnitException{
 			Random random = new Random();
 			int x = random.nextInt(this.getDimensionx()-1);
@@ -449,11 +470,15 @@ public class World {
 			int weight = random.nextInt(75)+25;
 			String name = createRandomName();
 			Unit unit = new Unit(x,y,looper,name,weight,strength,agility,toughness,enableDefaultBehavior);
+			//Unit unit = new Unit(x,y,looper,"Test unit",200,200,200,200,false);
+
 			unit.setWorld(this);
 			assignFaction(unit);
 			return unit;
 	}
-	
+	/**
+	 * assigns the smallest faction to the given unit
+	 */
 	private static void assignFaction(Unit unit) throws UnitException{
 		for (int i = 4;i>0; i--){
 			if (factions.get(i).getUnits().size()<factions.get(i-1).getUnits().size() && factions.get(i).getUnits().size()<50){
@@ -467,6 +492,9 @@ public class World {
 			unit.setFaction(factions.get(0));}
 		
 	}
+	/**
+	 * creates a totally random name starting with a capital.
+	 */
 	private static String createRandomName(){
 		Random random = new Random();
 		String name = new String();
@@ -478,18 +506,25 @@ public class World {
 		
 		return name;
 	}
+	/**
+	 * if the world doesn't contain more than 100 units the given unit is added to the world. 
+	 */
 	public void addUnit(Unit unit) throws UnitException{
 		if (!(countUnits()>=100)){
 			assignFaction(unit);
 			unit.setWorld(this);
 			}
 	}
-	//TODO: are they still alive ? do i need to check it
+	/**
+	 * counts all the units in this world.
+	 */
 	private int countUnits(){
 		return this.getUnits().size();
 	}
 	
-	
+	/**
+	 * returns a set of the active factions, the factions that have at least 1 unit
+	 */
 	public Set getActiveFactions(){
 		Set<Faction> activeFactions = new HashSet<>();
 		for (Faction f: this.getFactions()){
@@ -500,9 +535,13 @@ public class World {
 		return activeFactions;
 		
 	}
-	
-	public boolean dropLoad(Load load,Position workPosition) throws UnitException{
+	/**
+	 * 
+	 */
+	public boolean dropLoad(Load load,Position workPosition) throws WorldException{
+		System.out.println("drop load is called");
 		if (workPosition.getCube().isPassable()){
+			System.out.println("work position is passable: " + workPosition.toString() );
 			workPosition.setToMiddleOfCube();
 			load.setPosition(workPosition);
 			if (load instanceof Log){
@@ -512,8 +551,9 @@ public class World {
 				boulders.add((Boulder) load);
 			}
 			load.setParentCube(workPosition, this);
-			workPosition.incrPosition(0, 0, -1);
-			if (workPosition.getCube().isPassable()){
+			//workPosition.incrPosition(0, 0, -1);
+			Position pos = new Position(workPosition.xpos,workPosition.ypos,workPosition.zpos-1,this);
+			if (pos.getCube().isPassable()){
 				load.startFalling();
 			}
 			return true;		}
@@ -550,6 +590,9 @@ public class World {
 	public void removeBoulder(Boulder boulder){
 		this.boulders.remove(boulder);
 	}
+	
+	//REMOVE
+	
 	
 	
 

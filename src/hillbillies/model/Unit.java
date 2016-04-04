@@ -1114,14 +1114,28 @@ public void setSpeed(double speed)
  *        | !isValidMove(new in([]{dx,dy,dz}))
  */	
 public void moveToAdjacent(int dx, int dy, int dz) throws UnitException{
-	if (!(this.getMyState()==CurrentState.ATTACKING || this.getMyState()==CurrentState.MOVING || this.getMyState() == CurrentState.DEFENDING) && this.getHasRested() && (dx!=0 || dy!=0 || dz!=0)){
-		this.setMyState(CurrentState.MOVING);
-		if (!isValidMove(new int[]{dx,dy,dz})){
-			throw new UnitException();
-		}
-		this.setGlobalTarget(new Position(this.getMyPosition().getxpos()+dx, this.getMyPosition().getypos()+dy, this.getMyPosition().getzpos()+dz, this.myWorld));
-		setLocalTargetAndSpeed(this.getGlobalTarget());
-		}
+	System.out.println("move to adjacent");
+	if (this.getWorld().isWalkable(this.getCubeXpos()+dx, this.getCubeYpos()+dy, getCubeZpos()+dz) && isValidMove(new int[]{dx,dy,dz})){
+		System.out.println("check 1");
+		if (!(this.getMyState()==CurrentState.ATTACKING || this.getMyState()==CurrentState.MOVING || this.getMyState() == CurrentState.DEFENDING) && this.getHasRested() && (dx!=0 || dy!=0 || dz!=0)){
+			System.out.println("check 2");
+			this.setMyState(CurrentState.MOVING);
+			System.out.println("state is moving");
+			//if (!isValidMove(new int[]{dx,dy,dz})){
+			//	System.out.println("is GEEN valid pos voor naar te moven, exception wordt gethrowed");
+
+			//throw new UnitException();
+			//}
+			//ADDDED:
+			this.getLocalTarget().incrPosition(dx, dy, dz);
+			this.getLocalTarget().setToMiddleOfCube();
+			
+			this.setGlobalTarget(new Position(this.getMyPosition().getxpos()+dx, this.getMyPosition().getypos()+dy, this.getMyPosition().getzpos()+dz, this.myWorld));
+			setLocalTargetAndSpeed(this.getGlobalTarget());
+			}
+	}
+	
+	
 	
 }
 
@@ -1231,15 +1245,20 @@ private boolean isValidMove(int[] move) throws UnitException{
 			return false;
 		}
 	}
-	if (!Position.isValidPos(this.getxpos()+move[0],this.getypos()+move[1],this.getzpos()+move[2],this.myWorld)){
-		return false;
-	}
-	this.getLocalTarget().incrPosition(move[0], move[1], move[2]);
-	this.getLocalTarget().setToMiddleOfCube();
-	if (this.getLocalTarget().getCube().isWalkable()){
-		this.setLocalTarget(this.getMyPosition());
-		return false;
-	}
+//	if (!(this.getWorld().isWalkable(this.getCubeXpos()+move[0], this.getCubeYpos()+move[1], getCubeZpos()+move[2]))){
+//		return false;
+//	}
+	
+//	if (!Position.isValidPos(this.getxpos()+move[0],this.getypos()+move[1],this.getzpos()+move[2],this.myWorld)){
+//		return false;
+//	}
+	//this.getLocalTarget().incrPosition(move[0], move[1], move[2]);
+	//this.getLocalTarget().setToMiddleOfCube();
+	//if (this.getLocalTarget().getCube().isWalkable()){
+		//this.setLocalTarget(this.getMyPosition());
+		//return false;
+	//	}
+	
 	return true;
 	
 }
@@ -1291,6 +1310,9 @@ public void setWorld(World world) throws UnitException{
 	this.getMyPosition().setWorld(world);
 	this.getLocalTarget().setWorld(world);
 	this.setParentCube(this.getMyPosition(), world);
+}
+public World getWorld(){
+	return this.myWorld;
 }
 
 private PathFinding myPath;

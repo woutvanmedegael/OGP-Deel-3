@@ -117,6 +117,7 @@ public class Position {
  *       | result == (0<=pos && pos<50)
 */
 public boolean isValidPos(double xpos, double ypos, double zpos) {
+
 	if (world == null){
 		return (xpos>=0 && ypos>=0 && zpos>=0);
 	}
@@ -131,6 +132,48 @@ public boolean isValidPos(double xpos, double ypos, double zpos) {
 	} 
 	return true;
 }
+
+public boolean isValidPos(){
+	if (this.world == null){
+		return (this.getxpos()>=0 && this.getypos()>=0 && this.getzpos()>=0);
+	}
+	if (this.getxpos()<0 || this.getxpos() >= this.world.getDimensionx()){
+		return false;
+	}
+	if (this.getypos()<0 || this.getypos() >= this.world.getDimensiony()){
+		return false;
+	}
+	if (this.getzpos()<0 || this.getzpos() >= this.world.getDimensionz()){
+		return false;
+	}
+	return true;
+}
+
+public static boolean posWithinWorld(int x, int y, int z, World world){
+	try{
+		world.getCube(x, y, z);
+		return true;
+	} catch (ArrayIndexOutOfBoundsException e){
+		return false;
+	}
+}
+
+public static boolean isValidPos(double xpos, double ypos, double zpos, World world){
+	if (world == null){
+		return true;
+	}
+	if (xpos<0 || xpos >= world.getDimensionx()){
+		return false;
+	}
+	if (ypos<0 || ypos >= world.getDimensiony()){
+		return false;
+	}
+	if (zpos<0 || zpos >= world.getDimensionz()){
+		return false;
+	}
+	return true;
+}
+
 /**
  *Calculates the distance between this position and another position
  * @param other
@@ -213,46 +256,7 @@ public void setWorld(World world) throws UnitException{
 	}
 }
 
-public boolean isValidPos(){
-	if (this.world == null){
-		return (this.getxpos()>=0 && this.getypos()>=0 && this.getzpos()>=0);
-	}
-	if (this.getxpos()<0 || this.getxpos() >= this.world.getDimensionx()){
-		return false;
-	}
-	if (this.getypos()<0 || this.getypos() >= this.world.getDimensiony()){
-		return false;
-	}
-	if (this.getzpos()<0 || this.getzpos() >= this.world.getDimensionz()){
-		return false;
-	}
-	return true;
-}
 
-public static boolean posWithinWorld(int x, int y, int z, World world){
-	try{
-		world.getCube(x, y, z);
-		return true;
-	} catch (ArrayIndexOutOfBoundsException e){
-		return false;
-	}
-}
-
-public static boolean isValidPos(double xpos, double ypos, double zpos, World world){
-	if (world == null){
-		return true;
-	}
-	if (xpos<0 || xpos >= world.getDimensionx()){
-		return false;
-	}
-	if (ypos<0 || ypos >= world.getDimensiony()){
-		return false;
-	}
-	if (zpos<0 || zpos >= world.getDimensionz()){
-		return false;
-	}
-	return true;
-}
 	
 public boolean isAdjacent(Position other){
 	if (Math.abs(this.getCubexpos()-other.getCubexpos())>1){

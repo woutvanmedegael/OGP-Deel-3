@@ -1,3 +1,4 @@
+
 package hillbillies.model;
 
 import java.util.Random;
@@ -31,8 +32,9 @@ public Position getPosition() {
 	return this.position;
 }
 
-//TODO commentaar hier
-
+/**
+ * returns the position in the double type
+ */
 public double[] getDoublePosition(){
 	return new double[]{position.getxpos(),position.getypos(),position.getzpos()};
 }
@@ -42,7 +44,7 @@ public double[] getDoublePosition(){
 */
 @Raw
 public boolean canHaveAsPosition(Position position) {
-	return true;
+	return position.isValidPos();
 }
 
 
@@ -69,13 +71,21 @@ public boolean canHaveAsWeight(int weight) {
  * Variable registering the weight of this load.
  */
 private final int weight;
-
+/**
+ * an enum of the different states a load can be in.
+ */
 private static enum LoadState{
 	FALLING,NEUTRAL
 }
+/**
+ * Variable registering the state of this load
+ */
 private LoadState myState = LoadState.NEUTRAL;
+/**
+ * advances the time for this object. If the state is neutral nothing happens, if the states is falling the falls.
+ */
 @Override
-public void advanceTime(double dt) throws UnitException {
+public void advanceTime(double dt) throws WorldException {
 	switch (this.getMyState()){
 		case NEUTRAL:
 			break;
@@ -86,34 +96,51 @@ public void advanceTime(double dt) throws UnitException {
 	
 }
 //ADDED: position niet meer final gemaakt ? Waarom was die final? 
+/**
+ * sets the position and parent cube of this load an
+ */
 public void setPosition(Position position){
 	this.position = position;
 	setParentCube(this.getPosition(),this.world);	
 }
-
-public void startFalling() throws UnitException{
+/**
+ * Makes the Load fall. The state is set to falling, the local target is set at the underlying cube. 
+ */
+public void startFalling() throws WorldException{
 	this.setMyState(LoadState.FALLING);
 	this.getLocalTarget().setPositionAt(this.getPosition());
 	this.getLocalTarget().incrPosition(0, 0, -1);
 }
-
+/**
+ * variable registering the local target of this load.
+ */
 private Position LocalTarget;
-
+/**
+ * returns the local target of this loac
+ */
 public Position getLocalTarget(){
 	return this.LocalTarget;
 }
-
+/**
+ * the speed to fall
+ */
 private final double speed = 3;
-
+/**
+ * sets the state of this load to the given state
+ */
 public void setMyState(LoadState state){
 	this.myState = state;
 }
-
+/**
+ * returns the state of this load
+ */
 public LoadState getMyState(){
 	return this.myState;
 }
-
-public void fall(double dt) throws UnitException{
+/**
+ * makes the load fall and stop when needed
+ */
+public void fall(double dt) throws WorldException{
 	double distance = this.getPosition().calculateDistance(this.getLocalTarget());
 	boolean hasArrivedAtLocalTarget = this.speed*dt>distance;
 	if (hasArrivedAtLocalTarget){
@@ -130,6 +157,7 @@ public void fall(double dt) throws UnitException{
 		double velocityy = velocity*(this.getLocalTarget().getypos()-this.getPosition().getypos())/distance;
 		double velocityz = velocity*(this.getLocalTarget().getzpos()-this.getPosition().getzpos())/distance;
 		this.getPosition().incrPosition(velocityx*dt, velocityy*dt, velocityz*dt);	
+		//this.getPosition().incrPosition(0, 0, speed*dt);
 	}
 	if (this.getPosition().getCube()!=this.getParentCube()){
 		this.setParentCube(this.getPosition(), this.world);

@@ -271,7 +271,7 @@ public class Facade implements IFacade{
 	public void setCubeType(World world, int x, int y, int z, int value) throws ModelException {
 		try {
 			world.changeCubeType(x, y, z, value);
-		} catch (UnitException e) {
+		} catch (WorldException e) {
 			throw new ModelException();
 		}
 	}
