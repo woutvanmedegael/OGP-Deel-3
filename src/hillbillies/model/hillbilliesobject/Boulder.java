@@ -10,6 +10,5 @@ public class Boulder extends Load{
 	*/
 	public Boulder(Position position,World world) throws WorldException {
 		super(position,world);
-		// TODO Auto-generated constructor stub
 	}	
 }

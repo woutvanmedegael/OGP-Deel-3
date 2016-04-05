@@ -10,7 +10,6 @@ public class Log extends Load{
 	*/
 	public Log(Position position, World world) throws WorldException {
 		super(position,world);
-		// TODO Auto-generated constructor stub
 	}
 	
 

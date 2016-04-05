@@ -1130,7 +1130,6 @@ public void moveToAdjacent(int dx, int dy, int dz) throws UnitException{
 		if (!(this.getMyState()==CurrentState.ATTACKING || this.getMyState()==CurrentState.MOVING || this.getMyState() == CurrentState.DEFENDING) && this.getHasRested() && (dx!=0 || dy!=0 || dz!=0)){
 			this.setMyState(CurrentState.MOVING);
 			//if (!isValidMove(new int[]{dx,dy,dz})){
-			//	System.out.println("is GEEN valid pos voor naar te moven, exception wordt gethrowed");
 
 			//throw new UnitException();
 			//}
@@ -1310,44 +1309,49 @@ public void moveTo(int cubeX, int cubeY, int cubeZ) throws UnitException{
 	}
 }
 
-
-//TODO formeel commentaar 'pathfinding' referentie
-
+/**
+ * Sets the world to the given world.
+ * @post The world of this unit is set to the given world, as are its position, its local target and its parent cube.
+ * 		| new.myWorld == world && new.getMyPosition().world == world && new.getLocalTarget().world == world && new.getParentCube() != null
+ */
 public void setWorld(World world) throws UnitException{
 	this.myWorld = world;
 	this.getMyPosition().setWorld(world);
 	this.getLocalTarget().setWorld(world);
 	this.setParentCube(this.getMyPosition(), world);
 }
+
+/**
+ * Returns the world of this unit.
+ * @return this.myWorld
+ */
 private World getWorld(){
 	return this.myWorld;
 }
-
+/**
+ * Variable registering the current pathfinding object of this unit.
+ */
 private PathFinding myPath;
 
+/**
+ * Variable registering the world of this unit.
+ */
 private World myWorld;
+
 /**
  * This methods calculates the local target - the neighbouring cube to which the unit will move next - based on the global target: the neighbouring cube to which the unit will move next.
- * @effect  The local target gets set to the neighbouring cube closest to the global target.
- *         | if (nbComp.isSmaller(this.globalTarget.getxpos(),this.getCubeXpos()+0.5)
- * 		   | then dx = -1
- *         | else if (nbComp.isBigger(this.globalTarget.getxpos(),this.getCubeXpos()+0.5))
- *         | then dx = 1
- *         | else dx = 0
- *         | if (nbComp.isSmaller(globalTarget.getypos(),this.getCubeYpos()+0.5))
- * 	       | then dy = -1
- *         | else if (nbComp.isBigger(this.globalTarget.getypos(),this.getCubeYpos()+0.5))
- *         | then dy = 1
- *         | else dy = 0
- *         | if (nbComp.isSmaller(this.globalTarget.getzpos(),this.getCubeZpos()+0.5))
- * 		   | then dz = -1
- *         | else if (nbComp.isBigger(this.globalTarget.getzpos(),this.getCubeZpos()+0.5)
- *         | then dz = 1
- *         | else dz = 0
- *         | setLocalTargetAndSpeed(dx,dy,dz)
+ * @post If the next position is null, this unit has arrived. If it isn't a valid position, a new path is calculated.
+ *			| Position nextPos = this.myPath.moveToNextPos()
+ *			| if (nextPos == null)
+ *			| then new.getMyState() == CurrentState.NEUTRAL && new.getGlobalTarget() == null
+ *			| else if (!nextPos.isValidPos())
+ *			| then new.myPath = new PathFinding(this.myWorld,this.getMyPosition(),this.getGlobalTarget())
+ * @effect  The local target gets set to the neighbouring cube next in path.
+ * 			| Position nextPos = this.myPath.moveToNextPos()
+ * 			| if (nextPos != null && nextPos.isValidPos())
+ * 			| then setLocalTargetAndSpeed(nextPos)
  * @throws UnitException
- * 		 	An exception is thrown if setLocalTargetAndSpeed receives illegalArguments
- * @note UnitException will never be thrown. The parameters dx, dy and dz will always be valid.
+ * 		 	An exception is thrown if setLocalTargetAndSpeed receives illegal arguments or the pathfinding throws an error.
  */
 private void calculateLocalTarget() throws UnitException{
 	Position nextPos = this.myPath.moveToNextPos();
@@ -1361,7 +1365,6 @@ private void calculateLocalTarget() throws UnitException{
 	}
 	
 }
-//TODO:commentaar
 
 /**
  * Every three minutes, the unit starts resting.
@@ -1374,27 +1377,23 @@ private void calculateLocalTarget() throws UnitException{
  * If the unit is attacking and has already been attacking for a second, it will execute it's attack.
  * 	if it hasn't been attacking for a second yet, it will wait to attack.
  * If the unit is waiting to attack, it will move on to the middle of a cube before starting an attack
+ * If the unit is falling, it continues to fall for dt seconds.
  * @throws WorldException 
  */
 public void advanceTime(double dt) throws WorldException{
-	System.out.println("unit 1");
 	if (this.getExperiencePoints()>=10){
 		this.setExperiencePoints(this.getExperiencePoints()-10);
 		improveProperty();
 	}
-	System.out.println("slfdkjd");
-	System.out.println(dt);
 	//if (dt<=0 || dt>0.2){
 	//	throw new UnitException();
 	//}
-	System.out.println("lijlkj");
 	double timeSinceRest =  (this.getMyTimeState().getTimeSinceRest()+dt);
 	if (timeSinceRest>180){
 		this.setMyState(CurrentState.RESTING);
 		timeSinceRest -= 180;
 	}
 	this.getMyTimeState().setTimeSinceRest(timeSinceRest);
-	System.out.println(this.getMyState());
 	switch (this.getMyState()){
 		case NEUTRAL:
 			if ((getGlobalTarget() != null && !getGlobalTarget().Equals(this.getMyPosition()))){
@@ -1440,7 +1439,6 @@ public void advanceTime(double dt) throws WorldException{
 		break;
 			
 	}
-	System.out.println("unit 1 finished");
 }
 
 /**
@@ -1607,6 +1605,9 @@ public void workAt(int x, int y, int z){
 	}
 }
 
+/**
+ * Variable registering the position to work on.
+ */
 private Position workPosition;
 
 /**
@@ -1633,10 +1634,38 @@ private void work(double dt) throws WorldException{
 //TODO:Commentaar
 
 /**
- * Finished work.f
- * @throws WorldException 
- * @post Finished work and units state is back to neutral.
- * 		| new.getMyState == CurrentState.NEUTRAL
+ * Finishes work. 
+ * @post Finished work and units state is back to neutral, as is the worktime.
+ * 		| new.getMyState == CurrentState.NEUTRAL && new.getMyTimeState().getTrackTimeWork()==0
+ * @post If this unit was carrying a boulder or log, he tries to drop its load.
+ * 		| if (this.isCarryingBoulder() || this.isCarryingLog())
+ * 		| then if (this.getWorld().dropLoad(this.getLoad(),this.getWorkPosition()))
+ * 		| 	then new.getLoad()==null
+ * @effect 
+ * 		| this.getWorld().dropLoad(this.getLoad(),this.getWorkPosition())
+ * @post Else if the working cube is workshop and contains a log and a boulder, the unit consumes the log and boulder and increments its weight and toughness.
+ * 		| else if (this.getWorkPosition().getCube().getTerrainType()==TerrainType.WORKSHOP && this.getWorkPosition().getCube().containsBoulder() && this.getWorkPosition().getCube().containsLog())
+ * 		| then new.getWeight()==this.getWeight()+1 && new.getToughness()==this.getToughness()+1
+ * @effect
+ * 		| this.getWorkPosition().getCube().deleteObject(this.getWorkPosition().getCube().getALog())
+ * 		| this.getWorkPosition().getCube().deleteObject(this.getWorkPosition().getCube().getABoulder())
+ * @post Else if the working cube contains a boulder, the unit will pick it up.
+ * 		| else if (this.getWorkPosition().getCube().containsBoulder())
+ * 		| then new.getLoad() = this.getWorkPosition().getCube().getABoulder()
+ * @effect
+* 		| this.getWorkPosition().getCube().deleteObject(this.getWorkPosition().getCube().getABoulder())
+ * @post Else if the working cube contains a log, the unit will pick it up.
+ * 		| else if (this.getWorkPosition().getCube().containsLog())
+ * 		| then new.getLoad() = this.getWorkPosition().getCube().getALog()
+ * @effect
+ * 		| this.getWorkPosition().getCube().deleteObject(this.getWorkPosition().getCube().getALog())
+ * @effect Else if the working cube isn't passable, it will collapse.
+ * 		| this.getWorld().collapseCube(this.getWorkPosition())
+ * @post If one of the above conditions is fulfilled, the unit earns 10 experience points.
+ * 		| new.getExperiencePoints(this.getExperiencePoints()+10)
+ * @throws WorldException
+ * 		This method throws a WorldException if the cube can't collapse.
+ * 
  */
 private void finishWork() throws WorldException{
 	this.setExperiencePoints(this.getExperiencePoints()+10);
@@ -1744,14 +1773,19 @@ private boolean targetWithinReach(Unit defender){
 	} else 
 		return true;
 }
-//TODO:Commentaar
+
 /**
  * Defends against the attacker.
  * @param attacker
  * 			The unit attacking this unit
- * @post The units state is set to neutral.
+ * @post The units state is set to neutral and the unit faces its attacker
  * 		 | new.getMyState() == CurrentState.NEUTRAL
- * 		
+ * 		 | new.getLocalTarget().Equals(this.getMyPosition())
+ * 		 | new.getGlobalTarget()==null
+ * 		 | new.getOrientation()==Math.atan2(attacker.getypos()-this.getypos(),attacker.getxpos()-this.getxpos())
+ * @post If the unit can dodge or block the attack, its increases its experience by 20 points.
+ * 		| if (dodge(attacker) || blocked(attacker)
+ * 		| then new.getExperiencePoints() = this.getExperiencePoints()+20
  * @effect If this unit has dodged attackers attack, it jumped away.
  * 		 Otherwise if it hasn't blocked attackers attack, it took damage.
  * 		| if (dodge(attacker))
@@ -1799,14 +1833,13 @@ private boolean dodge(Unit attacker){
  * If that position isn't in the gaming field, the unit jumps away in the opposite direction.
  * @post  If it is possible to change the x-coordinate and y-coordinate (stays within the gaming field) with a random value dx and dy between (-1..1),
  * 				 the x-coordinate and y-coordinate are changed.
- * 		  	if that isn't possible the position is updated with -dx and -dy.
  * 		 | dx = randomNumberBetween(-1..1)
  * 		 | dy = randomNumberBetween(-1..1)
  * 		 | if (isValidPos(this.getMyPosition().getxpos()+dx) && isValidPos(this.getMyPosition().getypos()+dy))
  * 		 | then new.getMyPosition.getxpos() == this.getMyPosition.getxpos() + dx and
  * 				new.getMyPosition.getypos() == this.getMyPosition.getypos() + dy
- * 		 | otherwise new.getMyPosition.getxpos() == this.getMyPosition.getxpos() - dx and
- * 					 new.getMyPosition.getypos() == this.getMyPosition.getypos() - dy
+ * @effect If the new random position isn't valid, the unit jumps away.
+ * 		| else jumpAway();
  * @throws UnitException
  *  		Throws an exception if either setxpos() or setypos() throws an exception.
  * @note This exception will never be thrown.
@@ -1844,19 +1877,25 @@ private boolean blocked(Unit attacker){
 private float calculateProbability(Unit attacker) {
 	return (float) ((this.getStrength()+this.getAgility())/(4*attacker.getStrength()+attacker.getAgility()));
 }
-//TODO:commentaar
+
 /**
  * A method that reduces this unit's HP depending on the strength of the attacker.
  * @param attacker
  * 		  The unit that attacks this unit
  * @throws UnitException 
+ * 			Throws a UnitException if attackSuccesfull throws a UnitException.
  * @post The delivered damage is calculated  as the attackers strength divided by 10.
  * 		 If it is not possible to deliver all the damage this unit's HP will be set to 0 
  * 	     Else this unit's HP is reduced with the delivered damage
  * 		 | damage = attacker.getStrength()/10;
  * 		 | if (damage>this.getCurrentHP) 
  * 		 |  then new.getCurrentHP() == 0
- * 		 | otherwise new.getCurrentHP()== this.getCurrentHP()-damage	
+ * 		 | otherwise new.getCurrentHP()== this.getCurrentHP()-damage
+ * @effect The attacker is alerted its attack was successfull
+ * 		| attacker.attackSuccessfull()
+ * @effect If the units HP reaches 0, it dies.
+ * 		| if (attacker.getStrength()/10>this.getCurrentHP())
+ * 		| then this.die()
  */
 private void takeDamage(Unit attacker) throws UnitException{
 	attacker.attackSuccesfull();
@@ -1869,7 +1908,13 @@ private void takeDamage(Unit attacker) throws UnitException{
 	}
 }
 
-//TODO: commentaar
+/**
+ * Adds experience points for a successfull attack
+ * @post The experience points of this unit are added by 20
+ * 		| new.getExperiencePoints()==this.getExperiencePoints()+20
+ * @throws UnitException
+ * 		Won't be thrown.
+ */
 private void attackSuccesfull() throws UnitException{
 	this.setExperiencePoints(this.getExperiencePoints()+20);
 }
@@ -2006,9 +2051,16 @@ private static final int SIZE = DEFAULTSTATES.size();
  * @post If default is enabled this function randomly puts the unit in a default state.
  * 		 | if (this.isDefaultBehaviourEnabled())
  * 		 | then new.getMyState() in DEFAULTSTATES
- * @post If the random-generated state is 'moving', a random position in the map has been selected. 
+ * @post If the random-generated state is 'moving', a random valid position in the map has been selected. 
  * 		 | if (this.isDefaultBehaviourEnabled() && randomDefaultState == CurrentState.MOVING)
- * 		 | then new.globalTarget in map
+ * 		 | then new.globalTarget valid in world
+ * @post If a unit of another faction is within reach, there is a chance of attacking it of 0.25
+ * 		 | if (potential target is within reach)
+ * 		 | then P(new.getMyState()==CurrentState.ATTACKING) == 0.25
+ * 		 | else P(new.getMyState()==CurrentState.ATTACKING) == 0
+ * @effect If a unit starts working, a random adjacent position within the world is picked to work on.
+ * 		 | Pos = random valid adjacent position
+ * 		 | this.workAt(Pos.getCubeXpos(),Pos.getCubeYPos(),Pos.getCubeZPos())
  * @throws UnitException
  *			Throws an exception if Position(...) throws an exception.
  * @note UnitException won't be thrown.
@@ -2054,6 +2106,13 @@ private void executeDefaultBehaviour() throws UnitException{
 	}
 }
 
+
+/**
+ * Generates a random walkable position within world.
+ * @return
+ *  	 A valid walkable position
+ * @throws UnitException
+ */
 private Position generateRandomPos() throws UnitException{
 	Random random = new Random();
 	int x = random.nextInt(this.myWorld.getDimensionx()-1);
@@ -2144,7 +2203,10 @@ private void setExperiencePoints(int experiencePoints)
  */
 private int experiencePoints =0;
 
-//TODO: improveProperty 
+/**
+ * Improves one random non-maximum property (agility, strength and toughness).
+ * @post One property has improved one point.
+ */
 private void improveProperty(){
 		int prevMaxHP = this.getMaxHP();
 		int prevMaxSP = this.getMaxSP();
@@ -2180,12 +2242,21 @@ private void improveProperty(){
 private Load getLoad() {
 	return this.load;
 }
-//TODO: commentaar
+
+/**
+ * Checks whether this unit is carrying a log.
+ * @return
+ *  this.getLoad()!=null & this.getLoad() instanceof Log
+ */
 public boolean isCarryingLog(){
 	return (this.getLoad()!=null && this.getLoad() instanceof Log);
 }
 
-//TODO: commentaar
+/**
+ * Checks whether this unit is carrying a boulder.
+ * @return
+ *  this.getLoad()!=null & this.getLoad() instanceof Boulder
+ */
 public boolean isCarryingBoulder(){
 	return (this.getLoad()!=null && this.getLoad() instanceof Boulder);
 }
@@ -2219,29 +2290,67 @@ private void setLoad(Load load){
  */
 private Load load;
 
+/**
+ * Variable registering the faction of this unit.
+ */
 private Faction myFaction = new Faction();
 
+/**
+ * Sets the faction of this unit to the given faction.
+ * @post The faction of this unit is equal to the given faction.
+ * 		| new.getFaction() == faction
+ * @param faction
+ * 			The new faction to put the unit in.
+ */
 public void setFaction(Faction faction){
 	myFaction = faction;
 }
 
+/**
+ * Return the faction of this unit.
+ */
 public Faction getFaction(){
 	return this.myFaction;
 }
 
+/**
+ * Removes this unit from its faction.
+ */
 private void die(){
 	this.getFaction().removeUnit(this);
 }
 
+/**
+ * Makes this unit fall for dt seconds.
+ * @param dt
+ * 		The number of seconds to fall.
+ * @post If the unit reaches the middle of a walkable cube, it stops falling and reduces its HP.
+ * 		| if this.getSpeed()*dt>=this.getMyPosition().calculateDistance(this.getLocalTarget())
+ * 		| then new.getMyState()==CurrentState.NEUTRAL and new.getSpeed()==0 and new.getMyPosition().Equals(this.getLocalTarget())
+ * 		| 	if this.getCurrentHP()<=10
+ * 		|	then new.getCurrentHP() == 0
+ * 		|	else new.getCurrentHP()==this.getCurrentHP()-10
+ * @effect If the unit reaches the middle of a cube, it checks whether its position is stable and dies if its hp reaches 0.
+ * @effect If the unit hasn't reached the middle of a walkable cube yet, it updates its position.
+ * 		| if this.getSpeed()*dt>=this.getMyPosition().calculateDistance(this.getLocalTarget())
+ * 		| 	if !this.getLocalTarget().getCube().isWalkable
+ * 		| 	then this.startFalling()
+ * 		|	if this.getCurrentHP()<=10
+ * 		|	then this.die()
+ * @effect	If the unit crosses the border of a cube, its parentcube is adjusted.
+ * 		| if new.getMyPosition().getCube()!=this.getParentCube()
+ * 		| then this.setParentCube(new.getMyPosition(), this.getWorld())
+ * @throws UnitException
+ */
 private void fall(double dt) throws UnitException{
 	double distance = this.getMyPosition().calculateDistance(this.getLocalTarget());
-	boolean hasArrivedAtLocalTarget = this.getSpeed()*dt>distance;
+	boolean hasArrivedAtLocalTarget = this.getSpeed()*dt>=distance;
 	if (hasArrivedAtLocalTarget){
 		this.setMyState(CurrentState.NEUTRAL);
 		this.setSpeed(0);
 		this.getMyPosition().setPositionAt(this.getLocalTarget());
 		if (!this.getMyPosition().getCube().isWalkable()){
-			startFalling();
+			this.startFalling();
 		}
 		if (this.getCurrentHP()<=10){
 			this.setCurrentHP(0);
@@ -2251,17 +2360,24 @@ private void fall(double dt) throws UnitException{
 		}
 	} else {
 		double velocity = this.getSpeed();
-		double velocityx = velocity*(this.getLocalTarget().getxpos()-this.getxpos())/distance;
-		double velocityy = velocity*(this.getLocalTarget().getypos()-this.getypos())/distance;
-		double velocityz = velocity*(this.getLocalTarget().getzpos()-this.getzpos())/distance;
-		this.getMyPosition().incrPosition(velocityx*dt, velocityy*dt, velocityz*dt);
-		this.setOrientation((float) Math.atan2(velocityy,velocityx));
+		this.getMyPosition().incrPosition(0, 0, -velocity*dt);
 	}
 	if (this.getMyPosition().getCube()!=this.getParentCube()){
 		this.setParentCube(this.getMyPosition(), myWorld);
 	}
 }
 
+/**
+ * This units starts falling.
+ * @post The units state is set to falling
+ * 		| new.getMyState()==CurrentState.FALLING
+ * 		| new.getLocalTarget().getCubeXPos()==this.getMyPosition().getCubeXPos()
+ * 		| new.getLocalTarget().getCubeYPos()==this.getMyPosition().getCubeYPos()
+ * 		| new.getLocalTarget().getCubeZPos()==this.getMyPosition().getCubeZPos()-1
+ * 		| new.getGlobalTarget()==null
+ * 		| new.getSpeed()==3
+ * @throws UnitException
+ */
 public void startFalling() throws UnitException{
 	this.setMyState(CurrentState.FALLING);
 	this.getLocalTarget().setPositionAt(this.getMyPosition());
@@ -2270,6 +2386,13 @@ public void startFalling() throws UnitException{
 	this.setSpeed(3);
 }
 
+
+/**
+ * Returns whether this unit is moving.
+ * @return
+ *		this.getMyState()==CurrentState.MOVING || this.getMyState()==CurrentState.ATTACK_PENDING || (this.getMyState()==CurrentState.RESTING && !this.getMyPosition().Equals(localTarget))
+
+ */
 public boolean isMoving(){
 	return (this.getMyState()==CurrentState.MOVING || this.getMyState()==CurrentState.ATTACK_PENDING || (this.getMyState()==CurrentState.RESTING && !this.getMyPosition().Equals(localTarget)));
 }

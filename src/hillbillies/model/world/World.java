@@ -13,6 +13,7 @@ import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.util.ConnectedToBorder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 /**
  * 
@@ -100,10 +101,18 @@ public class World {
 	 * setting all the walkable cubes
 	 */
 	public World(int[][][] terrainTypes, TerrainChangeListener modelListener) throws WorldException{
+		ArrayList<ArrayList<ArrayList<Integer>>> myworld = new ArrayList<>();
+		
 		dimensionx = terrainTypes.length;
 		dimensiony = terrainTypes[1].length;
 		dimensionz = terrainTypes[0][1].length;
-
+		for (int x=0;x<dimensionx;x++){
+			for (int y=0;y<dimensiony;y++){
+				System.out.println(Arrays.toString(terrainTypes[x][y]));
+				}
+			}
+		
+		
 		world = new Cube[dimensionx][dimensiony][dimensionz];
 		connectedToBorder = new ConnectedToBorder(dimensionx,dimensiony,dimensionz);
 		for (int x=0;x<dimensionx;x++){
@@ -402,8 +411,6 @@ public class World {
 		Position pos = new Position(p[0]+lc/2,p[1]+lc/2,p[2]+lc/2,this);
 		Boulder newBoulder = new Boulder(pos,this);
 		if (p[2]!=0 && this.getCube(p[0], p[1], p[2]-1).isPassable()){
-			System.out.println("start falling at");
-			System.out.println(pos);
 			newBoulder.startFalling();
 		}
 		boulders.add(newBoulder);
@@ -412,22 +419,16 @@ public class World {
 	 *advances the time for each object in this world
 	 */
 	public void advanceTime(double dt) throws WorldException{
-		System.out.println(this.getBoulders());
 		updateCubes();
-		System.out.println("1");
 		for (Log log: this.logs){
 			log.advanceTime(dt);
 			}
-		System.out.println("2");
 		for (Boulder boulder: this.boulders){
 			boulder.advanceTime(dt);
 		}
-		System.out.println("3");
 		for (Unit unit: this.getUnits()){
 			unit.advanceTime(dt);
 		}
-		System.out.println("4");
-		
 		}
 	
 	/**

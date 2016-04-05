@@ -8,16 +8,16 @@ import hillbillies.model.world.WorldException;
 
 public abstract class HillbilliesObject {
 	/**
-	 * abstract method advance time that is implemented in each hillbillie objct
+	 * Abstract method advance time that is implemented in each hillbilliesobject.
 	 */
 	public abstract void advanceTime(double dt) throws UnitException, WorldException;
 	
 	/**
-	 * the parent cube of this object
+	 * The parent cube of this object.
 	 */
 	private Cube parentCube=null;
 	/**
-	 * notify's the cube that an  hillbillie object is currently occupying it. Removes the old parent cube
+	 * Notify's the cube that a hillbilliesobject is currently occupying it. Removes the old parent cube.
 	 */
 	public void setParentCube(Position position,World world){
 		removeObjectFromOldParent();
@@ -25,14 +25,13 @@ public abstract class HillbilliesObject {
 		this.parentCube.addObject(this);
 	}
 	/**
-	 * returns the parent cube of this object
-	 * @return
+	 * Returns the parent cube of this object.
 	 */
 	public Cube getParentCube(){
 		return this.parentCube;
 	}
 	/**
-	 * removes the object from the old parent cube
+	 * Removes the object from the old parent cube.
 	 */
 	public void removeObjectFromOldParent(){
 		if (parentCube != null){

@@ -36,7 +36,7 @@ private Position getPosition() {
 }
 
 /**
- * returns the position in the double type
+ * Returns the position in the double[] type.
  */
 public double[] getDoublePosition(){
 	return new double[]{position.getxpos(),position.getypos(),position.getzpos()};
@@ -66,17 +66,17 @@ private boolean canHaveAsWeight(int weight) {
  */
 private final int weight;
 /**
- * an enum of the different states a load can be in.
+ * An enum of the different states a load can be in.
  */
 private static enum LoadState{
 	FALLING,NEUTRAL
 }
 /**
- * Variable registering the state of this load
+ * Variable registering the state of this load.
  */
 private LoadState myState = LoadState.NEUTRAL;
 /**
- * advances the time for this object. If the state is neutral nothing happens, if the states is falling the falls.
+ * Advances the time for this object. If the state is neutral nothing happens, if the states is falling the falls.
  */
 @Override
 public void advanceTime(double dt) throws WorldException {
@@ -90,14 +90,14 @@ public void advanceTime(double dt) throws WorldException {
 	
 }
 /**
- * sets the position and parent cube of this load an
+ * Sets the position and parent cube of this load on the given position.
  */
 public void setPosition(Position position){
 	this.position = position;
 	setParentCube(this.getPosition(),this.world);	
 }
 /**
- * Makes the Load fall. The state is set to falling, the local target is set at the underlying cube. 
+ * Makes the load fall. The state is set to falling, the local target is set at the underlying cube. 
  */
 public void startFalling() throws WorldException{
 	this.setMyState(LoadState.FALLING);
@@ -105,33 +105,33 @@ public void startFalling() throws WorldException{
 	this.getLocalTarget().incrPosition(0, 0, -1);
 }
 /**
- * variable registering the local target of this load.
+ * Variable registering the local target of this load.
  */
 private Position LocalTarget;
 /**
- * returns the local target of this loac
+ * Returns the local target of this load.
  */
 private Position getLocalTarget(){
 	return this.LocalTarget;
 }
 /**
- * the speed to fall
+ * The speed to fall at.
  */
 private final double speed = 3;
 /**
- * sets the state of this load to the given state
+ * Sets the state of this load to the given state.
  */
 public void setMyState(LoadState state){
 	this.myState = state;
 }
 /**
- * returns the state of this load
+ * Returns the state of this load.
  */
 private LoadState getMyState(){
 	return this.myState;
 }
 /**
- * makes the load fall and stop when needed
+ * Makes the load fall and stop when needed.
  */
 private void fall(double dt) throws WorldException{
 	double distance = this.getPosition().calculateDistance(this.getLocalTarget());

@@ -9,20 +9,33 @@ import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
 public class Testing {
-	 private static int[][][] ints = new int[5][5][5];
+	 private static int[][][] world1 = new int[3][3][3];
 	 static
 	 {
-	 for (int x = 0; x<5; x++){
-		 for (int y = 0; y<5; y++){
-			 for (int z = 0; z<5; z++){
+	 for (int x = 0; x<3; x++){
+		 for (int y = 0; y<3; y++){
+			 for (int z = 0; z<3; z++){
 				 if (z==0){
-					 ints[x][y][z] = 1;
+					 world1[x][y][z] = 1;
 				 }
 			 }
 		 }
 		 
 	 }
-	 ints[2][2][1] = 1;
+	 world1[2][2][1] = 1;
+	 }
+	 
+	 private static int[][][] world2 = new int[5][5][5];
+	 static
+	 {
+	 for (int x = 0; x<5; x++){
+		 for (int y = 0; y<5; y++){
+			 for (int z = 0; z<5; z++){
+				
+			 }
+		 }
+		 
+	 }
 	 }
 	 
 	 
@@ -74,38 +87,21 @@ public class Testing {
 				} else return 1;
 			}
 		}
-     public static void main(String []args) throws WorldException{
-    	 World world = new World(ints, null);
+     public static void main(String []pargs) throws WorldException{
+    	 World world = new World(world1, null);
     	 Unit unit = world.spawnUnit(false);
-    	 unit.setMyPosition(new Position(0,0,1,world));
     	 unit.moveTo(4, 4, 1);
     	 //advanceSeconds(unit,10);
 //    	 for (int x = 0; x<5; x++){
 //    		 for (int y = 0; y<5; y++){
 //    			 for (int z = 0; z<5; z++){
 //    				 if (z==0 && world.getCube(x,y,z).isPassable()){
-//    					 System.out.println("problem passable 1");
-//    					 System.out.println(x);
-//    					 System.out.println(y);
-//    					 System.out.println(z);
 //    				 }
 //    				 if (z!=0 && !world.getCube(x, y, z).isPassable()){
-//    					 System.out.println("problem passable 2");
-//    					 System.out.println(x);
-//    					 System.out.println(y);
-//    					 System.out.println(z);
 //    				 }
 //    				 if (z==1 && !world.getCube(x, y, z).isWalkable()){
-//    					 System.out.println("problem walkable 1");
-//    					 System.out.println(x);
-//    					 System.out.println(y);
-//    					 System.out.println(z);
 //    				 }
 //    				 if (z!=1 && world.getCube(x, y, z).isWalkable()){
-//    					 System.out.println("problem walkable 2");
-//    					 System.out.println(x);
-//    					 System.out.println(y);
-//    					 System.out.println(z);
 //    				 }
 //    			 }
 //    		 }
@@ -120,11 +116,11 @@ public class Testing {
 //		 Node node2 = t.new Node(null,2,3,null);
 //		 Node node3 = t.new Node(null,3,6,null);
 //		 openset.add(node1);
-//		 System.out.println(openset);
+
 //		 openset.add(node2);
-//		 System.out.println(openset);
+
 //		 openset.add(node3);
-//		 System.out.println(openset);
+
 //	 }
 	 
      public static void advanceSeconds(Unit unit, double time) throws WorldException{

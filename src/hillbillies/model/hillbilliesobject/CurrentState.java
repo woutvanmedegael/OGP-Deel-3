@@ -12,7 +12,6 @@ package hillbillies.model.hillbilliesobject;
  *    RESTING: the unit is resting
  *    NEUTRAL: the unit is doing nothing
  *    ATTACK_PENDING: the unit finishes its move before attacking
- * @author Wout Van Medegael & Adriaan Van Gerven
  *
  */
 public enum CurrentState {
