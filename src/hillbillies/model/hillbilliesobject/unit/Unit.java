@@ -1128,16 +1128,9 @@ private void setSpeed(double speed)
 public void moveToAdjacent(int dx, int dy, int dz) throws UnitException{
 	if (this.getWorld().isWalkable(this.getCubeXpos()+dx, this.getCubeYpos()+dy, getCubeZpos()+dz) && isValidMove(new int[]{dx,dy,dz})){
 		if (!(this.getMyState()==CurrentState.ATTACKING || this.getMyState()==CurrentState.MOVING || this.getMyState() == CurrentState.DEFENDING) && this.getHasRested() && (dx!=0 || dy!=0 || dz!=0)){
-			this.setMyState(CurrentState.MOVING);
-			//if (!isValidMove(new int[]{dx,dy,dz})){
-
-			//throw new UnitException();
-			//}
-			//ADDDED:
-			this.getLocalTarget().incrPosition(dx, dy, dz);
-			this.getLocalTarget().setToMiddleOfCube();
-			
+			this.setMyState(CurrentState.MOVING);			
 			this.setGlobalTarget(new Position(this.getMyPosition().getxpos()+dx, this.getMyPosition().getypos()+dy, this.getMyPosition().getzpos()+dz, this.myWorld));
+			this.getGlobalTarget().setToMiddleOfCube();
 			setLocalTargetAndSpeed(this.getGlobalTarget());
 			}
 	}
@@ -1292,20 +1285,27 @@ private boolean isValidMove(int[] move) throws UnitException{
  */
 public void moveTo(int cubeX, int cubeY, int cubeZ) throws UnitException{
 	if (!(this.getMyState()==CurrentState.DEFENDING || this.getMyState() == CurrentState.ATTACKING) && this.getHasRested()){
+		System.out.println("moveto started");
 		this.setMyState(CurrentState.MOVING);
+		System.out.println(this.getMyPosition());
 		if (!Position.isValidPos(cubeX, cubeY, cubeZ, this.myWorld)){
 			throw new UnitException();
 		}
+		System.out.println(this.getMyPosition());
 		this.setGlobalTarget(new Position(cubeX+0.5, cubeY+0.5, cubeZ+0.5, this.myWorld));
 		if (myWorld != null){
 			myPath = new PathFinding(myWorld, this.getMyPosition(),this.getGlobalTarget());
 		}
+		System.out.println(this.getMyPosition());
 		if (myPath.getPath().isEmpty()){
 			this.setMyState(CurrentState.NEUTRAL);
 			this.setGlobalTarget(null);
 			return;
 		}
+		System.out.println(this.getMyPosition());
 		calculateLocalTarget();
+		System.out.println(this.getMyPosition());
+		System.out.println("moveto ended");
 	}
 }
 
@@ -1844,15 +1844,17 @@ private boolean dodge(Unit attacker){
  *  		Throws an exception if either setxpos() or setypos() throws an exception.
  * @note This exception will never be thrown.
  */
-private void jumpAway(){
+private void jumpAway() throws UnitException{
 	float xrand = (random.nextFloat())*2-1;
 	float yrand = (random.nextFloat())*2-1;
-	try{
-		this.getMyPosition().incrPosition(xrand, yrand, 0);
+	this.getMyPosition().incrPosition(xrand, yrand, 0);
+	if (this.getMyPosition().getCube().isWalkable()){
+		this.getLocalTarget().setPositionAt(this.getMyPosition());
 		if (this.getMyPosition().getCube()!=this.getParentCube()){
 			this.setParentCube(this.getMyPosition(), myWorld);
 		}
-	} catch (UnitException e) {
+	} else {
+		this.getMyPosition().incrPosition(-xrand, -yrand, 0);
 		jumpAway();
 	}
 }
@@ -2069,7 +2071,7 @@ private void executeDefaultBehaviour() throws UnitException{
 	if (this.getDefaultBehaviourEnabled()){
 		Unit enemy=null;
 		for (Position neighbour : this.getMyPosition().getNeighbours()){
-			for (HillbilliesObject o : neighbour.getCube().getObjects()){
+			for (HillbilliesObject o : neighbour.getCube().getObjectsOnThisCube()){
 				if (o instanceof Unit && ((Unit) o).getFaction()!=this.getFaction()){
 					enemy = (Unit) o;
 				}

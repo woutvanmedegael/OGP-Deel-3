@@ -247,6 +247,7 @@ public void setToMiddleOfCube() throws UnitException{
 }
 
 public void incrPosition(double dx, double dy, double dz) throws UnitException{
+	
 	this.setPos(this.getxpos()+dx, this.getypos()+dy, this.getzpos()+dz);
 }
 

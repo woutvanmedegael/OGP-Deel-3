@@ -37,8 +37,9 @@ public class PathFinding {
 	 */
 	public PathFinding(World world, Position start, Position target) throws UnitException{
 		this.world = world;
-		start.setToMiddleOfCube();
-		this.calculateFastestPath(start, target);
+		Position pos = new Position(start.getxpos(),start.getypos(),start.getzpos(),world);
+		pos.setToMiddleOfCube();
+		this.calculateFastestPath(pos, target);
 	}
 	
 	/**
