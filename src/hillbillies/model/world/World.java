@@ -268,8 +268,11 @@ public class World {
 				doSomethingIfObjectIsDependent(x,y,z);
 				}
 			else if  (changedFromPassableToSolid(x, y, z, oldTerrainType)){
+				
 				if (!isOccupied(x,y,z)){
+					System.out.println("isn't occupied");
 					connectedToBorder.changePassableToSolid(x, y, z);
+					System.out.println("connected to border succesfully notified");
 					cubesToCheck.add(new int[]{x,y,z});
 					this.setSurroundingCubesToWalkable(x, y, z);
 					}
@@ -299,8 +302,10 @@ public class World {
 		for (int xpos: pos){
 			for (int ypos: pos){
 				for (int zpos: pos){
-					if (Position.posWithinWorld(x+xpos, x+ ypos, z+zpos, this)){
-					this.getCube(x+xpos, y+ypos, z+zpos).setWalkable(isWalkable(x+xpos,y+ypos,z+zpos));	}				
+	
+					if (Position.posWithinWorld(x+xpos, y+ ypos, z+zpos, this)){
+						this.getCube(x+xpos, y+ypos, z+zpos).setWalkable(isWalkable(x+xpos,y+ypos,z+zpos));	
+						}
 				}
 			}
 		}
@@ -454,7 +459,7 @@ public class World {
 			return false;
 		}
 		
-		if (xpos==0 || ypos==0 || zpos==0){
+		if (xpos==0 ){
 			return true;
 		}
 		
@@ -474,12 +479,12 @@ public class World {
 	final static String alphabet = "abcdefghijklmnopqrstuvxyzABCDEFHIJKLMNOPQRSTUVWXYZ '\"";
 	final static String ALPHABET = "ABCDEFHIJKLMNOPQRSTUVWXYZ";
 	/**
-	 * Returns a random unit with random attributes and a random position with the given enabledDefaultBehavior.
+	 * Returns a random unit with random attributes and a random position with the given enabledDefaultBehavior. 
+	 * If the total number of units is smaller than 100 the unit is added to the world.
+	 * @throws WorldException 
 	 */
-	public Unit spawnUnit(boolean enableDefaultBehavior) throws UnitException{
-		
-			//!!!!! 
-			enableDefaultBehavior = false;
+	public Unit spawnUnit(boolean enableDefaultBehavior) throws WorldException{
+//			enableDefaultBehavior = false;
 			Random random = new Random();
 			int x = random.nextInt(this.getDimensionx()-1);
 			int y = random.nextInt(this.getDimensiony()-1);
@@ -498,14 +503,17 @@ public class World {
 			int weight = random.nextInt(75)+25;
 			String name = createRandomName();
 			Unit unit = new Unit(x,y,looper,name,weight,strength,agility,toughness,enableDefaultBehavior);
+			if (!(countUnits()>=100)){
 			unit.setWorld(this);
 			assignFaction(unit);
+			}
 			return unit;
 	}
 	/**
 	 * Assigns the smallest faction to the given unit.
+	 * @throws WorldException 
 	 */
-	private static void assignFaction(Unit unit) throws UnitException{
+	private static void assignFaction(Unit unit) throws WorldException{
 		for (int i = 4;i>0; i--){
 			if (factions.get(i).getUnits().size()<factions.get(i-1).getUnits().size() && factions.get(i).getUnits().size()<50){
 				factions.get(i).addUnit(unit);
@@ -535,8 +543,9 @@ public class World {
 	/**
 	 * If the world doesn't contain more than 100 units the given unit is added to the world. 
 	 * Else this request is silently rejected (nothing happens).
+	 * @throws WorldException 
 	 */
-	public void addUnit(Unit unit) throws UnitException{
+	public void addUnit(Unit unit) throws WorldException{
 		if (!(countUnits()>=100)){
 			assignFaction(unit);
 			unit.setWorld(this);

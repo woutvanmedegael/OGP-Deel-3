@@ -11,15 +11,19 @@ public class Faction {
 	 */
 	private final Set<Unit> units = new HashSet<>();
 	/**
-	 * Adds the given unit to this faction.
+	 * Adds the given unit to this faction is made package accesible.
+	 * @throws WorldException 
 	 */
-	public void addUnit(Unit unit){
+	void addUnit(Unit unit) throws WorldException{
+		if (units.size()>=50){
+			throw new WorldException();
+		}
 		units.add(unit);
 	}
 	/**
-	 * Removes the given unit from this faction.
+	 * Removes the given unit from this faction is made package accessible.
 	 */
-	public void removeUnit(Unit unit){
+	void removeUnit(Unit unit){
 		units.remove(unit);
 	}
 	/**

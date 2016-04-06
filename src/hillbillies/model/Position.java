@@ -5,11 +5,11 @@ import java.util.ArrayList;
 /**
  * @value
  */
-import be.kuleuven.cs.som.annotate.Basic;
-import be.kuleuven.cs.som.annotate.Raw;
+
 import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.model.world.Cube;
 import hillbillies.model.world.World;
+import hillbillies.model.world.WorldException;
 
 /**
  * @invar  The xpos of each Position must be a valid xpos for any
@@ -22,39 +22,63 @@ import hillbillies.model.world.World;
  *         Position
  *       | this.isValidPos(getzpos())      
  */
-
 public class Position {
-	
-	private double diagconst = Math.sqrt(2)-1;
-	
+		
 	/**
 	 * A variable used to ease comparing two different numbers.
 	 */
 	private static final NbCompare nbComp = new NbCompare();
+	/**
+	 * The 3 coordinates: xpos the x coordinate, ypos the y coordinate, zpos the z coordinate.
+	 */
 	public double xpos;
 	public double ypos;
 	public double zpos;
+	/**
+	 * Returns the xpos of this position.
+	 */
 	public double getxpos(){
 		return this.xpos;
 	}
+	/**
+	 * Returns the ypos of this position.
+	 */
 	public double getypos(){
 		return this.ypos;
 	}
+	/**
+	 * Returns the zpos of this position.
+	 */
 	public double getzpos(){
 		return this.zpos;
 	}
+	/**
+	 * Returns the x coordinate of the cube on which this position is located.
+	 */
 	public int getCubexpos(){
 		return (int)this.xpos;
 	}
+	/**
+	 * Returns the y coordinate of the cube on which this position is located.
+	 */
 	public int getCubeypos(){
 		return (int)this.ypos;
 	}
+	/**
+	 * Returns the z coordinate of the cube on which this position is located.
+	 */
 	public int getCubezpos(){
 		return (int)this.zpos;
 	}
+	/**
+	 * Returns the cube on which this position is located.
+	 */
 	public Cube getCube(){
-		return this.world.getCube((int)xpos, (int)ypos, (int)zpos);
+		return this.world.getCube(getCubexpos(), getCubeypos(), getCubezpos());
 	}
+	/**
+	 * Sets this position to the given coordinates. If this position isn't a valid position an exception is thrown.
+	 */
 	public void setPos(double xpos, double ypos, double zpos) throws UnitException{
 		if (!isValidPos(xpos, ypos, zpos)){
 			throw new UnitException();
@@ -65,7 +89,7 @@ public class Position {
 	}
 	
 	/**
-	 * 
+	 * Creates a position with the given coordinates.If the given cooridinates cannot form a valid position an exception is thrown.
 	 * @param xpos
 	 * 			| the xpos of this position
 	 * @param ypos
@@ -95,6 +119,10 @@ public class Position {
 		this.zpos = zpos;
 	}
 	
+	/**
+	 *Creates a position with the given coordinates and world. If this position isn't a valid pos for this world an exception is thrown.
+	 *If the world isn't null, the world is setted to the given world.
+	 */
 	public Position(double xpos, double ypos, double zpos, World world) throws UnitException{
 		
 		if (!Position.isValidPos(xpos,ypos,zpos,world)){
@@ -111,7 +139,7 @@ public class Position {
 	
 
 /**
-* Check whether the given pos is a valid pos for
+ * Check whether the given pos are valid  for
  * any position.
  *  
  * @param  pos
@@ -135,7 +163,9 @@ public boolean isValidPos(double xpos, double ypos, double zpos) {
 	} 
 	return true;
 }
-
+/**
+ *Returns true if this position is a valid position.
+ */
 public boolean isValidPos(){
 	if (this.world == null){
 		return (this.getxpos()>=0 && this.getypos()>=0 && this.getzpos()>=0);
@@ -151,8 +181,11 @@ public boolean isValidPos(){
 	}
 	return true;
 }
-
+/**
+ * Returns true if the position with given coordinates is a valid position in the given world.
+ */
 public static boolean posWithinWorld(int x, int y, int z, World world){
+
 	try{
 		world.getCube(x, y, z);
 		return true;
@@ -160,7 +193,9 @@ public static boolean posWithinWorld(int x, int y, int z, World world){
 		return false;
 	}
 }
-
+/**
+ * Returns true if the position with given coordinates is a valid position for the given world.
+ */
 public static boolean isValidPos(double xpos, double ypos, double zpos, World world){
 	if (world == null){
 		return true;
@@ -206,7 +241,9 @@ public boolean Equals(Position other){
 	} else
 		return true;
 }
-
+/**
+ * Returns an estimation for the time it will take to travel from this position towards the given other position. 
+ */
 public double getEstimatedTimeTo(Position other){
 	double time = 0;
 	double zConst = 0.5;
@@ -220,8 +257,16 @@ public double getEstimatedTimeTo(Position other){
 	time += deltaZ/zConst+deltaX+deltaY;
 	return time;
 }
-
-public double getExactTimeToAdjacent(Position other){
+/**
+ * Returns the
+ * @param other
+ * TODO
+ * @return
+ */
+public double getExactTimeToAdjacent(Position other) throws UnitException{
+	if (!this.isAdjacent(other)){
+		throw new UnitException();
+	}
 	double zConst = 1;
 	int deltaX = Math.abs((int)(other.getxpos()-this.getxpos()));
 	int deltaY = Math.abs((int)(other.getypos()-this.getypos()));
@@ -235,22 +280,32 @@ public double getExactTimeToAdjacent(Position other){
 	}
 	return Math.sqrt(deltaX*deltaX+deltaY*deltaY+deltaZ*deltaZ)/zConst;
 }
-
+/**
+ * Sets this position to the coordinates from the given position.
+ */
 public void setPositionAt(Position position) throws UnitException{
 	this.setPos(position.getxpos(), position.getypos(), position.getzpos());
 }
-
+/**
+ * Variable registering the world of this position.
+ */
 private World world;
-
+/**
+ * Updates the coordinates of this position to be in the center of the corresponding cube.
+ */
 public void setToMiddleOfCube() throws UnitException{
 	this.setPos((int)this.getxpos()+0.5, (int)this.getypos()+0.5, (int)this.getzpos()+0.5);
 }
-
+/**
+ * Updates the coordinates of this position with the given parameters.
+ */
 public void incrPosition(double dx, double dy, double dz) throws UnitException{
 	
 	this.setPos(this.getxpos()+dx, this.getypos()+dy, this.getzpos()+dz);
 }
-
+/**
+ * Sets the world from this position to the given world.
+ */
 public void setWorld(World world) throws UnitException{
 	if (world != null){
 		this.world = world;
@@ -261,7 +316,9 @@ public void setWorld(World world) throws UnitException{
 }
 
 
-	
+/**
+ * Returns true if the corresponding cube of the given position is directly adjacent to the cube of this position.
+ */
 public boolean isAdjacent(Position other){
 	if (Math.abs(this.getCubexpos()-other.getCubexpos())>1){
 		return false;
@@ -275,7 +332,7 @@ public boolean isAdjacent(Position other){
 	return true;
 }
 
-
+//TODO: commentaar
 @Override
 public int hashCode() {
 	final int prime = 31;
@@ -289,7 +346,9 @@ public int hashCode() {
 	result = prime * result + (int) (temp ^ (temp >>> 32));
 	return result;
 }
-
+/**
+ * Returns true if this position is a passable pos. This is if this position is within world and the corresponding cube is passable.
+ */
 public boolean isPassablePos(){
 	if (!Position.posWithinWorld(getCubexpos(), getCubexpos(), getCubeypos(), getWorld())){
 		return false;
@@ -303,7 +362,7 @@ public boolean isPassablePos(){
 
 
 
-
+//TODO: commentaar
 @Override
 public boolean equals(Object obj) {
 	if (this == obj)
@@ -321,7 +380,12 @@ public boolean equals(Object obj) {
 		return false;
 	return true;
 }
-
+/**
+ * 
+ * @return
+ * @throws UnitException
+ */
+//TODO: rename method
 public ArrayList<Position> getNeighbours() throws UnitException{
 	ArrayList<Position> neighbours = new ArrayList<>();
 	int[] pos = new int[]{-1,0,1};
@@ -340,11 +404,15 @@ public ArrayList<Position> getNeighbours() throws UnitException{
 	return neighbours;
 }
 
-
+/**
+ * Returns the world of this position.
+ */
 public World getWorld(){
 	return this.world;
 }
-
+/**
+ * Returns the string representation of this position.
+ */
 public String toString(){
 	String str1 = Double.toString(this.getxpos());
 	String str2 = Double.toString(this.getypos());

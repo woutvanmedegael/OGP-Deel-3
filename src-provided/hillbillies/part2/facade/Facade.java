@@ -286,7 +286,7 @@ public class Facade implements IFacade{
 		// TODO Auto-generated method stub
 		try {
 			return world.spawnUnit(enableDefaultBehavior);
-		} catch (UnitException e) {
+		} catch (WorldException e) {
 			throw new ModelException();
 		}
 	}
@@ -295,7 +295,7 @@ public class Facade implements IFacade{
 	public void addUnit(Unit unit, World world) throws ModelException {
 		try {
 			world.addUnit(unit);
-		} catch (UnitException e) {
+		} catch (WorldException e) {
 			throw new ModelException();
 		}
 	}
