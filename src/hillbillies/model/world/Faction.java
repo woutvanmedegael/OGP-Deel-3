@@ -11,25 +11,19 @@ public class Faction {
 	 */
 	private final Set<Unit> units = new HashSet<>();
 	/**
-	 * Adds a unit to this faction.
-	 * @param unit 
-	 * 		The unit to add.
+	 * Adds the given unit to this faction.
 	 */
 	public void addUnit(Unit unit){
 		units.add(unit);
 	}
 	/**
-	 * Removes a unit from this faction.
-	 * @param unit
-	 * 		The unit to remove.
+	 * Removes the given unit from this faction.
 	 */
 	public void removeUnit(Unit unit){
 		units.remove(unit);
 	}
 	/**
 	 * Returns the units from this faction.
-	 * @return
-	 * 		A set containing all units of this faction.
 	 */
 	public Set<Unit> getUnits(){
 		return units;
