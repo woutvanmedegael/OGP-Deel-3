@@ -404,6 +404,7 @@ public class World {
 		}
 		
 	}
+	
 	/**
 	 * Adds a log to the middle of the cube with given coordinates.
 	 * If the log is not above solid terrain, the log starts falling.
@@ -411,12 +412,14 @@ public class World {
 	private void addLog(int[] p) throws WorldException{
 		Position pos = new Position(p[0]+lc/2,p[1]+lc/2,p[2]+lc/2,this);
 		Log newLog = new Log(pos,this);
+		newLog.setParentCube(pos, this);
 		if (p[2]!=0 && this.getCube(p[0], p[1], p[2]-1).isPassable()){
 			newLog.startFalling();
 		}
 		logs.add(newLog);
 		
 	}
+	
 	/**
 	 * Adds a boulder to the middle of the cube with given coordinates.
 	 * If the boulder is not above solid terrain, the boulder starts falling.
@@ -424,11 +427,13 @@ public class World {
 	private void addBoulder(int[] p ) throws WorldException{
 		Position pos = new Position(p[0]+lc/2,p[1]+lc/2,p[2]+lc/2,this);
 		Boulder newBoulder = new Boulder(pos,this);
+		newBoulder.setParentCube(pos, this);
 		if (p[2]!=0 && this.getCube(p[0], p[1], p[2]-1).isPassable()){
 			newBoulder.startFalling();
 		}
 		boulders.add(newBoulder);
 	}
+	
 	/**
 	 *Advances the time for each hillbillie object in this world.
 	 */
@@ -610,6 +615,7 @@ public class World {
 		changeCubeType(position.getCubexpos(),position.getCubeypos(),position.getCubezpos(),0);
 		if (oldTerrainType == TerrainType.TREE){
 			addLog(new int [] {position.getCubexpos(),position.getCubeypos(),position.getCubezpos()});
+			
 			terrainChangeListener.notifyTerrainChanged(position.getCubexpos(), position.getCubeypos(), position.getCubezpos());
 			
 					}

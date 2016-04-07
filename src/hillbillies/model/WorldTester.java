@@ -211,13 +211,13 @@ public class WorldTester {
 		testWorld.changeCubeType(0,0,0, TYPE_TREE);
 		testWorld.collapseCube(new Position(0,0,0));
 		assertTrue(testWorld.getCube(0, 0, 0).containsLog());
-		
+		assertTrue(testWorld.getLogs().size()==1);
 		//basic collapsing test boulder
 		assertTrue(testWorld.getBoulders().size()==0);
 		testWorld.changeCubeType(1,0,0, TYPE_ROCK);
 		testWorld.collapseCube(new Position(1,0,0));
 		assertTrue(testWorld.getCube(1, 0, 0).containsBoulder());
-		
+		assertTrue(testWorld.getBoulders().size()==1);
 	}
 	
 	@Test
@@ -567,19 +567,14 @@ public class WorldTester {
 	public void testDropLoad() throws WorldException{
 		//Test ground floor of an empty world
 		World world = this.createEmptyTestWorld();
-		Log log = new Log(new Position(0,0,0), world);
+		Log log = new Log(new Position(0,0,0, world), world);
 		world.removeLog(log);
-		world.dropLoad(log, new Position(1,0,0));
+		world.dropLoad(log, new Position(1,0,0, world));
 		assertTrue(world.getLogs().contains(log));
 		
-		Boulder boulder = new Boulder( new Position(0,1,0), world);
+		Boulder boulder = new Boulder( new Position(0,1,0, world), world);
+		world.dropLoad(boulder, new Position(0,2,0, world));
 		assertTrue(world.getBoulders().contains(boulder));
-		world.dropLoad(boulder, new Position(0,2,0));
-		
-		
-		
-		
-		
 	}	
 	
 	

@@ -2090,29 +2090,6 @@ private void executeDefaultBehaviour() throws UnitException{
 	}
 }
 
-
-/**
- * Generates a random walkable position within world.
- * @return
- *  	 A valid walkable position
- * @throws UnitException
- */
-private Position generateRandomPos() throws UnitException{
-	Random random = new Random();
-	int x = random.nextInt(this.myWorld.getDimensionx()-1);
-	int y = random.nextInt(this.myWorld.getDimensiony()-1);
-	int z = random.nextInt(this.myWorld.getDimensionz()-1);
-	int looper = z;
-	while (!this.myWorld.getCube(x, y, looper).isWalkable() && looper !=z-1){
-		looper+=1;
-		looper %= this.myWorld.getDimensionz()-1;
-	}
-	if (!this.myWorld.getCube(x, y, looper).isWalkable()){
-		return generateRandomPos();
-	}
-	return new Position(x,y,looper);
-}
-
 /**
  * This method executes the attack.
  * The current state of this unit is set back to neutral, the given defender defends the attack 

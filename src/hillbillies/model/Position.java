@@ -70,7 +70,7 @@ public class Position {
 	 * Returns the cube on which this position is located.
 	 */
 	public Cube getCube(){
-		return this.world.getCube(getCubexpos(), getCubeypos(), getCubezpos());
+		return this.world.getCube(this.getCubexpos(), this.getCubeypos(), this.getCubezpos());
 	}
 	/**
 	 * Sets this position to the given coordinates. If this position isn't a valid position an exception is thrown.

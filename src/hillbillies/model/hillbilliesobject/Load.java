@@ -26,7 +26,8 @@ public Load(Position position,World world) throws WorldException {
 	Random rand = new Random();
 	this.weight = rand.nextInt(40)+10;
 	//ADDED
-	setParentCube(position,world);
+	System.out.println(position);
+	System.out.println(world);
 	this.world = world;
 }
 /**
