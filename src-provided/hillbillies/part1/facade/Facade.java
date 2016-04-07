@@ -152,7 +152,7 @@ public class Facade implements IFacade{
 
 	@Override
 	public boolean isMoving(Unit unit) throws ModelException {
-		return (unit.getMyState()==CurrentState.MOVING || unit.getMyState()==CurrentState.ATTACK_PENDING);
+		return (unit.getMyState()==CurrentState.MOVING);
 	}
 
 	@Override

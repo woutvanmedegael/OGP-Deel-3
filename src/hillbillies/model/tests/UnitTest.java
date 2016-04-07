@@ -1,4 +1,4 @@
-package hillbillies.model.hillbilliesobject.unit;
+package hillbillies.model.tests;
 
 import static org.junit.Assert.*;
 
@@ -16,6 +16,9 @@ import org.junit.Test;
 import hillbillies.model.NbCompare;
 import hillbillies.model.Position;
 import hillbillies.model.hillbilliesobject.CurrentState;
+import hillbillies.model.hillbilliesobject.unit.IllegalNameException;
+import hillbillies.model.hillbilliesobject.unit.Unit;
+import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.model.world.Cube;
 import hillbillies.model.world.Faction;
 import hillbillies.model.world.World;
@@ -24,6 +27,7 @@ import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.tests.util.PositionAsserts;
 
 public class UnitTest {
+	
 	
 	ChangeListener changeListener = new ChangeListener();
 	Unit test;
@@ -35,11 +39,6 @@ public class UnitTest {
 	 */
 	NbCompare comp = new NbCompare();
 	
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		
-	}
-	
 	private class ChangeListener implements TerrainChangeListener{
 
 		@Override
@@ -47,10 +46,6 @@ public class UnitTest {
 			
 		}
 		
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
 	}
 
 	@Before
@@ -75,10 +70,6 @@ public class UnitTest {
 			 }
 		 }
 		 test = new Unit(0,0,1,"Adri'aan en W\"out", 50, 50, 50, 50, false);
-	}
-
-	@After
-	public void tearDown() throws Exception {
 	}
 	
 	/**
@@ -113,9 +104,8 @@ public class UnitTest {
 	}
 	
 	/**
-	 * Tests whether all restrictions on coordinates work.
+	 * Tests whether valid coordinates render no problems.
 	 * A unit created with valid coordinates should return the middle of the cube the unit is created on.
-	 * Invalid coordinates should throw a UnitException.
 	 * @throws WorldException 
 	 */
 	@Test
@@ -130,6 +120,10 @@ public class UnitTest {
 				{test.getxpos(),test.getypos(),test.getzpos()});
 	}
 	
+	/**
+	 * Tests whether invalid coordinates throw UnitExceptions, as they should.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testInvalidCoordinates() throws WorldException{
 		World smallworld = new World(smallWorld,changeListener);
@@ -209,7 +203,7 @@ public class UnitTest {
 
 	
 	/**
-	 * Tests whether units satisfy all conditions concerning resting.
+	 * Tests whether resting increases the hitpoints of a unit.
 	 * @throws WorldException 
 	 */
 	@Test
@@ -238,6 +232,11 @@ public class UnitTest {
 		
 	}
 	
+	
+	/**
+	 * Tests whether resting increases the stamina points of a unit.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testRestingIncreasesSP() throws WorldException{
 		World world = new World(smallWorld,changeListener);
@@ -257,6 +256,11 @@ public class UnitTest {
 		assert (test.getCurrentSP()==test.getMaxSP());
 	}
 	
+	
+	/**
+	 * Tests whether the correct number of hitpoints and stamina points are increased by resting.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testRestingIncreasesCorrectNumbers() throws WorldException{
 		World world = new World(smallWorld,changeListener);
@@ -276,6 +280,10 @@ public class UnitTest {
 		}
 	}
 	
+	/**
+	 * Tests whether a unit automatically starts resting after 3 minutes of gametime.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testRestingAfter3Minutes() throws WorldException{
 		World world = new World(smallWorld,changeListener);
@@ -286,6 +294,12 @@ public class UnitTest {
 		assert (test.isResting());
 	}
 
+	/**
+	 * Help function to decrease HP and SP of a unit.
+	 * @param world
+	 * @throws UnitException
+	 * @throws WorldException
+	 */
 	private void decreaseHPAndSP(World world) throws UnitException, WorldException {
 		test.setFaction(new Faction());
 		Unit test2 = new Unit(1,1,1,"Other", 50, 50, 50, 50, false);
@@ -319,7 +333,10 @@ public class UnitTest {
 		}
 	}
 	
-	
+	/**
+	 * Tests whether sprinting doubles the speed of a unit.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testSprintingGoesFaster() throws WorldException{
 		World world = new World(smallWorld,changeListener);
@@ -342,6 +359,10 @@ public class UnitTest {
 		assert (timeNotSprinting<=timeSprinting*2.05);
 	}
 	
+	/**
+	 * Tests whether sprinting decreases the stamina points.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testSprintingDecreasesSP() throws WorldException{
 		World world = new World(bigWorld,changeListener);
@@ -357,6 +378,10 @@ public class UnitTest {
 		}
 	}
 
+	/**
+	 * Tests whether a unit stops sprinting at 0 stamina points.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testSprintingStops0SP() throws WorldException{
 		World world = new World(bigWorld,changeListener);
@@ -371,6 +396,10 @@ public class UnitTest {
 		assert (!test.getToggledSprint());
 	}
 	
+	/**
+	 * Tests whether only units of different factions can attack eachother.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testFightingOnlyDifferentFactions() throws WorldException{
 		World world = new World(smallWorld,changeListener);
@@ -394,6 +423,10 @@ public class UnitTest {
 
 	}
 	
+	/**
+	 * Tests whether only units at adjacent cubes can attack eachother.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testFightingOnlyInRange() throws WorldException{
 		World world = new World(smallWorld,changeListener);
@@ -411,6 +444,10 @@ public class UnitTest {
 		assert (test1.getMyState()==CurrentState.ATTACKING);
 	}
 	
+	/**
+	 * Tests whether defending either grants experience points, or decreases the hitpoints.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testDefendingDecreasesHPOrGrantsXP() throws WorldException{
 		World world = new World(smallWorld,changeListener);
@@ -444,6 +481,10 @@ public class UnitTest {
 		}
 	}
 	
+	/**
+	 * Tests whether a unit that jumped away from an attack always lands on a valid position.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testJumpingAwayOnlyValidTerrain() throws WorldException{
 		smallWorld[1][0][1] = 1;
@@ -464,6 +505,10 @@ public class UnitTest {
 		}
 	}
 	
+	/**
+	 * Tests whether moving to an adjacent valid position renders no problems.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testMoveToAdjacentToValidPos() throws WorldException{
 		World world = new World(smallWorld,changeListener);
@@ -481,6 +526,10 @@ public class UnitTest {
 		
 	}
 	
+	/**
+	 * Tests whether moving to adjacent invalid positions throws UnitExceptions.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testMoveToAdjacentToInvalidPos() throws WorldException{
 		World world = new World(bigWorld,changeListener);
@@ -508,6 +557,10 @@ public class UnitTest {
 		
 	}
 	
+	/**
+	 * Tests whether moving to invalid positions throws UnitExceptions.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testMoveToToInvalidPos() throws WorldException{
 		World world = new World(smallWorld,changeListener);
@@ -526,6 +579,11 @@ public class UnitTest {
 		}
 	}
 	
+	
+	/**
+	 * Tests whether moving to valid positions renders no problems.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testMoveToToValidPos() throws WorldException{
 		World world = new World(bigWorld,changeListener);
@@ -543,6 +601,10 @@ public class UnitTest {
 		}
 	}
 	
+	/**
+	 * Tests whether moving to a valid, though unreachable position has no effect.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testMoveToToUnreachablePos() throws WorldException{
 		bigWorld[14][14][0] = 0;
@@ -552,6 +614,10 @@ public class UnitTest {
 		assert !test.isMoving();
 	}
 	
+	/**
+	 * Tests whether working at invalid positions throws UnitExceptions.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testWorkAtInValidPos() throws WorldException{
 		World world  = new World(smallWorld,changeListener);
@@ -570,6 +636,10 @@ public class UnitTest {
 		}
 	}
 	
+	/**
+	 * Tests whether working grants a unit experience points.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testWorkAtGrantsXP() throws WorldException{
 		World world  = new World(smallWorld,changeListener);
@@ -586,6 +656,10 @@ public class UnitTest {
 		assert (newTotProp==totProp);
 	}
 	
+	/**
+	 * Tests whether working at a cube goes in the correct order.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testWorkAt() throws WorldException{
 		smallWorld[1][1][1] = 3;
@@ -628,6 +702,10 @@ public class UnitTest {
 		
 	}
 	
+	/**
+	 * Tests whether a unit falls at the correct speed.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testFallingSpeed() throws WorldException{
 		for (int i=1;i<7;i++){
@@ -648,6 +726,10 @@ public class UnitTest {
 		assert (comp.equals(test.getSpeed(), 3));
 	}
 	
+	/**
+	 * Tests whether a falling unit moves down until walkable cube.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testFallingMovesDown() throws WorldException{
 		for (int i=1;i<5;i++){
@@ -680,6 +762,10 @@ public class UnitTest {
 
 	}
 	
+	/**
+	 * Tests whether falling decreases a units hit points.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testFallingDecreasesHP() throws WorldException{
 		for (int i=1;i<7;i++){
@@ -700,6 +786,10 @@ public class UnitTest {
 		assert (test.getCurrentHP()<test.getMaxHP());
 	}
 	
+	/**
+	 * Tests whether a dead unit is removed from its faction and world.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testDying() throws WorldException{
 		for (int i=1;i<13;i++){
@@ -712,6 +802,7 @@ public class UnitTest {
 		world.addUnit(test);
 		Faction faction = test.getFaction();
 		assert (faction.getUnits().contains(test));
+		assert (world.getUnits().contains(test));
 		test.moveTo(1, 3, 12);
 		this.advanceSeconds(test, 30);
 		test.workAt(1, 2, 12);
@@ -721,9 +812,16 @@ public class UnitTest {
 		}
 		assert (test.getCurrentHP()==0);
 		assert (!faction.getUnits().contains(test));
+		assert (!world.getUnits().contains(test));
 		
 	}
 
+	/**
+	 * Generates a random walkable position in the given world.
+	 * @param myWorld
+	 * @return
+	 * @throws UnitException
+	 */
 	private Position generateWalkablePos(World myWorld) throws UnitException{
 		Random random = new Random();
 		int x = random.nextInt(myWorld.getDimensionx()-1);
@@ -740,6 +838,10 @@ public class UnitTest {
 		return new Position(x,y,looper,myWorld);
 	}
 	
+	/**
+	 * Tests default behaviour without attacking (1 unit).
+	 * @throws WorldException
+	 */
 	@Test
 	public void testDefaultBehaviourWithoutAttacking() throws WorldException{
 		World world = new World(bigWorld,changeListener);
@@ -747,24 +849,23 @@ public class UnitTest {
 		test.setDefaultBehaviourEnabled(true);
 		test.moveTo(2,2,3);
 		test.setToggledSprint(true);
-		boolean neutralstate = false;
 		for (int i = 0;i<500;i++){
 			this.advanceSeconds(test, 5);
-			if (test.getMyState()==CurrentState.NEUTRAL){
-				if (neutralstate){
-					fail("Twice in neutralstate");
-				}
-				else {
-					neutralstate = true;
-				}
+			while (test.getMyState()==CurrentState.NEUTRAL){
+				test.advanceTime(0.01);
 			}
-			else {
-				neutralstate = false;
-				assert (test.isMoving() || test.isResting() || test.getMyState()==CurrentState.WORKING || test.getMyState()==CurrentState.FALLING);
-			}
+			assert (test.getMyState()!=CurrentState.NEUTRAL);
+			assert (test.getMyState()!=CurrentState.ATTACKING);
+			assert (test.getMyState()!=CurrentState.DEFENDING);
+
+			
 		}
 	}
 	
+	/**
+	 * Tests default behaviour inclusive attacking (multiple units - big test)
+	 * @throws WorldException
+	 */
 	@Test
 	public void testDefaultBehaviourWithAttacking() throws WorldException{
 		World world = new World(bigWorld,changeListener);
@@ -786,6 +887,10 @@ public class UnitTest {
 		}
 	}
 	
+	/**
+	 * Tests if falling can't be interrupted by attacking, as it shouldn't.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testAttackingCantInterruptFalling() throws WorldException{
 		for (int i=1;i<7;i++){
@@ -811,6 +916,10 @@ public class UnitTest {
 		assert (test.isFalling());
 	}
 	
+	/**
+	 * Tests whether a falling unit can't perform an action.
+	 * @throws WorldException
+	 */
 	@Test
 	public void cannotWorkOrAttackOrRestWhenFalling() throws WorldException{
 		for (int i=1;i<7;i++){
@@ -829,7 +938,7 @@ public class UnitTest {
 		world.collapseCube(new Position(1,2,6,world));
 		assert (test.isFalling());
 		while (test.getzpos()>5){
-			test.advanceTime(0.1);
+			test.advanceTime(0.01);
 		}
 		//ATTACK
 		test.startAttacking(defender);
@@ -845,7 +954,10 @@ public class UnitTest {
 		assert(test.isFalling());
 		}
 	
-	
+	/**
+	 * Tests whether a moving unit can be attacked.
+	 * @throws WorldException
+	 */
 	@Test
 	public void attackerCanAttackMovingUnit() throws WorldException{
 		World world = new World(smallWorld,changeListener);

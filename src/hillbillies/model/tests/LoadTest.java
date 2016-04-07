@@ -1,4 +1,4 @@
-package hillbillies.model.hillbilliesobject;
+package hillbillies.model.tests;
 
 import static org.junit.Assert.*;
 
@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import hillbillies.model.NbCompare;
 import hillbillies.model.Position;
+import hillbillies.model.hillbilliesobject.Load;
 import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
@@ -45,17 +46,19 @@ public class LoadTest {
 		load = new Load(pos,world);
 	}
 
-	@After
-	public void tearDown() throws Exception {
-	}
-
+	/**
+	 * Tests whether a load returns the correct position.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testDoublePosition() throws WorldException {
 		PositionAsserts.assertDoublePositionEquals(1.5, 1.5, 1.5, load.getDoublePosition());
-
 	}
 	
-	
+	/**
+	 * Tests whether all loads have valid weights.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testCorrectWeight() throws WorldException{
 		for (int i=0;i<1000;i++){
@@ -65,6 +68,10 @@ public class LoadTest {
 		}
 	}
 	
+	/**
+	 * Tests whether advancetime throws exceptions if an invalid argument is given.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testAdvanceTime() throws WorldException{
 		
@@ -89,6 +96,10 @@ public class LoadTest {
 		}
 	}
 	
+	/**
+	 * Tests if a falling load moves down.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testFallingMovesDown() throws WorldException{
 		pos = new Position(0,0,2,world);
@@ -105,11 +116,15 @@ public class LoadTest {
 		assert (comp.equals(load.getDoublePosition()[2], 1.5));
 	}
 	
+	/**
+	 * Tests whether a loads parentcube is updated automatically upon falling.
+	 * @throws WorldException
+	 */
 	@Test
 	public void testParentCube() throws WorldException{
 		pos = new Position(0,0,2,world);
 		load = new Load(pos,world);
-		load.startFalling();
+		world.dropLoad(load, pos);
 		assert load.getParentCube()==world.getCube(0, 0, 2);
 		while (!comp.equals(load.getDoublePosition()[2], 1.5)){
 			if (load.getDoublePosition()[2]>=2){

@@ -15,5 +15,5 @@ package hillbillies.model.hillbilliesobject;
  *
  */
 public enum CurrentState {
-	MOVING, WORKING, ATTACKING, RESTING, DEFENDING, NEUTRAL, ATTACK_PENDING, FALLING;
+	MOVING, WORKING, ATTACKING, RESTING, DEFENDING, NEUTRAL, FALLING;
 }

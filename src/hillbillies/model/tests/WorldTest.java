@@ -1,14 +1,15 @@
-package hillbillies.model;
+package hillbillies.model.tests;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+import hillbillies.model.Position;
 import hillbillies.model.hillbilliesobject.Boulder;
 import hillbillies.model.hillbilliesobject.Log;
 import hillbillies.model.world.Faction;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
-public class WorldTester {
+public class WorldTest {
 	private static final int TYPE_AIR = 0;
 	private static final int TYPE_ROCK = 1;
 	private static final int TYPE_TREE = 2;

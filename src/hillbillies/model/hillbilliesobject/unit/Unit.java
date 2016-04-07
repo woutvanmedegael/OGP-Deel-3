@@ -1728,8 +1728,6 @@ public void startAttacking(Unit defender){
 		this.setMyState(CurrentState.ATTACKING);
 		this.setOrientation((float) Math.atan2(this.getDefender().getypos()-this.getypos(), this.getDefender().getxpos()-this.getxpos()));
 		this.getMyTimeState().setAttackTime(0);
-	} else {
-		this.setMyState(CurrentState.MOVING);
 	}
 }
 
@@ -2086,7 +2084,7 @@ private void executeDefaultBehaviour() throws UnitException{
 			int x = random.nextInt(3)-1;
 			int y = random.nextInt(3)-1;
 			int z = random.nextInt(3)-1;
-			while (!Position.posWithinWorld(this.getCubeXpos()+x, this.getCubeYpos()+y, this.getCubeZpos()+z, this.myWorld)){
+			while (!Position.posWithinWorld(this.getCubeXpos()+x, this.getCubeYpos()+y, this.getCubeZpos()+z, this.getWorld())){
 				x = random.nextInt(3)-1;
 				y = random.nextInt(3)-1;
 				z = random.nextInt(3)-1;
@@ -2175,6 +2173,8 @@ private int experiencePoints =0;
 /**
  * Improves one random non-maximum property (agility, strength and toughness).
  * @post One property has improved one point.
+ * 		| if (this.getStrength()!=200 || this.getAgility()!=200 || this.getToughness()!=200)
+ * 		| then (new.getStrength()==this.getStrength()+1 || new.getAgility()==this.getAgility()+1 || new.getToughness()==this.getToughness()+1)
  */
 private void improveProperty(){
 	 	int prevprop = this.getToughness()+this.getAgility()+this.getStrength();
@@ -2224,7 +2224,7 @@ private Load getLoad() {
 /**
  * Checks whether this unit is carrying a log.
  * @return
- *  this.getLoad()!=null & this.getLoad() instanceof Log
+ *  this.getLoad()!=null && this.getLoad() instanceof Log
  */
 public boolean isCarryingLog(){
 	return (this.getLoad()!=null && this.getLoad() instanceof Log);
@@ -2233,7 +2233,7 @@ public boolean isCarryingLog(){
 /**
  * Checks whether this unit is carrying a boulder.
  * @return
- *  this.getLoad()!=null & this.getLoad() instanceof Boulder
+ *  this.getLoad()!=null && this.getLoad() instanceof Boulder
  */
 public boolean isCarryingBoulder(){
 	return (this.getLoad()!=null && this.getLoad() instanceof Boulder);
@@ -2341,7 +2341,7 @@ private void fall(double dt) throws WorldException{
 		this.getMyPosition().incrPosition(0, 0, -velocity*dt);
 	}
 	if (this.getMyPosition().getCube()!=this.getParentCube()){
-		this.setParentCube(this.getMyPosition(), myWorld);
+		this.setParentCube(this.getMyPosition(), this.getWorld());
 	}
 }
 
@@ -2372,7 +2372,7 @@ public void startFalling() throws UnitException{
 
  */
 public boolean isMoving(){
-	return (this.getMyState()==CurrentState.MOVING || this.getMyState()==CurrentState.ATTACK_PENDING || (this.getMyState()==CurrentState.RESTING && !this.getMyPosition().Equals(localTarget)));
+	return (this.getMyState()==CurrentState.MOVING || (this.getMyState()==CurrentState.RESTING && !this.getMyPosition().Equals(this.getLocalTarget())));
 }
 
 }
