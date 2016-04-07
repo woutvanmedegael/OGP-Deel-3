@@ -7,6 +7,7 @@ import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.model.Position;
+import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
@@ -20,6 +21,7 @@ public Load(Position position,World world) throws WorldException {
 	if (! position.isValidPos())
 		throw new WorldException();
 	this.position = position;
+	this.getPosition().setToMiddleOfCube();
 	this.LocalTarget = position;
 	Random rand = new Random();
 	this.weight = rand.nextInt(40)+10;
@@ -80,6 +82,9 @@ private LoadState myState = LoadState.NEUTRAL;
  */
 @Override
 public void advanceTime(double dt) throws WorldException {
+	if (dt<=0 || dt>0.2){
+		throw new UnitException();
+	}
 	switch (this.getMyState()){
 		case NEUTRAL:
 			break;
@@ -91,8 +96,9 @@ public void advanceTime(double dt) throws WorldException {
 }
 /**
  * Sets the position and parent cube of this load on the given position.
+ * @throws WorldException 
  */
-public void setPosition(Position position){
+public void setPosition(Position position) throws WorldException{
 	this.position = position;
 	setParentCube(this.getPosition(),this.world);	
 }
@@ -121,7 +127,7 @@ private final double speed = 3;
 /**
  * Sets the state of this load to the given state.
  */
-public void setMyState(LoadState state){
+private void setMyState(LoadState state){
 	this.myState = state;
 }
 /**

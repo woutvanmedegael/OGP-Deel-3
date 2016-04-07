@@ -1,16 +1,12 @@
 package hillbillies.model;
-
 import java.util.ArrayList;
-
 /**
  * @value
  */
-
 import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.model.world.Cube;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
-
 /**
  * @invar  The xpos of each Position must be a valid xpos for any
  *         Position
@@ -137,7 +133,6 @@ public class Position {
 		}
 	}
 	
-
 /**
  * Check whether the given pos are valid  for
  * any position.
@@ -148,7 +143,6 @@ public class Position {
  *       | result == (0<=pos && pos<50)
 */
 public boolean isValidPos(double xpos, double ypos, double zpos) {
-
 	if (world == null){
 		return (xpos>=0 && ypos>=0 && zpos>=0);
 	}
@@ -185,7 +179,6 @@ public boolean isValidPos(){
  * Returns true if the position with given coordinates is a valid position in the given world.
  */
 public static boolean posWithinWorld(int x, int y, int z, World world){
-
 	try{
 		world.getCube(x, y, z);
 		return true;
@@ -198,6 +191,7 @@ public static boolean posWithinWorld(int x, int y, int z, World world){
  */
 public static boolean isValidPos(double xpos, double ypos, double zpos, World world){
 	if (world == null){
+		System.out.println("world is null");
 		return true;
 	}
 	if (xpos<0 || xpos >= world.getDimensionx()){
@@ -209,9 +203,11 @@ public static boolean isValidPos(double xpos, double ypos, double zpos, World wo
 	if (zpos<0 || zpos >= world.getDimensionz()){
 		return false;
 	}
+	System.out.println(xpos);
+	System.out.println(ypos);
+	System.out.println(zpos);
 	return true;
 }
-
 /**
  *Calculates the distance between this position and another position
  * @param other
@@ -222,7 +218,6 @@ public static boolean isValidPos(double xpos, double ypos, double zpos, World wo
 public double calculateDistance(Position other){
 	return Math.sqrt(Math.pow(this.getxpos()-other.getxpos(), 2)+Math.pow(this.getypos()-other.getypos(),2)+Math.pow(this.getzpos()-other.getzpos(),2));
 }
-
 /**
  * checks if this position is equal to another position
  * @param other
@@ -314,8 +309,6 @@ public void setWorld(World world) throws UnitException{
 		throw new UnitException();
 	}
 }
-
-
 /**
  * Returns true if the corresponding cube of the given position is directly adjacent to the cube of this position.
  */
@@ -331,7 +324,6 @@ public boolean isAdjacent(Position other){
 	}
 	return true;
 }
-
 //TODO: commentaar
 @Override
 public int hashCode() {
@@ -357,11 +349,6 @@ public boolean isPassablePos(){
 	}
 	return true;
 }
-
-
-
-
-
 //TODO: commentaar
 @Override
 public boolean equals(Object obj) {
@@ -392,10 +379,22 @@ public ArrayList<Position> getNeighbours() throws UnitException{
 	for (int x: pos){
 		for (int y: pos){
 			for (int z: pos){
+				System.out.println("right here");
 				if (Position.isValidPos(x+this.getxpos(), y+this.getypos(), z+this.getzpos(), this.world) && (x!=0 || y!=0 || z!=0)){
 					Position neighbour = new Position(this.getxpos()+x,this.getypos()+y,this.getzpos()+z, this.world);
+					try{
 					if (neighbour.getCube().isWalkable()){
 						neighbours.add(neighbour);
+					}
+					} catch (NullPointerException e){
+						System.out.println(neighbour);
+						System.out.println(x);
+						System.out.println(y);
+						System.out.println(z);
+						System.out.println(this.getxpos());
+						System.out.println(this.getypos());
+						System.out.println(this.getzpos());
+						System.out.println(neighbour.getCube());
 					}
 				}
 			}
@@ -403,7 +402,6 @@ public ArrayList<Position> getNeighbours() throws UnitException{
 	}
 	return neighbours;
 }
-
 /**
  * Returns the world of this position.
  */

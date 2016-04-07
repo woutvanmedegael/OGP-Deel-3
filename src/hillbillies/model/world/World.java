@@ -1,7 +1,6 @@
 package hillbillies.model.world;
 import java.util.Random;
 import java.util.Set;
-
 import hillbillies.model.Position;
 import hillbillies.model.hillbilliesobject.Boulder;
 import hillbillies.model.hillbilliesobject.HillbilliesObject;
@@ -11,7 +10,6 @@ import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.util.ConnectedToBorder;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 /**
@@ -19,7 +17,6 @@ import java.util.HashSet;
  * @author Wout Van Medegael & Adriaan Van Gerven
  *
  */
-
 public class World {
 	/**
 	 * Variables registering the dimensions of the game world.
@@ -109,12 +106,11 @@ public class World {
 	 */
 	public World(int[][][] terrainTypes, TerrainChangeListener modelListener) throws WorldException{
 		
-		dimensionx = terrainTypes.length;
-		dimensiony = terrainTypes[1].length;
-		dimensionz = terrainTypes[0][1].length;
-
-		world = new Cube[dimensionx][dimensiony][dimensionz];
-		connectedToBorder = new ConnectedToBorder(dimensionx,dimensiony,dimensionz);
+		this.dimensionx = terrainTypes.length;
+		this.dimensiony = terrainTypes[1].length;
+		this.dimensionz = terrainTypes[0][1].length;
+		this.world = new Cube[dimensionx][dimensiony][dimensionz];
+		this.connectedToBorder = new ConnectedToBorder(this.dimensionx,dimensiony,dimensionz);
 		for (int x=0;x<dimensionx;x++){
 			for (int y=0;y<dimensiony;y++){
 				for (int z=0;z<dimensionz;z++){
@@ -125,7 +121,6 @@ public class World {
 				}	
 				}
 			}
-		
 		fixWalkableCubes();
 		terrainChangeListener = modelListener;
 		int dimensionMax = Math.max(dimensionx,Math.max(dimensiony, dimensionz));
@@ -150,7 +145,6 @@ public class World {
 						terrainChangeListener.notifyTerrainChanged(x, y, z);
 						maybeAddLogOrBoulder(new int[]{x,y,z},old);
 						changeWalkable(x,y,z);
-
 					}
 				}
 			}
@@ -163,7 +157,12 @@ public class World {
 		for (int x=0;x<dimensionx;x++){
 			for (int y=0;y<dimensiony;y++){
 				for (int z=0;z<dimensionz;z++){
-					setSurroundingCubesToWalkable(x, y, z);		
+					setSurroundingCubesToWalkable(x, y, z);	
+					if (z==0){
+						if (getCube(x,y,z).isPassable()){
+							getCube(x,y,z).setWalkable(true);
+						}
+					}
 				}
 			}
 		}
@@ -172,7 +171,9 @@ public class World {
      * If the given cube is a solid, the passable cubes around it are set to walkable.
 	 */
 	private void setSurroundingCubesToWalkable(int x, int y, int z) {
+		
 		if (!getCube(x,y,z).isPassable()){
+			getCube(x,y,z).setWalkable(false);
 			int[] pos = new int[]{-1,0,1};
 			for (int xpos: pos){
 				for (int ypos: pos){
@@ -180,6 +181,7 @@ public class World {
 						if(Position.posWithinWorld(x+xpos, y+ypos, z+zpos,this)&& getCube(x+xpos,y+ypos,z+zpos).isPassable()){
 							getCube(x+xpos,y+ypos,z+zpos).setWalkable(true);
 						}
+						
 					}
 				}
 		}
@@ -270,9 +272,7 @@ public class World {
 			else if  (changedFromPassableToSolid(x, y, z, oldTerrainType)){
 				
 				if (!isOccupied(x,y,z)){
-					System.out.println("isn't occupied");
 					connectedToBorder.changePassableToSolid(x, y, z);
-					System.out.println("connected to border succesfully notified");
 					cubesToCheck.add(new int[]{x,y,z});
 					this.setSurroundingCubesToWalkable(x, y, z);
 					}
@@ -283,7 +283,6 @@ public class World {
 				
 				terrainChangeListener.notifyTerrainChanged(x, y, z);
 			}
-
 		}
 		
 	}
@@ -302,7 +301,7 @@ public class World {
 		for (int xpos: pos){
 			for (int ypos: pos){
 				for (int zpos: pos){
-	
+					
 					if (Position.posWithinWorld(x+xpos, y+ ypos, z+zpos, this)){
 						this.getCube(x+xpos, y+ypos, z+zpos).setWalkable(isWalkable(x+xpos,y+ypos,z+zpos));	
 						}
@@ -310,7 +309,6 @@ public class World {
 			}
 		}
 	}
-
 	/**
 	 * Returns true if the cube with the given coordinates has changes from solid to passable (compared to the given old terrain type ).
 	 */
@@ -413,7 +411,7 @@ public class World {
 	private void addLog(int[] p) throws WorldException{
 		Position pos = new Position(p[0]+lc/2,p[1]+lc/2,p[2]+lc/2,this);
 		Log newLog = new Log(pos,this);
-		if (this.getCube(p[0], p[1], p[2]-1).isPassable()){
+		if (p[2]!=0 && this.getCube(p[0], p[1], p[2]-1).isPassable()){
 			newLog.startFalling();
 		}
 		logs.add(newLog);
@@ -454,7 +452,6 @@ public class World {
 	 * Returns true if there is a neighboring solid cube.
 	 */
 	public boolean isWalkable(int xpos, int ypos, int zpos){
-
 		if (!this.getCube(xpos, ypos, zpos).isPassable()){
 			return false;
 		}
@@ -474,7 +471,6 @@ public class World {
 		}
 		return false;
 	}
-
 	
 	final static String alphabet = "abcdefghijklmnopqrstuvxyzABCDEFHIJKLMNOPQRSTUVWXYZ '\"";
 	final static String ALPHABET = "ABCDEFHIJKLMNOPQRSTUVWXYZ";
@@ -588,9 +584,11 @@ public class World {
 				boulders.add((Boulder) load);
 			}
 			load.setParentCube(workPosition, this);
-			Position pos = new Position(workPosition.xpos,workPosition.ypos,workPosition.zpos-1,this);
-			if (pos.getCube().isPassable()){
-				load.startFalling();
+			if (Position.isValidPos(workPosition.getxpos(), workPosition.getypos(), workPosition.getzpos()-1, this)){
+				Position pos = new Position(workPosition.getxpos(),workPosition.getypos(),workPosition.getzpos()-1,this);
+				if (pos.getCube().isPassable()){
+					load.startFalling();
+				}
 			}
 			return true;		}
 	  return false;
@@ -601,7 +599,7 @@ public class World {
 	 * The log the terrainChangeListener is notified.
 	 */
 	public void collapseCube( Position position) throws WorldException{
-		TerrainType oldTerrainType = position.getCube().getTerrainType();
+		TerrainType oldTerrainType = this.getCube(position.getCubexpos(),position.getCubeypos(),position.getCubezpos()).getTerrainType();
 		changeCubeType(position.getCubexpos(),position.getCubeypos(),position.getCubezpos(),0);
 		if (oldTerrainType == TerrainType.TREE){
 			addLog(new int [] {position.getCubexpos(),position.getCubeypos(),position.getCubezpos()});
@@ -611,7 +609,6 @@ public class World {
 		else if (oldTerrainType== TerrainType.ROCK){
 			addBoulder(new int [] {position.getCubexpos(),position.getCubeypos(),position.getCubezpos()});
 			terrainChangeListener.notifyTerrainChanged(position.getCubexpos(), position.getCubeypos(), position.getCubezpos());
-
 		}
 		
 		
@@ -629,9 +626,7 @@ public class World {
 	public void removeBoulder(Boulder boulder){
 		this.boulders.remove(boulder);
 	}
-
 	
 	
 	
-
 }

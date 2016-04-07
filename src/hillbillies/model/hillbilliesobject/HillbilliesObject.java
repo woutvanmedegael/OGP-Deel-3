@@ -18,8 +18,9 @@ public abstract class HillbilliesObject {
 	private Cube parentCube=null;
 	/**
 	 * Notify's the cube that a hillbilliesobject is currently occupying it. Removes the old parent cube.
+	 * @throws WorldException 
 	 */
-	public void setParentCube(Position position,World world){
+	public void setParentCube(Position position,World world) throws WorldException{
 		removeObjectFromOldParent();
 		this.parentCube = position.getCube();
 		this.parentCube.addObject(this);

@@ -157,12 +157,20 @@ public class Facade implements IFacade{
 
 	@Override
 	public void startSprinting(Unit unit) throws ModelException {
-		unit.setToggledSprint(true);;
+		try {
+			unit.setToggledSprint(true);
+		} catch (UnitException e) {
+			throw new ModelException();
+		};
 	}
 
 	@Override
 	public void stopSprinting(Unit unit) throws ModelException {
-		unit.setToggledSprint(false);;
+		try {
+			unit.setToggledSprint(false);
+		} catch (UnitException e) {
+			throw new ModelException();
+		}
 	}
 
 	@Override
@@ -187,7 +195,11 @@ public class Facade implements IFacade{
 
 	@Override
 	public void work(Unit unit) throws ModelException {
-		unit.workAt(0,0,0);
+		try {
+			unit.workAt(0,0,0);
+		} catch (UnitException e) {
+			throw new ModelException();
+		}
 	}
 
 	@Override
@@ -197,7 +209,7 @@ public class Facade implements IFacade{
 
 	@Override
 	public void fight(Unit attacker, Unit defender) throws ModelException {
-		attacker.initiateAttack(defender);
+		attacker.startAttacking(defender);
 	}
 
 	@Override

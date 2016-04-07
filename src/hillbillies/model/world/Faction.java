@@ -1,10 +1,7 @@
 package hillbillies.model.world;
-
 import java.util.HashSet;
 import java.util.Set;
-
 import hillbillies.model.hillbilliesobject.unit.Unit;
-
 public class Faction {
 	/**
 	 * Set containing all units of this faction.
@@ -23,7 +20,7 @@ public class Faction {
 	/**
 	 * Removes the given unit from this faction is made package accessible.
 	 */
-	void removeUnit(Unit unit){
+	public void removeUnit(Unit unit){
 		units.remove(unit);
 	}
 	/**
