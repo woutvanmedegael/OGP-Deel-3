@@ -161,7 +161,7 @@ public class Testing {
  		if (!myWorld.getCube(x, y, looper).isPassable() || myWorld.getCube(x, y, looper-1).isPassable()){
  			return generateWalkablePos(myWorld);
  		}
- 		return new Position(x,y,looper);
+ 		return new Position(x,y,looper,null);
  	}
 
 }

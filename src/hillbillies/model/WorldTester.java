@@ -26,7 +26,10 @@ public class WorldTester {
 	}
 	
 	/**
-	 * Test to check 
+	 * Test to check the different properties of faction and the number of units in this world.
+	 * The first test tests that the number of factions always stays below 5.
+	 * The next test tests that the number of units in a world always stays below 100.
+	 * The last tests makes sure that the number of units in a factions stays below 50.
 	 */
 	@Test
 	public void testFactionsAndNumberOfUnits() throws WorldException {
@@ -55,27 +58,32 @@ public class WorldTester {
 			assertTrue(f.getUnits().size() <=50);
 		}	
 	}
-	
+	/**
+	 * Tests to see if cubes are connected to the border.
+	 * Test 1 is about a world that in which the cubes are all connected to the border. It makes sure that each solid block is connected to the border
+	 * Test 2 updates a non essential cube (one on which the other cubes do not rely to be connected to the border). 
+	 * 	It makes sure that the other cubes still are connected.
+	 * Test 3 updates a cube to solid 3.1 updates the a cube that will be connected to the border
+	 *  and 3.2 updates a cube that wont't be connected to the border.
+	 * Test 4 updates a solid cube to air that was crucial for the other cubes.
+	 */
 	@Test
 	public void testSolidConnectedToBorder() throws WorldException{
 		
 		World testWorldAllConnected = createTestingWorld();
-		World emptyTestWorld = createEmptyTestWorld();
-		//Test if all the solid blocks are connected to the border.
+		//TEST 1
 		for (int z=0;z<5;z++){	
 			for (int x=0;x<4;x++){
 				for (int y=0; y<4; y++){
 					if (!testWorldAllConnected.getCube(x, y, z).isPassable()){
-						
 						assertTrue(testWorldAllConnected.isSolidConnectedToBorder(x, y, z));
 					}
 				}
 			}
 		}
-		//Test :Update a non crucial cube to air and assert that the others are still solid and  connected to the border.
+		//TEST 2
 		testWorldAllConnected.changeCubeType(0, 0, 0, TYPE_AIR);
 		assertTrue(testWorldAllConnected.getCube(0, 0, 0).getIntTerrainType() == TYPE_AIR);
-		//check if the other cubes are still connected to the border.
 		for (int z=0;z<5;z++){	
 			for (int x=0;x<4;x++){
 				for (int y=0; y<4; y++){
@@ -85,33 +93,32 @@ public class WorldTester {
 				}
 			}
 		}
-			
-		//Update a cube to solid.First we try a cube that will be connected the the border next a cube that isn't connected to the border
-		//Update a cube that is connected to the border.
+		//TEST 3	
+		//3.1
 		testWorldAllConnected.changeCubeType(2,1, 1, TYPE_ROCK);
 		assertTrue(testWorldAllConnected.isSolidConnectedToBorder(2, 1, 1));
 		testWorldAllConnected.changeCubeType(2, 1, 1, TYPE_AIR);
 		
-		//Updating a cube that isn't connected to the border will be tested in a different world.
+		World emptyTestWorld = createEmptyTestWorld();
+		//3.2 (tested in an empty test world)
 		emptyTestWorld.changeCubeType(2,2,2,TYPE_ROCK);
 		assertTrue(emptyTestWorld.getCube(2, 2, 2).getIntTerrainType() ==1);
 		assertFalse(emptyTestWorld.isSolidConnectedToBorder(2, 2, 2));
 		
-		//TEST: update a cube that connects other cubes to the border.
-			//Update the cube with coordinates [2][0][3] to air.
-			testWorldAllConnected.changeCubeType(2, 0, 3, TYPE_AIR);
-			//We make sure that the 2*2 plane on level 3 isn't connected to the border anymore and the others still are.
-			int stillSolidButNotconnectedToTheBorderInLevel3Counter =0;
-			for (int z=0;z<5;z++){	
-				for (int x=0;x<4;x++){
-					for (int y=0; y<4; y++){
-						if (!testWorldAllConnected.getCube(x, y, z).isPassable()){
-							if (z!=3){
+		//TEST 4
+		testWorldAllConnected.changeCubeType(2, 0, 3, TYPE_AIR);
+		//We make sure that the 2*2 plane on level 3 isn't connected to the border anymore and the others still are.
+		int stillSolidButNotconnectedToTheBorderInLevel3Counter =0;
+		for (int z=0;z<5;z++){	
+			for (int x=0;x<4;x++){
+				for (int y=0; y<4; y++){
+					if (!testWorldAllConnected.getCube(x, y, z).isPassable()){
+						if (z!=3){
 							assertTrue(testWorldAllConnected.isSolidConnectedToBorder(x, y, z));
-							}
-							else{
-								assertFalse(testWorldAllConnected.isSolidConnectedToBorder(x, y, z));
-								stillSolidButNotconnectedToTheBorderInLevel3Counter +=1 ;
+						}
+						else{
+							assertFalse(testWorldAllConnected.isSolidConnectedToBorder(x, y, z));
+							stillSolidButNotconnectedToTheBorderInLevel3Counter +=1 ;
 							}
 						}
 					}
@@ -123,6 +130,9 @@ public class WorldTester {
 		
 		
 	}
+	/**
+	 * Returns an empty 4By4By4 world.
+	 */
 	private World createEmptyTestWorld() throws WorldException{
 		int[][][] w  = new int[4][4][4];
 		for (int x=0;x<4;x++){
@@ -139,7 +149,7 @@ public class WorldTester {
 		
 	}
 	/**
-	 * Creates a valid 4*4*5 world in which all the cubes are connected to the border.
+	 * Creates a 4*4*5 world in which all the cubes are connected to the border.
 	 * Level zero looks like: 
 	 * 		[0000]
 	 * 		[0000]
@@ -203,26 +213,55 @@ public class WorldTester {
 	
 		return  new World(w,new DefaultTerrainChangeListener());
 	}
+	/**
+	 * Test collapsing cubes of different types.
+	 * @throws WorldException
+	 */
+	@Test
+	public void testCollapseCube() throws WorldException{
+		World worldWithWoodAndRock = createWorldWithWoodAndRock();
+		assertTrue(worldWithWoodAndRock.getCube(0, 0, 0).getIntTerrainType()==TYPE_ROCK);
+		assertTrue(worldWithWoodAndRock.getCube(1, 1, 0).getIntTerrainType()==TYPE_TREE);
+		assertTrue(worldWithWoodAndRock.getCube(0, 0, 0).getObjectsOnThisCube().size()==0);
+		assertTrue(worldWithWoodAndRock.getCube(1, 1, 0).getObjectsOnThisCube().size()==0);
+		worldWithWoodAndRock.collapseCube(new Position(0,0,0,worldWithWoodAndRock));
+		worldWithWoodAndRock.collapseCube(new Position(1,1,0,worldWithWoodAndRock));
+		assertTrue(worldWithWoodAndRock.getCube(0, 0, 0).getIntTerrainType()==TYPE_AIR);
+		assertTrue(worldWithWoodAndRock.getCube(1, 1, 0).getIntTerrainType()==TYPE_AIR);
+		assertTrue(worldWithWoodAndRock.getCube(0, 0, 0).getObjectsOnThisCube().size()==1);
+		assertTrue(worldWithWoodAndRock.getCube(1, 1, 0).getObjectsOnThisCube().size()==1);
+		assertTrue(worldWithWoodAndRock.getCube(0, 0, 0).containsBoulder());
+		assertTrue(worldWithWoodAndRock.getCube(1, 1, 0).containsLog());
+	}
+	
+	/**
+	 * Tests if after collapsing the logs and the boulder appear in the world.
+	 */
 	@Test
 	public void testLogAndBouldersOfThisWorld() throws WorldException{
 		World testWorld = createEmptyTestWorld();
 		//basic collapsing test log
 		assertTrue(testWorld.getLogs().size()==0);
 		testWorld.changeCubeType(0,0,0, TYPE_TREE);
-		testWorld.collapseCube(new Position(0,0,0));
+		testWorld.collapseCube(new Position(0,0,0,testWorld));
 		assertTrue(testWorld.getCube(0, 0, 0).containsLog());
 		assertTrue(testWorld.getLogs().size()==1);
 		//basic collapsing test boulder
 		assertTrue(testWorld.getBoulders().size()==0);
 		testWorld.changeCubeType(1,0,0, TYPE_ROCK);
-		testWorld.collapseCube(new Position(1,0,0));
+		testWorld.collapseCube(new Position(1,0,0,testWorld));
 		assertTrue(testWorld.getCube(1, 0, 0).containsBoulder());
 		assertTrue(testWorld.getBoulders().size()==1);
 	}
 	
+	
+	
+	/**
+	 * Tests the cave in process.
+	 */
 	@Test
 	public void testChangeCubeTypeAndCaveIn() throws WorldException{
-		// cave in with initializing world.
+		// Cave in with initializing world with an invalid type.
 		int[][][] w  = new int[4][4][4];
 		for (int x=0;x<4;x++){
 			for (int y=0;y<4;y++){
@@ -256,7 +295,7 @@ public class WorldTester {
 		assertTrue(complexWorld.getCube(2, 0, 3).getIntTerrainType() == TYPE_TREE );
 		assertTrue(complexWorld.getCube(2, 1, 3).getIntTerrainType() == TYPE_ROCK && complexWorld.getCube(2, 2, 3).getIntTerrainType() == TYPE_ROCK
 				&& complexWorld.getCube(1, 1, 3).getIntTerrainType() == TYPE_ROCK && complexWorld.getCube(1, 2, 3).getIntTerrainType() == TYPE_ROCK);
-		complexWorld.collapseCube(new Position(2,0,3));
+		complexWorld.collapseCube(new Position(2,0,3,complexWorld));
 		assertTrue(complexWorld.getCube(2, 0, 3).getIntTerrainType() == TYPE_AIR);
 		advanceSeconds(complexWorld,5);
 		assertTrue(complexWorld.getCube(2, 1, 3).getIntTerrainType() == TYPE_AIR && complexWorld.getCube(2, 2, 3).getIntTerrainType() == TYPE_AIR
@@ -272,15 +311,17 @@ public class WorldTester {
 		advanceSeconds(newComplexWorld,5);
 		assertTrue(newComplexWorld.getCube(2, 1, 3).getIntTerrainType() == TYPE_AIR && newComplexWorld.getCube(2, 2, 3).getIntTerrainType() == TYPE_AIR
 				&& newComplexWorld.getCube(1, 1, 3).getIntTerrainType() == TYPE_AIR && newComplexWorld.getCube(1, 2, 3).getIntTerrainType() == TYPE_AIR);
-		//Game time test with a 100x100x100 worst case scenario world.
+		//Game time test with a 50x50x50 worst case scenario world.
 		World worstCaseWorld= createWorstCaseWorld();
 		assertTrue(worstCaseWorld.isSolidConnectedToBorder(46, 46, 46));
 		worstCaseWorld.collapseCube(new Position(0,1,1,worstCaseWorld));
-		advanceSeconds(worstCaseWorld, 100);
+		advanceSeconds(worstCaseWorld, 5);
 		assertTrue(worstCaseWorld.getCube(46, 46, 46).getIntTerrainType() == TYPE_AIR);
 		
 	}
-	
+	/**
+	 * Creates the worst case scenario world, this is a diagonal line across the world with solid cubes.
+	 */
 	public World createWorstCaseWorld() throws WorldException{
 		int[][][] w  = new int[50][50][50];
 		
@@ -297,7 +338,9 @@ public class WorldTester {
 		return new World(w,new DefaultTerrainChangeListener());
 	}
 	
-	
+	/**
+	 * Tests the walkable property of a cube. 
+	 */
 	@Test
 	public void testIsWalkable() throws WorldException{
 		//Test ground floor empty world is walkable and the other cubes not walkable.
@@ -315,20 +358,7 @@ public class WorldTester {
 			}
 		}
 	
-		//Test walkable arround a cube,the used World is a 5 by 10 by 5 world with at z==2 the following construction. The
-		// * cubes should be walkable.
-		// The levels z==1 and z==3 will look the same accept the ones will be replaced with *.
-		//[0000000]
-		//[0000000]
-		//[00***00]
-		//[00*1*00]
-		//[00*1*00]
-		//[00*1*00]
-		//[00*1*00]
-		//[00*1*00]
-		//[00*1*00]
-		//[00*1*00]
-		//[00*1*00]
+	
 		World stripeWorld = createStripeWorld();
 		firstTestStripeWorld(stripeWorld);
 		
@@ -344,12 +374,28 @@ public class WorldTester {
 		thirdTestStripeWorld(stripeWorld);
 		//Check the walkable after a unit manipulation starting at y=2
 		World stripeWorld1 =  createStripeWorld();
-		stripeWorld1.collapseCube(new Position(3,2,2));
+		stripeWorld1.collapseCube(new Position(3,2,2,stripeWorld1));
 		advanceSeconds(stripeWorld1, 5);
 		thirdTestStripeWorld(stripeWorld1);
 		
 	}
-	
+	/**
+	 * Makes sure that all the cubes which have to be walkable in the stripeWorld are walkable.
+	 * The cubes with a * should be walkable.
+	 * The levels z==1 and z==3 will look the same accept the 1's will be replaced with *. 
+	 * The rest of the cubes shouldn't be walkable
+	 * [0000000]
+	 * [0000000]
+	 * [00***00]
+     * [00*1*00]
+     * [00*1*00]
+     * [00*1*00]
+     * [00*1*00]
+     * [00*1*00]
+     * [00*1*00]
+     * [00*1*00]
+     * [00*1*00]
+	 */
 	private void firstTestStripeWorld(World stripeWorld) {
 		for (int z=0;z<5;z++){	
 			for (int x=0;x<7;x++){
@@ -399,27 +445,61 @@ public class WorldTester {
 			}
 		}
 	}
-		
-	private void secondTestStripeWorld(World stripeWorld){
+	/**
+	 * Makes sure that all the cubes which have to be walkable in the stripeWorld are walkable.
+	 * The cubes with a * should be walkable.
+	 * The levels z==1 and z==3 will look the same accept the 1's will be replaced with *. 
+	 * The rest of the cubes shouldn't be walkable
+	 * [0000000]
+	 * [0000000]
+	 * [00***00]
+     * [00*1*00]
+     * [00*1*00]
+     * [00*1*00]
+     * [00*1*00]
+     * [00*1*00]
+     * [00*1*00]
+     * [00*1*00]
+     * [00*1*00]
+	 */	
+	
+	/**
+	 * Makes sure that all the cubes which have to be walkable in the modified stripeWorld are walkable.
+	 * The cubes with a * should be walkable.
+	 * The levels z==1 and z==3 will look the same accept the 1's will be replaced with *. 
+	 * The rest of the cubes shouldn't be walkable.
+	 * [0000000]
+	 * [0000000]
+	 * [0000000]
+     * [00***00]
+     * [00*1*00]
+     * [00*1*00]
+     * [00*1*00]
+     * [00*1*00]
+     * [00*1*00]
+     * [00*1*00]
+     * [00*1*00]
+	 */
+	private void secondTestStripeWorld(World modifiedStripeWorld){
 		for (int z=0;z<5;z++){	
 			for (int x=0;x<7;x++){
 				for (int y=0; y<11; y++){
 					//At the ground every cube should be walkable
 					if (z==0){
-						assertTrue(stripeWorld.getCube(x,y,z).isWalkable());
+						assertTrue(modifiedStripeWorld.getCube(x,y,z).isWalkable());
 					}
 					//At the top no cube is walkable.
 					if (z==4){
-						assertFalse(stripeWorld.getCube(x,y,z).isWalkable());
+						assertFalse(modifiedStripeWorld.getCube(x,y,z).isWalkable());
 					}
 					//At the levels z==1 an z==3 every cube the desired result is checked.
 					if (z==1 || z==3){
 						if (x==2 || x==3 || x==4){
 							if (y<8){
-								assertTrue(stripeWorld.getCube(x,y,z).isWalkable());
+								assertTrue(modifiedStripeWorld.getCube(x,y,z).isWalkable());
 							}
 							else {
-								assertFalse(stripeWorld.getCube(x,y,z).isWalkable());
+								assertFalse(modifiedStripeWorld.getCube(x,y,z).isWalkable());
 							}
 						}
 					}
@@ -427,21 +507,21 @@ public class WorldTester {
 					if (z==2){
 						if (x==3){
 							if (y<7){
-								assertFalse(stripeWorld.getCube(x,y,z).isWalkable());
+								assertFalse(modifiedStripeWorld.getCube(x,y,z).isWalkable());
 							}
 							else if (y==7){
-								assertTrue(stripeWorld.getCube(x,y,z).isWalkable());
+								assertTrue(modifiedStripeWorld.getCube(x,y,z).isWalkable());
 							}
 							else{
-								assertFalse(stripeWorld.getCube(x,y,z).isWalkable());
+								assertFalse(modifiedStripeWorld.getCube(x,y,z).isWalkable());
 							}
 						}
 						if (x==2 || x==4){
 							if (y<8){
-								assertTrue(stripeWorld.getCube(x,y,z).isWalkable());
+								assertTrue(modifiedStripeWorld.getCube(x,y,z).isWalkable());
 							}
 							else {
-								assertFalse(stripeWorld.getCube(x,y,z).isWalkable());
+								assertFalse(modifiedStripeWorld.getCube(x,y,z).isWalkable());
 							}
 						}
 					}
@@ -449,7 +529,22 @@ public class WorldTester {
 			}
 		}
 	}
-	
+	/**
+	 * Makes sure that all the cubes which have to be walkable in the given stripeWorld are walkable.
+	 * The cubes with a * should be walkable.
+	 * The levels z==1 and z==3 will look the same accept the 1's will be replaced with *. 
+	 * The rest of the cubes shouldn't be walkable
+	 * [0000000]
+	 * [0000000]
+     * [0000000]
+     * [0000000]
+     * [0000000]
+     * [0000000]
+     * [0000000]
+     * [00***00]
+     * [00*1*00]
+     * [00*1*00]
+	 */
 	private void thirdTestStripeWorld(World stripeWorld){
 		for (int z=0;z<5;z++){	
 			for (int x=0;x<7;x++){
@@ -501,7 +596,20 @@ public class WorldTester {
 	
 	}
 		
-	
+	/**
+	 * Creates the stripe world with configuration at z==2 else where 0.
+	 * 	[0000000]
+	 *	[0000000]
+	 *	[0000000]
+	 *	[0001000]
+	 *	[0001000]
+	 *	[0001000]
+	 *	[0001000]
+	 *	[0001000]
+	 *	[0001000]
+	 *	[0001000]
+	 *  [0001000]
+	 */
 	private World createStripeWorld() throws WorldException{
 		int[][][] w  = new int[7][11][5];
 		for (int z=0;z<5;z++){	
@@ -522,22 +630,9 @@ public class WorldTester {
 		return  new World(w,new DefaultTerrainChangeListener());
 			
 	}
-	@Test
-	public void testCollapseCube() throws WorldException{
-		World worldWithWoodAndRock = createWorldWithWoodAndRock();
-		assertTrue(worldWithWoodAndRock.getCube(0, 0, 0).getIntTerrainType()==TYPE_ROCK);
-		assertTrue(worldWithWoodAndRock.getCube(1, 1, 0).getIntTerrainType()==TYPE_TREE);
-		assertTrue(worldWithWoodAndRock.getCube(0, 0, 0).getObjectsOnThisCube().size()==0);
-		assertTrue(worldWithWoodAndRock.getCube(1, 1, 0).getObjectsOnThisCube().size()==0);
-		worldWithWoodAndRock.collapseCube(new Position(0,0,0));
-		worldWithWoodAndRock.collapseCube(new Position(1,1,0));
-		assertTrue(worldWithWoodAndRock.getCube(0, 0, 0).getIntTerrainType()==TYPE_AIR);
-		assertTrue(worldWithWoodAndRock.getCube(1, 1, 0).getIntTerrainType()==TYPE_AIR);
-		assertTrue(worldWithWoodAndRock.getCube(0, 0, 0).getObjectsOnThisCube().size()==1);
-		assertTrue(worldWithWoodAndRock.getCube(1, 1, 0).getObjectsOnThisCube().size()==1);
-		assertTrue(worldWithWoodAndRock.getCube(0, 0, 0).getABoulder()!=null);
-		assertTrue(worldWithWoodAndRock.getCube(1, 1, 0).getALog()!=null);
-	}
+	/**
+	 * Creates a 3By3By3 world with rock at (0,0,0) and wood at (1,1,0)
+	 */
 	private World createWorldWithWoodAndRock() throws WorldException{
 		int[][][] w  = new int[3][3][3];
 		for (int z=0;z<3;z++){	
@@ -562,7 +657,9 @@ public class WorldTester {
 	
 	
 	
-	//TODO: is die nodig ?
+
+	
+	
 	@Test
 	public void testDropLoad() throws WorldException{
 		//Test ground floor of an empty world

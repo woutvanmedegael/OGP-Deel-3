@@ -59,11 +59,11 @@ public class World {
 	/**
 	 * An arrayList containing all the factions of this world.
 	 */
-	private static ArrayList<Faction> factions = new ArrayList<>();
+	private ArrayList<Faction> factions = new ArrayList<>();
 	/**
 	 * The 5 different factions are created.
 	 */
-	static{
+	{
 		Faction Targaryen = new Faction();
 		Faction Lannister = new Faction();
 		Faction Stark = new Faction();
@@ -197,8 +197,8 @@ public class World {
 	/**
 	 * Returns an arraylist of the factions in this world.
 	 */
-	public static ArrayList<Faction> getFactions(){
-		return World.factions;
+	public ArrayList<Faction> getFactions(){
+		return factions;
 	}
 	/**
 	 * Returns a set of all the boulders in this world.
@@ -461,7 +461,7 @@ public class World {
 			return false;
 		}
 		
-		if (xpos==0 ){
+		if (zpos==0){
 			return true;
 		}
 		
@@ -521,7 +521,7 @@ public class World {
 	 * Assigns the smallest faction to the given unit.
 	 * @throws WorldException 
 	 */
-	private static void assignFaction(Unit unit) throws WorldException{
+	private void assignFaction(Unit unit) throws WorldException{
 		for (int i = 4;i>0; i--){
 			if (factions.get(i).getUnits().size()<factions.get(i-1).getUnits().size() && factions.get(i).getUnits().size()<50){
 				factions.get(i).addUnit(unit);
@@ -571,7 +571,7 @@ public class World {
 	 */
 	public Set<Faction> getActiveFactions(){
 		Set<Faction> activeFactions = new HashSet<>();
-		for (Faction f: World.getFactions()){
+		for (Faction f: this.getFactions()){
 			if (f.getUnits().size()>0){
 				activeFactions.add(f);
 			}

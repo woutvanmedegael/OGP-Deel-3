@@ -735,7 +735,7 @@ public class UnitTest {
 		if (!myWorld.getCube(x, y, looper).isPassable() || (looper!=0 && myWorld.getCube(x, y, looper-1).isPassable())){
 			return generateWalkablePos(myWorld);
 		}
-		return new Position(x,y,looper);
+		return new Position(x,y,looper,myWorld);
 	}
 	
 	@Test
@@ -763,29 +763,26 @@ public class UnitTest {
 		}
 	}
 	
-//	@Test
-//	public void testDefaultBehaviourWithAttacking() throws WorldException{
-//		World world = new World(smallWorld,changeListener);
-//		ArrayList<Unit> units = new ArrayList<>();
-//		for (int i=0;i<10;i++){
-//			units.add(world.spawnUnit(true));
-//		}
-//		for (int i = 0;i<100;i++){
-//			for (int j = 0; j<500;j++){
-//				world.advanceTime(0.01);
-//			}
-//			for (Unit u : units){
-//				System.out.println("start");
-//				if (u.getMyState()==CurrentState.NEUTRAL){
-//					System.out.println("yep");
-//					u.advanceTime(0.01);
-//				} 
-//				System.out.println("nope?");
-//				assert (u.getMyState()!=CurrentState.NEUTRAL);
-//				System.out.println("jawel");
-//			}
-//		}
-//	}
+	@Test
+	public void testDefaultBehaviourWithAttacking() throws WorldException{
+		World world = new World(bigWorld,changeListener);
+		ArrayList<Unit> units = new ArrayList<>();
+		for (int i=0;i<30;i++){
+			Unit unit = world.spawnUnit(true);
+			units.add(unit);
+		}
+		for (int i = 0;i<50;i++){
+			for (int j = 0; j<500;j++){
+				world.advanceTime(0.01);
+			}
+			for (Unit u : units){
+				while (u.getMyState()==CurrentState.NEUTRAL){
+					u.advanceTime(0.01);
+				} 
+				assert (u.getMyState()!=CurrentState.NEUTRAL);
+			}
+		}
+	}
 
 	
 	

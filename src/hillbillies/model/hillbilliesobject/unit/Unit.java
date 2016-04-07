@@ -190,8 +190,8 @@ public class Unit extends HillbilliesObject{
 
 public Unit(double xpos,double ypos,double zpos,String name,int weight,int strength,int agility, int toughness, boolean enableDefaultBehaviour)
 		throws UnitException {
-	this.setMyPosition(new Position((double)((int)xpos+0.5),(double)((int)ypos+0.5),(double)((int)zpos+0.5)));
-	this.setLocalTarget(new Position((double)((int)xpos+0.5),(double)((int)ypos+0.5),(double)((int)zpos+0.5)));
+	this.setMyPosition(new Position((double)((int)xpos+0.5),(double)((int)ypos+0.5),(double)((int)zpos+0.5),null));
+	this.setLocalTarget(new Position((double)((int)xpos+0.5),(double)((int)ypos+0.5),(double)((int)zpos+0.5),null));
 	this.setName(name);
 	
 	
@@ -1278,7 +1278,7 @@ public void setWorld(World world) throws WorldException{
  * Returns the world of this unit.
  * @return this.myWorld
  */
-private World getWorld(){
+public World getWorld(){
 	return this.myWorld;
 }
 /**
@@ -2067,7 +2067,6 @@ private void executeDefaultBehaviour() throws UnitException{
 		}
 		
 		CurrentState state = states.get(random.nextInt(states.size()));
-		
 		if (state == CurrentState.MOVING){
 			int[] target = World.generateRandomWalkablePos(this.getWorld());
 			this.moveTo(target[0],target[1],target[2]);
@@ -2183,6 +2182,9 @@ private void improveProperty(){
 			props.add(2);
 		}
 		Random random = new Random();
+		if (props.size()==0){
+			return;
+		}
 		int nb = random.nextInt(props.size());
 		switch (nb){
 			case 0:

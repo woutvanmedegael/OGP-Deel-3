@@ -25,9 +25,6 @@ public Load(Position position,World world) throws WorldException {
 	this.LocalTarget = position;
 	Random rand = new Random();
 	this.weight = rand.nextInt(40)+10;
-	//ADDED
-	System.out.println(position);
-	System.out.println(world);
 	this.world = world;
 }
 /**
@@ -96,20 +93,27 @@ public void advanceTime(double dt) throws WorldException {
 	
 }
 /**
- * Sets the position and parent cube of this load on the given position.
+ * Sets the position and parent cube of this load on the given position. The local target and state are reset as well.
  * @throws WorldException 
  */
 public void setPosition(Position position) throws WorldException{
+	this.setMyState(LoadState.NEUTRAL);
 	this.position = position;
+	this.getLocalTarget().setPositionAt(position);
 	setParentCube(this.getPosition(),this.world);	
 }
 /**
  * Makes the load fall. The state is set to falling, the local target is set at the underlying cube. 
  */
 public void startFalling() throws WorldException{
-	this.setMyState(LoadState.FALLING);
-	this.getLocalTarget().setPositionAt(this.getPosition());
-	this.getLocalTarget().incrPosition(0, 0, -1);
+	if (this.getMyState()!=LoadState.FALLING){
+		startFalling = new Position(0,0,0,this.world);
+		startFalling.setPositionAt(getPosition());
+		this.setMyState(LoadState.FALLING);
+		this.getLocalTarget().setPositionAt(this.getPosition());
+		this.getLocalTarget().incrPosition(0, 0, -1);
+		
+	}
 }
 /**
  * Variable registering the local target of this load.
@@ -141,6 +145,9 @@ private LoadState getMyState(){
  * Makes the load fall and stop when needed.
  */
 private void fall(double dt) throws WorldException{
+	if (this.getLocalTarget().getxpos()!=this.getPosition().getxpos()){
+		throw new WorldException();
+	}
 	double distance = this.getPosition().calculateDistance(this.getLocalTarget());
 	boolean hasArrivedAtLocalTarget = this.speed*dt>distance;
 	if (hasArrivedAtLocalTarget){
@@ -157,6 +164,13 @@ private void fall(double dt) throws WorldException{
 	if (this.getPosition().getCube()!=this.getParentCube()){
 		this.setParentCube(this.getPosition(), this.world);
 	}
+}
+
+private Position startFalling;
+
+public void drop(){
+	this.setMyState(LoadState.NEUTRAL);
+	
 }
 }
 

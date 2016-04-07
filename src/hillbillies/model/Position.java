@@ -84,53 +84,49 @@ public class Position {
 		this.zpos = zpos;
 	}
 	
-	/**
-	 * Creates a position with the given coordinates.If the given cooridinates cannot form a valid position an exception is thrown.
-	 * @param xpos
-	 * 			| the xpos of this position
-	 * @param ypos
-	 * 			| the ypos of this position
-	 * @param zpos
-	 * 			| the zpos of this position
-	 * @effect The xpos of this new position is set to
-     *         the given xpos.
-     *       | this.setxpos(xpos)
-	 * @effect The ypos of this new position is set to
-     *         the given ypos.
-     *       | this.setypos(ypos)
-	 * @effect The zpos of this new position is set to
-     *         the given xpos.
-     *       | this.setxpos(zpos)
-	 * @throws UnitException
-	 * 			An exception is thrown if one of the arguments, -xpos,ypos or zpos- are not in the playing field.
-	 * 			|!isValidPos(xpos) OR !isValidPos(ypos)  OR !isValidPos(zpos)
-	 * 			
-	 */
-	public Position(double xpos, double ypos, double zpos) throws UnitException{
-		if (!isValidPos(xpos,ypos,zpos)){
-			throw new UnitException();
-		}
-		this.xpos = xpos;
-		this.ypos = ypos;
-		this.zpos = zpos;
-	}
+//	/**
+//	 * Creates a position with the given coordinates.If the given cooridinates cannot form a valid position an exception is thrown.
+//	 * @param xpos
+//	 * 			| the xpos of this position
+//	 * @param ypos
+//	 * 			| the ypos of this position
+//	 * @param zpos
+//	 * 			| the zpos of this position
+//	 * @effect The xpos of this new position is set to
+//     *         the given xpos.
+//     *       | this.setxpos(xpos)
+//	 * @effect The ypos of this new position is set to
+//     *         the given ypos.
+//     *       | this.setypos(ypos)
+//	 * @effect The zpos of this new position is set to
+//     *         the given xpos.
+//     *       | this.setxpos(zpos)
+//	 * @throws UnitException
+//	 * 			An exception is thrown if one of the arguments, -xpos,ypos or zpos- are not in the playing field.
+//	 * 			|!isValidPos(xpos) OR !isValidPos(ypos)  OR !isValidPos(zpos)
+//	 * 			
+//	 */
+//	public Position(double xpos, double ypos, double zpos) throws UnitException{
+//		if (!isValidPos(xpos,ypos,zpos)){
+//			throw new UnitException();
+//		}
+//		this.xpos = xpos;
+//		this.ypos = ypos;
+//		this.zpos = zpos;
+//	}
 	
 	/**
 	 *Creates a position with the given coordinates and world. If this position isn't a valid pos for this world an exception is thrown.
 	 *If the world isn't null, the world is setted to the given world.
 	 */
 	public Position(double xpos, double ypos, double zpos, World world) throws UnitException{
-		
 		if (!Position.isValidPos(xpos,ypos,zpos,world)){
 			throw new UnitException();
-			
 		}
 		this.xpos = xpos;
 		this.ypos = ypos;
 		this.zpos = zpos;
-		if (world!=null){
-			this.world = world;
-		}
+		this.world = world;
 	}
 	
 /**
@@ -191,8 +187,7 @@ public static boolean posWithinWorld(int x, int y, int z, World world){
  */
 public static boolean isValidPos(double xpos, double ypos, double zpos, World world){
 	if (world == null){
-		System.out.println("world is null");
-		return true;
+		return (xpos>=0 && ypos>=0 && zpos>=0);
 	}
 	if (xpos<0 || xpos >= world.getDimensionx()){
 		return false;
@@ -203,9 +198,6 @@ public static boolean isValidPos(double xpos, double ypos, double zpos, World wo
 	if (zpos<0 || zpos >= world.getDimensionz()){
 		return false;
 	}
-	System.out.println(xpos);
-	System.out.println(ypos);
-	System.out.println(zpos);
 	return true;
 }
 /**
@@ -379,23 +371,13 @@ public ArrayList<Position> getNeighbours() throws UnitException{
 	for (int x: pos){
 		for (int y: pos){
 			for (int z: pos){
-				System.out.println("right here");
 				if (Position.isValidPos(x+this.getxpos(), y+this.getypos(), z+this.getzpos(), this.world) && (x!=0 || y!=0 || z!=0)){
+					
 					Position neighbour = new Position(this.getxpos()+x,this.getypos()+y,this.getzpos()+z, this.world);
-					try{
 					if (neighbour.getCube().isWalkable()){
 						neighbours.add(neighbour);
 					}
-					} catch (NullPointerException e){
-						System.out.println(neighbour);
-						System.out.println(x);
-						System.out.println(y);
-						System.out.println(z);
-						System.out.println(this.getxpos());
-						System.out.println(this.getypos());
-						System.out.println(this.getzpos());
-						System.out.println(neighbour.getCube());
-					}
+					
 				}
 			}
 		}
