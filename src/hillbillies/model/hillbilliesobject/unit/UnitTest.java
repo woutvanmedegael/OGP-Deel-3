@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.swing.event.TreeSelectionEvent;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -808,6 +810,60 @@ public class UnitTest {
 		assert (attacker.getMyState()!=CurrentState.ATTACKING);
 		assert (test.isFalling());
 	}
+	
+	@Test
+	public void cannotWorkOrAttackOrRestWhenFalling() throws WorldException{
+		for (int i=1;i<7;i++){
+			bigWorld[1][0][i]=1;
+		}
+		bigWorld[1][0][6] = 1;
+		bigWorld[1][1][6] = 1;
+		bigWorld[1][2][6] = 1;
+		World world = new World(bigWorld,changeListener);
+		Unit defender = world.spawnUnit(false);
+		world.addUnit(test);
+		test.moveTo(1, 3, 6);
+		this.advanceSeconds(test, 30);
+		defender.moveTo(1, 2, 5);
+		this.advanceSeconds(defender, 30);
+		world.collapseCube(new Position(1,2,6,world));
+		assert (test.isFalling());
+		while (test.getzpos()>5){
+			test.advanceTime(0.1);
+		}
+		//ATTACK
+		test.startAttacking(defender);
+		assert(test.getMyState() != CurrentState.ATTACKING);
+		assert(test.isFalling());
+		//WORK
+		test.workAt(1, 2, 5);
+		assert(test.getMyState() != CurrentState.WORKING);
+		assert(test.isFalling());
+		//REST
+		test.startResting();
+		assert(test.getMyState() != CurrentState.RESTING);
+		assert(test.isFalling());
+		}
+	
+	
+	@Test
+	public void attackerCanAttackMovingUnit() throws WorldException{
+		World world = new World(smallWorld,changeListener);
+		Unit attacker = world.spawnUnit(false);
+		world.addUnit(test);
+		attacker.moveTo(0,1,1);
+		this.advanceSeconds(attacker, 30);
+		test.moveTo(1,2,1);
+		this.advanceSeconds(test, 30);
+		test.moveTo(1, 0, 1);
+		while (test.getypos()>1){
+			test.advanceTime(0.1);
+		}
+		attacker.startAttacking(test);
+		assertTrue (attacker.getMyState()==CurrentState.ATTACKING);
+	}
+	
+
 
 	
 	
