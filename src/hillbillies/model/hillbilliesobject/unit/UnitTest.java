@@ -783,6 +783,31 @@ public class UnitTest {
 			}
 		}
 	}
+	
+	@Test
+	public void testAttackingCantInterruptFalling() throws WorldException{
+		for (int i=1;i<7;i++){
+			bigWorld[1][0][i]=1;
+		}
+		bigWorld[1][0][6] = 1;
+		bigWorld[1][1][6] = 1;
+		bigWorld[1][2][6] = 1;
+		World world = new World(bigWorld,changeListener);
+		Unit attacker = world.spawnUnit(false);
+		world.addUnit(test);
+		test.moveTo(1, 3, 6);
+		this.advanceSeconds(test, 30);
+		attacker.moveTo(1, 2, 5);
+		this.advanceSeconds(attacker, 30);
+		world.collapseCube(new Position(1,2,6,world));
+		assert (test.isFalling());
+		while (test.getzpos()>5){
+			test.advanceTime(0.1);
+		}
+		attacker.startAttacking(test);
+		assert (attacker.getMyState()!=CurrentState.ATTACKING);
+		assert (test.isFalling());
+	}
 
 	
 	

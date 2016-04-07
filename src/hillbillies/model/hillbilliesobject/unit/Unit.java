@@ -1722,7 +1722,8 @@ public void startResting(){
  * 		| then this.getDefender().startDefending(this)
  */
 public void startAttacking(Unit defender){
-	if (targetWithinReach(defender) && !(this.getMyState() == CurrentState.DEFENDING || this.getMyState() == CurrentState.ATTACKING || this.getFaction()==defender.getFaction())){
+	if (targetWithinReach(defender) && !(this.getMyState() == CurrentState.DEFENDING || this.getMyState() == CurrentState.ATTACKING ||
+			this.getFaction()==defender.getFaction() || this.getMyState() == CurrentState.FALLING) && !defender.isFalling()){
 		this.setDefender(defender);
 		this.setMyState(CurrentState.ATTACKING);
 		this.setOrientation((float) Math.atan2(this.getDefender().getypos()-this.getypos(), this.getDefender().getxpos()-this.getxpos()));
@@ -1730,6 +1731,15 @@ public void startAttacking(Unit defender){
 	} else {
 		this.setMyState(CurrentState.MOVING);
 	}
+}
+
+/**
+ * Checks whether a unit is falling
+ * @return
+ * 		this.getMyState()==CurrentState.FALLING
+ */
+public boolean isFalling(){
+	return this.getMyState()==CurrentState.FALLING;
 }
 
 /**
