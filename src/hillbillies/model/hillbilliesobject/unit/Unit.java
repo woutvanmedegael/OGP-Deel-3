@@ -1808,13 +1808,13 @@ private boolean dodge(Unit attacker){
 }
 /**
  * Updates the unit's position randomly in the close region(x+(-1..1) and y + (-1..1)) around the current position.
- * If that position isn't in the gaming field, the unit jumps away in the opposite direction.
+ * If that position isn't walkable, the unit generates a new random position.
  * @throws WorldException 
  * @post  If it is possible to change the x-coordinate and y-coordinate (stays within the gaming field) with a random value dx and dy between (-1..1),
  * 				 the x-coordinate and y-coordinate are changed.
  * 		 | dx = randomNumberBetween(-1..1)
  * 		 | dy = randomNumberBetween(-1..1)
- * 		 | if (isValidPos(this.getMyPosition().getxpos()+dx) && isValidPos(this.getMyPosition().getypos()+dy))
+ * 		 | if (isValidPos(this.getMyPosition().getxpos()+dx, this.getMyPosition().getypos()+dy, this.getMyPosition().getzpos(),this.getWorld()) && targetpos.getCube().isWalkable())
  * 		 | then new.getMyPosition.getxpos() == this.getMyPosition.getxpos() + dx and
  * 				new.getMyPosition.getypos() == this.getMyPosition.getypos() + dy
  * @effect If the new random position isn't valid, the unit jumps away.
@@ -2069,8 +2069,8 @@ private void executeDefaultBehaviour() throws UnitException{
 		CurrentState state = states.get(random.nextInt(states.size()));
 		
 		if (state == CurrentState.MOVING){
-			Position target = generateRandomPos();
-			this.moveTo(target.getCubexpos(),target.getCubeypos(),target.getCubezpos());
+			int[] target = World.generateRandomWalkablePos(this.getWorld());
+			this.moveTo(target[0],target[1],target[2]);
 		}	
 		else if (state == CurrentState.WORKING){
 			Random random = new Random();

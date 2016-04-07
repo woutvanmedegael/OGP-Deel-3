@@ -480,31 +480,38 @@ public class World {
 	 * @throws WorldException 
 	 */
 	public Unit spawnUnit(boolean enableDefaultBehavior) throws WorldException{
-//			enableDefaultBehavior = false;
-			Random random = new Random();
-			int x = random.nextInt(this.getDimensionx()-1);
-			int y = random.nextInt(this.getDimensiony()-1);
-			int z = random.nextInt(this.getDimensionz()-1);
-			int looper = z;
-			while ((!this.getCube(x, y, looper).isPassable() || (looper != 0 && this.getCube(x, y, looper-1).isPassable())) && looper !=z-1){
-				looper+=1;
-				looper %= dimensionz-1;
-			}
-			if (!this.getCube(x, y, looper).isPassable() || (looper!=0 && this.getCube(x, y, looper-1).isPassable())){
-				return spawnUnit(enableDefaultBehavior);
-			}
+
+			int[] newPos = generateRandomWalkablePos(this);
 			int strength = random.nextInt(75)+25;
 			int agility = random.nextInt(75)+25;
 			int toughness = random.nextInt(75)+25;
 			int weight = random.nextInt(75)+25;
 			String name = createRandomName();
-			Unit unit = new Unit(x,y,looper,name,weight,strength,agility,toughness,enableDefaultBehavior);
+			Unit unit = new Unit(newPos[0],newPos[1],newPos[2],name,weight,strength,agility,toughness,enableDefaultBehavior);
 			if (!(countUnits()>=100)){
 			unit.setWorld(this);
 			assignFaction(unit);
 			}
 			return unit;
 	}
+	
+	public static int[] generateRandomWalkablePos(World world){
+		Random random = new Random();
+		int x = random.nextInt(world.getDimensionx()-1);
+		int y = random.nextInt(world.getDimensiony()-1);
+		int z = random.nextInt(world.getDimensionz()-2)+1;
+		int looper = z;
+		while ((!world.getCube(x, y, looper).isWalkable()) && looper!=z-1){
+			looper += 1;
+			looper %= world.getDimensionz()-1;
+		}
+		if (!world.getCube(x, y, looper).isWalkable()){
+			return generateRandomWalkablePos(world);
+		}
+		return new int[]{x,y,looper};
+	}
+	
+	
 	/**
 	 * Assigns the smallest faction to the given unit.
 	 * @throws WorldException 
@@ -578,7 +585,7 @@ public class World {
 			workPosition.setToMiddleOfCube();
 			load.setPosition(workPosition);
 			if (load instanceof Log){
-			logs.add((Log) load);
+				logs.add((Log) load);
 			}
 			else if (load instanceof Boulder){
 				boulders.add((Boulder) load);
