@@ -1,6 +1,9 @@
 package hillbillies.model;
 import static org.junit.Assert.*;
 import org.junit.Test;
+
+import hillbillies.model.hillbilliesobject.Boulder;
+import hillbillies.model.hillbilliesobject.Log;
 import hillbillies.model.world.Faction;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
@@ -11,16 +14,20 @@ public class WorldTester {
 	private static final int TYPE_TREE = 2;
 	private static final int TYPE_WORKSHOP = 3;
 	
-	
+	/**
+	 * Test to check if the dimensions are correct after initializing the world.
+	 */
 	@Test
 	public void testDimensions() throws WorldException{
 		World empty4By4By4 = new World(new int[4][4][4], new DefaultTerrainChangeListener());
 		World empty2By3By8 = new World(new int[2][3][8], new DefaultTerrainChangeListener());
 		assertTrue(empty4By4By4.getDimensionx()==4 && empty4By4By4.getDimensiony()==4 && empty4By4By4.getDimensionz()==4);
 		assertTrue(empty2By3By8.getDimensionx()==2 && empty2By3By8.getDimensiony()==3 && empty2By3By8.getDimensionz()==8);
-	
 	}
 	
+	/**
+	 * Test to check 
+	 */
 	@Test
 	public void testFactionsAndNumberOfUnits() throws WorldException {
 		World empty4By4 = new World(new int[4][4][4], new DefaultTerrainChangeListener());
@@ -558,6 +565,20 @@ public class WorldTester {
 	//TODO: is die nodig ?
 	@Test
 	public void testDropLoad() throws WorldException{
+		//Test ground floor of an empty world
+		World world = this.createEmptyTestWorld();
+		Log log = new Log(new Position(0,0,0), world);
+		world.removeLog(log);
+		world.dropLoad(log, new Position(1,0,0));
+		assertTrue(world.getLogs().contains(log));
+		
+		Boulder boulder = new Boulder( new Position(0,1,0), world);
+		assertTrue(world.getBoulders().contains(boulder));
+		world.dropLoad(boulder, new Position(0,2,0));
+		
+		
+		
+		
 		
 	}	
 	
