@@ -15,6 +15,7 @@ import java.util.HashSet;
 /**
  * The class World which controls the gameworld.
  * @author Wout Van Medegael & Adriaan Van Gerven
+ * URL: https://github.com/woutvm-peno/OGPDeel2
  */
 public class World {
 	/**

@@ -23,6 +23,7 @@ import hillbillies.model.world.WorldException;
 
 /**
  * @author Wout Van Medegael & Adriaan Van Gerven
+ * URL: https://github.com/woutvm-peno/OGPDeel2
  */
 
 /**
