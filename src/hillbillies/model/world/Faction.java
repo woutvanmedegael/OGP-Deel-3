@@ -1,7 +1,15 @@
 package hillbillies.model.world;
+
 import java.util.HashSet;
 import java.util.Set;
 import hillbillies.model.hillbilliesobject.unit.Unit;
+/**
+ * @value
+ * @author Wout Van Medegael & Adriaan Van Gerven
+ */
+/**
+ * A class faction used to keep track of the units in a faction.
+ */
 public class Faction {
 	/**
 	 * Set containing all units of this faction.

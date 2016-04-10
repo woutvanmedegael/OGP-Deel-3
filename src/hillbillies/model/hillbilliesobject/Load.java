@@ -11,6 +11,10 @@ import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
+/**
+ * @value
+ * @author Wout Van Medegael & Adriaan Van Gerven
+ */
 public class Load extends HillbilliesObject{
 
 private final World world;

@@ -1,10 +1,10 @@
 
 package hillbillies.model;
+
 /**
+ * A class used to compare different numbers.
  * @value
- */
-/**
- * A class used to compare different numbers
+ * @author Wout Van Medegael & Adriaan Van Gerven 
  */
 public class NbCompare {
 	

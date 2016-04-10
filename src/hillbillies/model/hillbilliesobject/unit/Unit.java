@@ -1,13 +1,7 @@
 package hillbillies.model.hillbilliesobject.unit;
 
+
 import java.util.ArrayList;
-
-/**
- * @author Wout Van Medegael - 2de bach B. Ir. CW-ESAT
- * @author Adriaan Van Gerven - 2de bach B. Ir. CW-ESAT
- * Github repository: https://github.com/woutvm-peno/Hillbillies.git
- */
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -26,6 +20,10 @@ import hillbillies.model.world.Faction;
 import hillbillies.model.world.TerrainType;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
+
+/**
+ * @author Wout Van Medegael & Adriaan Van Gerven
+ */
 
 /**
  * @invar  The xpos of each Unit must be a valid xpos for any
@@ -67,7 +65,6 @@ import hillbillies.model.world.WorldException;
  * @invar  The experiencePoints of each unit must be a valid experiencePoints for any
  *         unit.
  *       | isValidExcperiencePoints(getExcperiencePoints())
- * @author Adriaan en Wout
  */
 public class Unit extends HillbilliesObject{
 

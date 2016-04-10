@@ -1,11 +1,19 @@
 package hillbillies.model.world;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import hillbillies.model.hillbilliesobject.Boulder;
 import hillbillies.model.hillbilliesobject.HillbilliesObject;
 import hillbillies.model.hillbilliesobject.Log;
-import hillbillies.model.hillbilliesobject.unit.UnitException;
+
+/**
+ * @value
+ * @author Wout Van Medegael & Adriaan Van Gerven
+ */
+/**
+ * A class to register the different properties of a cube and the different objects it contains.
+ */
 public class Cube {
 /**
  * ArrayList used to keep track of the objects on this cube.

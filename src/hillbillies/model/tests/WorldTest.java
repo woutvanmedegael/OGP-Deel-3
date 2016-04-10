@@ -1,4 +1,5 @@
 package hillbillies.model.tests;
+
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -9,6 +10,11 @@ import hillbillies.model.world.Faction;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
+/**
+ * Tests different aspects of the world.
+ * @value
+ * @author Wout Van Medegael & Adriaan Van Gerven
+ */
 public class WorldTest {
 	private static final int TYPE_AIR = 0;
 	private static final int TYPE_ROCK = 1;

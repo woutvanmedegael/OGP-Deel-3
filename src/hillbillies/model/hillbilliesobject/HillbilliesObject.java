@@ -5,7 +5,10 @@ import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.model.world.Cube;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
-
+/**
+ * @value
+ * @author Wout Van Medegael & Adriaan Van Gerven
+ */
 public abstract class HillbilliesObject {
 	/**
 	 * Abstract method advance time that is implemented in each hillbilliesobject.

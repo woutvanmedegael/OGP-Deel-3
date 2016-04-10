@@ -1,8 +1,8 @@
 package hillbillies.model.hillbilliesobject;
 /**
  * @value
+ * @author Wout Van Medegael & Adriaan Van Gerven
  */
-
 /**
  * An enumeration of the different states a unit can be in.
  *    In its current definition, the class distinguishes between seven different states.

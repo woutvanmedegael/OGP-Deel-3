@@ -25,7 +25,11 @@ import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.tests.util.PositionAsserts;
-
+/**
+ * Different tests on unit.
+ * @value
+ * @author Wout Van Medegael & Adriaan Van Gerven
+ */
 public class UnitTest {
 	
 	

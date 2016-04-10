@@ -13,9 +13,8 @@ import hillbillies.util.ConnectedToBorder;
 import java.util.ArrayList;
 import java.util.HashSet;
 /**
- * 
+ * The class World which controls the gameworld.
  * @author Wout Van Medegael & Adriaan Van Gerven
- *
  */
 public class World {
 	/**

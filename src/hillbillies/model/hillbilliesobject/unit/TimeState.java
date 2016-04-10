@@ -1,9 +1,12 @@
 package hillbillies.model.hillbilliesobject.unit;
-/**
- * @value
- */
+
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
+/**
+ * A class used to keep track of the time a unit is in a certain state.
+ * @value
+ * @author Wout Van Medegael & Adriaan Van Gerven
+ */
 /**
  * @invar  The attackTime of each timeState must be a valid attackTime for any
  *         timeState.

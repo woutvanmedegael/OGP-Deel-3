@@ -1,5 +1,9 @@
 package hillbillies.model.world;
-
+/**
+ * Class used to throw exceptions in concerning the game world.
+ * @value
+ * @author Wout Van Medegael & Adriaan Van Gerven
+ */
 public class WorldException extends Exception {
 
 	/**

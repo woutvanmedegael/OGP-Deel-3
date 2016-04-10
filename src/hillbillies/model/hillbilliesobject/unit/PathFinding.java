@@ -8,6 +8,10 @@ import java.util.TreeSet;
 import hillbillies.model.Position;
 import hillbillies.model.world.World;
 /**
+ * @value
+ * @author Wout Van Medegael & Adriaan Van Gerven
+ */
+/**
  * Class to calculate the path from position start to position target through the given world.
  */
 public class PathFinding {

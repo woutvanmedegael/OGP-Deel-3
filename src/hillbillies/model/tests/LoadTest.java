@@ -1,5 +1,6 @@
 package hillbillies.model.tests;
 
+
 import static org.junit.Assert.*;
 
 import org.junit.After;
@@ -15,7 +16,11 @@ import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 import hillbillies.tests.util.PositionAsserts;
-
+/**
+ * Different tests on load.
+ * @value
+ * @author Wout Van Medegael & Adriaan Van Gerven
+ */
 public class LoadTest {
 	
 	static int[][][] smallWorld = new int[3][3][3];

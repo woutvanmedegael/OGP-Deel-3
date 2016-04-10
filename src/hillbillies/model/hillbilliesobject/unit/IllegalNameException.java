@@ -1,6 +1,10 @@
 package hillbillies.model.hillbilliesobject.unit;
 
 /**
+ * @value
+ * @author Wout Van Medegael & Adriaan Van Gerven
+ */
+/**
  * A class for signaling illegal names for a unit.
  */
 public class IllegalNameException extends UnitException{

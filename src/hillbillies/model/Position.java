@@ -8,6 +8,9 @@ import hillbillies.model.world.Cube;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 /**
+ * Class Position used to represent a position and different calculations with those positions.
+ * @value
+ * @author Wout Van Medegael & Adriaan Van Gerven
  * @invar  The xpos of each Position must be a valid xpos for any
  *         Position
  *       | this.isValidPos(getxpos())
@@ -83,38 +86,6 @@ public class Position {
 		this.ypos = ypos;
 		this.zpos = zpos;
 	}
-	
-//	/**
-//	 * Creates a position with the given coordinates.If the given cooridinates cannot form a valid position an exception is thrown.
-//	 * @param xpos
-//	 * 			| the xpos of this position
-//	 * @param ypos
-//	 * 			| the ypos of this position
-//	 * @param zpos
-//	 * 			| the zpos of this position
-//	 * @effect The xpos of this new position is set to
-//     *         the given xpos.
-//     *       | this.setxpos(xpos)
-//	 * @effect The ypos of this new position is set to
-//     *         the given ypos.
-//     *       | this.setypos(ypos)
-//	 * @effect The zpos of this new position is set to
-//     *         the given xpos.
-//     *       | this.setxpos(zpos)
-//	 * @throws UnitException
-//	 * 			An exception is thrown if one of the arguments, -xpos,ypos or zpos- are not in the playing field.
-//	 * 			|!isValidPos(xpos) OR !isValidPos(ypos)  OR !isValidPos(zpos)
-//	 * 			
-//	 */
-//	public Position(double xpos, double ypos, double zpos) throws UnitException{
-//		if (!isValidPos(xpos,ypos,zpos)){
-//			throw new UnitException();
-//		}
-//		this.xpos = xpos;
-//		this.ypos = ypos;
-//		this.zpos = zpos;
-//	}
-	
 	/**
 	 *Creates a position with the given coordinates and world. If this position isn't a valid pos for this world an exception is thrown.
 	 *If the world isn't null, the world is setted to the given world.
