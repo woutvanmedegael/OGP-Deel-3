@@ -527,7 +527,6 @@ public class UnitTest {
 		assert (comp.equals(test.getxpos(), 1.5));
 		assert (comp.equals(test.getypos(), 0.5));
 		assert (comp.equals(test.getzpos(), 1.5));
-		
 	}
 	
 	/**
@@ -878,7 +877,7 @@ public class UnitTest {
 			Unit unit = world.spawnUnit(true);
 			units.add(unit);
 		}
-		for (int i = 0;i<50;i++){
+		for (int i = 0;i<500;i++){
 			for (int j = 0; j<500;j++){
 				world.advanceTime(0.01);
 			}
