@@ -1,10 +1,11 @@
-package hillbillies.model.hillbilliesobject;
+package hillbilliesobject;
 
 import hillbillies.model.Position;
-import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.model.world.Cube;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
+import hillbilliesobject.unit.UnitException;
+
 /**
  * @value
  * @author Wout Van Medegael & Adriaan Van Gerven

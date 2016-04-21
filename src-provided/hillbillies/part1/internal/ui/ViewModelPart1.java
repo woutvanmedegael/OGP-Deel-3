@@ -7,10 +7,10 @@ import hillbillies.common.internal.providers.UnitInfoProvider;
 import hillbillies.common.internal.providers.WorldInfoProvider;
 import hillbillies.common.internal.ui.sprites.SpriteFactory;
 import hillbillies.common.internal.ui.viewmodel.ViewModel;
-import hillbillies.model.Unit;
 import hillbillies.part1.internal.map.EmptyMap;
 import hillbillies.part1.internal.ui.sprites.UnitSprite;
 import hillbillies.part1.internal.ui.viewmodel.IViewModel1;
+import hillbilliesobject.unit.Unit;
 import javafx.geometry.Rectangle2D;
 
 public class ViewModelPart1 extends ViewModel implements IViewModel1 {

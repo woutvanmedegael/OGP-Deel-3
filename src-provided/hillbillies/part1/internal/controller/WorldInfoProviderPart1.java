@@ -5,9 +5,9 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import hillbillies.common.internal.providers.WorldInfoProvider;
-import hillbillies.model.Unit;
 import hillbillies.part1.facade.IFacade;
 import hillbillies.part1.internal.map.EmptyMap;
+import hillbilliesobject.unit.Unit;
 import ogp.framework.util.ModelException;
 
 public class WorldInfoProviderPart1 implements WorldInfoProvider {

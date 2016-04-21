@@ -1,7 +1,7 @@
 package hillbillies.part2.internal.ui.viewparts;
 
 import hillbillies.common.internal.ui.viewparts.ControlArea;
-import hillbillies.model.Faction;
+import hillbillies.model.world.Faction;
 import hillbillies.part1.internal.ui.viewparts.UnitInfoAreaPart;
 import hillbillies.part2.internal.controller.ActionExecutorPart2;
 import hillbillies.part2.internal.providers.IGameObjectInfoProvider;

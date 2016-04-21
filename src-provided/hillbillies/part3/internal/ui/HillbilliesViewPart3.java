@@ -8,7 +8,6 @@ import hillbillies.common.internal.Constants;
 import hillbillies.common.internal.ui.viewmodel.ViewModel;
 import hillbillies.common.internal.ui.viewparts.InfoArea;
 import hillbillies.common.internal.ui.viewparts.WorldView;
-import hillbillies.model.Unit;
 import hillbillies.part2.internal.Part2Options;
 import hillbillies.part2.internal.ui.HillbilliesViewPart2;
 import hillbillies.part3.internal.controller.ActionExecutorPart3;
@@ -18,6 +17,7 @@ import hillbillies.part3.internal.ui.viewmodel.ViewModelPart3;
 import hillbillies.part3.internal.ui.viewparts.InfoArea3;
 import hillbillies.part3.internal.ui.viewparts.UnitInfoAreaPart3;
 import hillbillies.part3.internal.ui.viewparts.WorldViewPart3;
+import hillbilliesobject.unit.Unit;
 import javafx.geometry.Rectangle2D;
 
 public class HillbilliesViewPart3 extends HillbilliesViewPart2 implements IHillbilliesView3 {

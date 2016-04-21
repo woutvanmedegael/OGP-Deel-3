@@ -1,4 +1,4 @@
-package hillbillies.model.hillbilliesobject.unit;
+package hillbilliesobject.unit;
 
 import hillbillies.model.world.WorldException;
 

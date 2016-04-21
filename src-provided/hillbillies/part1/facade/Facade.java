@@ -1,11 +1,11 @@
 package hillbillies.part1.facade;
 
 
-import hillbillies.model.hillbilliesobject.CurrentState;
-import hillbillies.model.hillbilliesobject.unit.IllegalNameException;
-import hillbillies.model.hillbilliesobject.unit.Unit;
-import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.model.world.WorldException;
+import hillbilliesobject.CurrentState;
+import hillbilliesobject.unit.IllegalNameException;
+import hillbilliesobject.unit.Unit;
+import hillbilliesobject.unit.UnitException;
 import ogp.framework.util.ModelException;
 
 

@@ -1,5 +1,5 @@
 
-package hillbillies.model.hillbilliesobject;
+package hillbilliesobject;
 
 import java.util.Random;
 
@@ -7,9 +7,9 @@ import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.model.Position;
-import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
+import hillbilliesobject.unit.UnitException;
 
 /**
  * @value

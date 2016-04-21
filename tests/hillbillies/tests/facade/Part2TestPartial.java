@@ -5,11 +5,11 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.World;
 import hillbillies.part2.facade.Facade;
 import hillbillies.part2.facade.IFacade;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
+import hillbilliesobject.unit.Unit;
 import ogp.framework.util.ModelException;
 
 public class Part2TestPartial {

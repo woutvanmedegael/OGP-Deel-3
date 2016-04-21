@@ -1,8 +1,9 @@
-package hillbillies.model.hillbilliesobject;
+package hillbilliesobject;
 
 import hillbillies.model.Position;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
+
 /**
  * A class boulder used to represent a boulder.
  * @value

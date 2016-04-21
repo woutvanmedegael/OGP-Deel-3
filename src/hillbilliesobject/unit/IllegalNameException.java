@@ -1,4 +1,4 @@
-package hillbillies.model.hillbilliesobject.unit;
+package hillbilliesobject.unit;
 
 /**
  * @value

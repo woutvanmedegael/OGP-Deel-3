@@ -1,4 +1,4 @@
-package hillbillies.model.hillbilliesobject.unit;
+package hillbilliesobject.unit;
 
 import java.util.ArrayList;
 import java.util.HashSet;

@@ -2,16 +2,16 @@ package hillbillies.part2.facade;
 
 import java.util.Set;
 
-import hillbillies.model.hillbilliesobject.Boulder;
-import hillbillies.model.hillbilliesobject.CurrentState;
-import hillbillies.model.hillbilliesobject.Log;
-import hillbillies.model.hillbilliesobject.unit.IllegalNameException;
-import hillbillies.model.hillbilliesobject.unit.Unit;
-import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.model.world.Faction;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 import hillbillies.part2.listener.TerrainChangeListener;
+import hillbilliesobject.Boulder;
+import hillbilliesobject.CurrentState;
+import hillbilliesobject.Log;
+import hillbilliesobject.unit.IllegalNameException;
+import hillbilliesobject.unit.Unit;
+import hillbilliesobject.unit.UnitException;
 import ogp.framework.util.ModelException;
 
 public class Facade implements IFacade{

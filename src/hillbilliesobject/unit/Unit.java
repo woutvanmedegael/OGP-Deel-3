@@ -1,4 +1,4 @@
-package hillbillies.model.hillbilliesobject.unit;
+package hillbilliesobject.unit;
 
 
 import java.util.ArrayList;
@@ -10,16 +10,16 @@ import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.model.NbCompare;
 import hillbillies.model.Position;
-import hillbillies.model.hillbilliesobject.Boulder;
-import hillbillies.model.hillbilliesobject.CurrentState;
-import hillbillies.model.hillbilliesobject.HillbilliesObject;
-import hillbillies.model.hillbilliesobject.Load;
-import hillbillies.model.hillbilliesobject.Log;
 import hillbillies.model.world.Cube;
 import hillbillies.model.world.Faction;
 import hillbillies.model.world.TerrainType;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
+import hillbilliesobject.Boulder;
+import hillbilliesobject.CurrentState;
+import hillbilliesobject.HillbilliesObject;
+import hillbilliesobject.Load;
+import hillbilliesobject.Log;
 
 /**
  * @author Wout Van Medegael & Adriaan Van Gerven

@@ -1,8 +1,8 @@
 package hillbillies.part2.internal.ui.sprites;
 
 import hillbillies.common.internal.ui.sprites.AbstractSprite;
-import hillbillies.model.Boulder;
 import hillbillies.part2.internal.providers.IGameObjectInfoProvider;
+import hillbilliesobject.Boulder;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

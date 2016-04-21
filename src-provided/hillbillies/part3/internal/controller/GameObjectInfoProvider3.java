@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import hillbillies.model.Faction;
 import hillbillies.model.Scheduler;
 import hillbillies.model.Task;
-import hillbillies.model.Unit;
+import hillbillies.model.world.Faction;
 import hillbillies.part2.internal.controller.GameObjectInfoProvider;
 import hillbillies.part3.facade.IFacade;
 import hillbillies.part3.internal.providers.IGameObjectInfoProvider3;
+import hillbilliesobject.unit.Unit;
 import ogp.framework.util.ModelException;
 
 public class GameObjectInfoProvider3 extends GameObjectInfoProvider implements IGameObjectInfoProvider3 {

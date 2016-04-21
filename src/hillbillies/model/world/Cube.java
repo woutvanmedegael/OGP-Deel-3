@@ -3,9 +3,10 @@ package hillbillies.model.world;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import hillbillies.model.hillbilliesobject.Boulder;
-import hillbillies.model.hillbilliesobject.HillbilliesObject;
-import hillbillies.model.hillbilliesobject.Log;
+
+import hillbilliesobject.Boulder;
+import hillbilliesobject.HillbilliesObject;
+import hillbilliesobject.Log;
 
 /**
  * @value

@@ -1,4 +1,4 @@
-package hillbillies.model.hillbilliesobject;
+package hillbilliesobject;
 /**
  * @value
  * @author Wout Van Medegael & Adriaan Van Gerven

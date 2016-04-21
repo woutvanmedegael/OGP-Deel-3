@@ -8,9 +8,9 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.part1.facade.Facade;
 import hillbillies.part1.facade.IFacade;
+import hillbilliesobject.unit.Unit;
 import ogp.framework.util.ModelException;
 
 public class Part1TestPartial {

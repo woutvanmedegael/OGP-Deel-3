@@ -6,7 +6,6 @@ import hillbillies.common.internal.ui.viewmodel.ViewModel;
 import hillbillies.common.internal.ui.viewparts.InfoArea;
 import hillbillies.common.internal.ui.viewparts.MiniMap;
 import hillbillies.common.internal.ui.viewparts.WorldView;
-import hillbillies.model.Unit;
 import hillbillies.part2.internal.Part2Options;
 import hillbillies.part2.internal.controller.ActionExecutorPart2;
 import hillbillies.part2.internal.providers.IGameObjectInfoProvider;
@@ -16,6 +15,7 @@ import hillbillies.part2.internal.ui.viewparts.InfoArea2;
 import hillbillies.part2.internal.ui.viewparts.MiniMapPart2;
 import hillbillies.part2.internal.ui.viewparts.UnitInfoAreaPart2;
 import hillbillies.part2.internal.ui.viewparts.WorldViewPart2;
+import hillbilliesobject.unit.Unit;
 import javafx.geometry.Rectangle2D;
 
 public class HillbilliesViewPart2 extends HillbilliesView implements IHillbilliesView2 {

@@ -10,11 +10,11 @@ import org.junit.Test;
 
 import hillbillies.model.NbCompare;
 import hillbillies.model.Position;
-import hillbillies.model.hillbilliesobject.Load;
-import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 import hillbillies.tests.util.PositionAsserts;
+import hillbilliesobject.Load;
+import hillbilliesobject.unit.UnitException;
 /**
  * Different tests on load.
  * @value

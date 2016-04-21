@@ -2,7 +2,8 @@ package hillbillies.model.world;
 
 import java.util.HashSet;
 import java.util.Set;
-import hillbillies.model.hillbilliesobject.unit.Unit;
+
+import hillbilliesobject.unit.Unit;
 /**
  * @value
  * @author Wout Van Medegael & Adriaan Van Gerven
