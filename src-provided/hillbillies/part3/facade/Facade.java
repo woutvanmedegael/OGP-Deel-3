@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
-import hillbillies.model.Scheduler;
-import hillbillies.model.Task;
+import hillbillies.model.scheduler.Scheduler;
+import hillbillies.model.scheduler.Task;
 import hillbillies.model.world.Faction;
 import hillbillies.model.world.World;
 import hillbillies.part2.listener.TerrainChangeListener;

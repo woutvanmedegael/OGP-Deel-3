@@ -8,8 +8,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import hillbillies.model.Scheduler;
-import hillbillies.model.Task;
+import hillbillies.model.scheduler.Scheduler;
+import hillbillies.model.scheduler.Task;
 import hillbillies.model.world.Faction;
 import hillbillies.model.world.World;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
@@ -51,7 +51,7 @@ public class Part3TestPartial {
 		List<Task> tasks = TaskParser.parseTasksFromString(
 				"name: \"work task\"\npriority: 1\nactivities: work selected;", facade.createTaskFactory(),
 				Collections.singletonList(new int[] { 1, 1, 1 }));
-
+		System.out.println(tasks);
 		// tasks are created
 		assertNotNull(tasks);
 		// there's exactly one task

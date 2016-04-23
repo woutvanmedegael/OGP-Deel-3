@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import hillbillies.common.internal.ui.viewparts.ControlArea;
-import hillbillies.model.Task;
+import hillbillies.model.scheduler.Task;
 import hillbillies.model.world.Faction;
 import hillbillies.part2.internal.ui.sprites.FactionColors;
 import hillbillies.part3.internal.controller.ActionExecutorPart3;

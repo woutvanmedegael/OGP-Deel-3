@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import hillbillies.model.Scheduler;
-import hillbillies.model.Task;
+import hillbillies.model.scheduler.Scheduler;
+import hillbillies.model.scheduler.Task;
 import hillbillies.model.world.Faction;
 import hillbillies.part2.internal.controller.GameObjectInfoProvider;
 import hillbillies.part3.facade.IFacade;
