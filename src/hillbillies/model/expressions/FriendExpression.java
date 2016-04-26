@@ -5,7 +5,7 @@ import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
 public class FriendExpression extends UnitExpression{
-
+	//WOUT
 	@Override
 	public Unit evaluate(World world, Unit unit) throws WorldException {
 		// TODO Auto-generated method stub
