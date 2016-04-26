@@ -2373,6 +2373,15 @@ public boolean isMoving(){
 	return (this.getMyState()==CurrentState.MOVING || (this.getMyState()==CurrentState.RESTING && !this.getMyPosition().Equals(this.getLocalTarget())));
 }
 
+
+public double distanceTo(Load l) throws UnitException{
+	return this.getMyPosition().calculateDistance(new Position(l.getDoublePosition()[0],l.getDoublePosition()[1],l.getDoublePosition()[2], this.getWorld()));
+}
+
+public double distanceTo(Unit u) throws UnitException{
+	return this.getMyPosition().calculateDistance(new Position(u.getxpos(),u.getypos(),u.getzpos(), this.getWorld()));
+}
+
 }
 
 

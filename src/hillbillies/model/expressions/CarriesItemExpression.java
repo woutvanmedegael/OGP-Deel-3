@@ -1,5 +1,6 @@
 package hillbillies.model.expressions;
 
+import hillbillies.model.Position;
 import hillbillies.model.SyntaxException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.World;
@@ -17,8 +18,8 @@ public class CarriesItemExpression extends BooleanExpression{
 	}
 	
 	@Override
-	public Boolean evaluate(World world, Unit unit) throws WorldException {
-		Unit myUnit = this.unit.evaluate(world, unit);
+	public Boolean evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
+		Unit myUnit = this.unit.evaluate(world, unit, selectedCube);
 		return (myUnit.isCarryingBoulder() || myUnit.isCarryingLog());
 	}
 

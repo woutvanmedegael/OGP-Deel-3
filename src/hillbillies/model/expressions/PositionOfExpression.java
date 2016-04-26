@@ -17,8 +17,8 @@ public class PositionOfExpression extends PositionExpression{
 		
 	}
 	@Override
-	public Position evaluate(World world,Unit unit) throws WorldException {
-		Unit myUnit = this.unitExpression.evaluate(world, unit);
+	public Position evaluate(World world,Unit unit, Position selectedCube) throws WorldException {
+		Unit myUnit = this.unitExpression.evaluate(world, unit, selectedCube);
 		return new Position(myUnit.getxpos(), myUnit.getypos(), myUnit.getzpos(), world);
 	}
 

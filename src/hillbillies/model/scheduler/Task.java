@@ -2,13 +2,19 @@ package hillbillies.model.scheduler;
 
 import java.util.ArrayList;
 
+import hillbillies.model.Position;
 import hillbillies.model.hillbilliesobject.unit.Unit;
+import hillbillies.model.statement.Statement;
+import hillbillies.model.world.World;
+import hillbillies.model.world.WorldException;
 
 public class Task implements Comparable<Task>{
 	
 	private final int priority;
 	private final String name;
 	private Unit assignedUnit = null;
+	private Position selectedCube;
+	private final Statement statement;
 	
 	
 	/**
@@ -45,15 +51,30 @@ public class Task implements Comparable<Task>{
 		this.executing = executing;
 	}
 
-
+	public void execute(World world, Unit unit, Position selectedCube) throws WorldException{
+		this.statement.execute(world, unit, selectedCube);
+		
+	}
 
 	private boolean executing = false;
-	public Task(String name, int prio){
-		if (name==null){
+	
+	public Task(String name, int prio, Statement stat, Position selectedCube){
+		if (selectedCube==null){
+			this.checkSelectedKeyword();
+		}
+		if (name==null || stat==null){
 			throw new IllegalArgumentException();
 		}
 		this.priority = prio;
 		this.name = name;
+		this.statement = stat;
+		
+	}
+	
+	public void checkSelectedKeyword(){
+		if (statement.checkSelectedKeyword()){
+			throw new IllegalArgumentException();
+		}
 	}
 
 

@@ -8,6 +8,6 @@ import hillbillies.model.world.WorldException;
 public abstract class PositionExpression extends Expression {
 
 	@Override
-	public abstract Position evaluate(World world, Unit unit) throws WorldException;
+	public abstract Position evaluate(World world, Unit unit, Position selectedCube) throws WorldException;
 
 }

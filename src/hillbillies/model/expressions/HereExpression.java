@@ -8,9 +8,8 @@ import hillbillies.model.world.WorldException;
 public class HereExpression extends PositionExpression{
 	//WOUT
 	@Override
-	public Position evaluate(World world, Unit unit) throws WorldException {
-		// TODO Auto-generated method stub
-		return null;
+	public Position evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
+		return new Position(unit.getxpos(),unit.getypos(),unit.getzpos(),world);
 	}
 
 	

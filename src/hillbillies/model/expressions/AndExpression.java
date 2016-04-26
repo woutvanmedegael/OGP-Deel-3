@@ -1,5 +1,6 @@
 package hillbillies.model.expressions;
 
+import hillbillies.model.Position;
 import hillbillies.model.SyntaxException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.World;
@@ -19,8 +20,8 @@ public class AndExpression extends BooleanExpression {
 	}
 	
 	@Override
-	public Boolean evaluate(World world, Unit unit) throws WorldException {
-		return (right.evaluate(world, unit) && left.evaluate(world, unit));
+	public Boolean evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
+		return (right.evaluate(world, unit, selectedCube) && left.evaluate(world, unit, selectedCube));
 	}
 
 	public Expression getLeft() {

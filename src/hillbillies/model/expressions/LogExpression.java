@@ -8,7 +8,7 @@ import hillbillies.model.world.WorldException;
 public class LogExpression extends PositionExpression{
 	//ADRIAAN
 	@Override
-	public Position evaluate(World world, Unit unit) throws WorldException {
+	public Position evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
 		// TODO Auto-generated method stub
 		return null;
 	}

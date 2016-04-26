@@ -1,5 +1,6 @@
 package hillbillies.model.statement;
 
+import hillbillies.model.Position;
 import hillbillies.model.SyntaxException;
 import hillbillies.model.expressions.BooleanExpression;
 import hillbillies.model.expressions.Expression;
@@ -24,11 +25,11 @@ public class IfThenElseStatement extends Statement {
 
 
 	@Override
-	public void execute(World world, Unit unit) throws WorldException {
-		if (condition.evaluate(world, unit)){
-			this.thenStatement.execute(world, unit);
+	public void execute(World world, Unit unit, Position selectedCube) throws WorldException {
+		if (condition.evaluate(world, unit, selectedCube)){
+			this.thenStatement.execute(world, unit, selectedCube);
 		} else {
-			this.elseStatement.execute(world, unit);
+			this.elseStatement.execute(world, unit, selectedCube);
 		}
 		
 	}
