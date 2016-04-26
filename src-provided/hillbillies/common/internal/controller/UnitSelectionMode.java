@@ -2,7 +2,7 @@ package hillbillies.common.internal.controller;
 
 import java.util.Optional;
 
-import hillbilliesobject.unit.Unit;
+import hillbillies.model.hillbilliesobject.unit.Unit;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 

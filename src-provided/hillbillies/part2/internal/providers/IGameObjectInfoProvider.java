@@ -1,10 +1,10 @@
 package hillbillies.part2.internal.providers;
 
 import hillbillies.common.internal.providers.UnitInfoProvider;
+import hillbillies.model.hillbilliesobject.Boulder;
+import hillbillies.model.hillbilliesobject.Log;
+import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.Faction;
-import hillbilliesobject.Boulder;
-import hillbilliesobject.Log;
-import hillbilliesobject.unit.Unit;
 
 public interface IGameObjectInfoProvider extends UnitInfoProvider {
 

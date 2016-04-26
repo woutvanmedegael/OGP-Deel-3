@@ -4,15 +4,15 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
+import hillbillies.model.hillbilliesobject.Boulder;
+import hillbillies.model.hillbilliesobject.Log;
+import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.scheduler.Scheduler;
 import hillbillies.model.scheduler.Task;
 import hillbillies.model.world.Faction;
 import hillbillies.model.world.World;
 import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.part3.programs.ITaskFactory;
-import hillbilliesobject.Boulder;
-import hillbilliesobject.Log;
-import hillbilliesobject.unit.Unit;
 import ogp.framework.util.ModelException;
 
 public class Facade implements IFacade {

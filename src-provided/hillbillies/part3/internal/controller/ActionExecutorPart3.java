@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import hillbillies.common.internal.controller.AbstractSelectionMode;
 import hillbillies.common.internal.controller.CubeSelectionMode.Cube;
 import hillbillies.common.internal.inputmodes.InputMode;
+import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.scheduler.Scheduler;
 import hillbillies.model.scheduler.Task;
 import hillbillies.model.world.Faction;
@@ -18,7 +19,6 @@ import hillbillies.part2.internal.controller.ActionExecutorPart2;
 import hillbillies.part3.facade.IFacade;
 import hillbillies.part3.programs.TaskParser;
 import hillbillies.part3.programs.internal.SelectedChecker;
-import hillbilliesobject.unit.Unit;
 import ogp.framework.util.ModelException;
 
 public class ActionExecutorPart3 extends ActionExecutorPart2 {

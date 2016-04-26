@@ -2,13 +2,13 @@ package hillbillies.part2.internal.controller;
 
 import java.util.function.Consumer;
 
+import hillbillies.model.hillbilliesobject.Boulder;
+import hillbillies.model.hillbilliesobject.Log;
+import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.Faction;
 import hillbillies.part1.internal.controller.UnitInfoProviderPart1;
 import hillbillies.part2.facade.IFacade;
 import hillbillies.part2.internal.providers.IGameObjectInfoProvider;
-import hillbilliesobject.Boulder;
-import hillbilliesobject.Log;
-import hillbilliesobject.unit.Unit;
 import ogp.framework.util.ModelException;
 
 public class GameObjectInfoProvider extends UnitInfoProviderPart1 implements IGameObjectInfoProvider {

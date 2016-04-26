@@ -7,12 +7,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import hillbillies.common.internal.ui.viewparts.ControlArea;
+import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.scheduler.Task;
 import hillbillies.model.world.Faction;
 import hillbillies.part2.internal.ui.sprites.FactionColors;
 import hillbillies.part3.internal.controller.ActionExecutorPart3;
 import hillbillies.part3.internal.providers.IGameObjectInfoProvider3;
-import hillbilliesobject.unit.Unit;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;

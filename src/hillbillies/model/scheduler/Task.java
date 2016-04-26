@@ -2,14 +2,12 @@ package hillbillies.model.scheduler;
 
 import java.util.ArrayList;
 
-import Activity.Activity;
-import hillbilliesobject.unit.Unit;
+import hillbillies.model.hillbilliesobject.unit.Unit;
 
 public class Task implements Comparable<Task>{
 	
 	private final int priority;
 	private final String name;
-	private ArrayList<Activity> activities;
 	private Unit assignedUnit = null;
 	
 	
@@ -50,32 +48,14 @@ public class Task implements Comparable<Task>{
 
 
 	private boolean executing = false;
-	public Task(String name, int prio, ArrayList<Activity> activities){
-		if (name==null || activities.size()==0){
+	public Task(String name, int prio){
+		if (name==null){
 			throw new IllegalArgumentException();
 		}
 		this.priority = prio;
 		this.name = name;
-		this.activities = activities;
-	}
-	
-	
-	
-	/**
-	 * @return the activities
-	 */
-	public ArrayList<Activity> getActivities() {
-		return activities;
 	}
 
-
-
-	/**
-	 * @param activities the activities to set
-	 */
-	public void setActivities(ArrayList<Activity> activities) {
-		this.activities = activities;
-	}
 
 
 

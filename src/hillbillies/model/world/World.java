@@ -3,14 +3,14 @@ import java.util.Random;
 import java.util.Set;
 
 import hillbillies.model.Position;
+import hillbillies.model.hillbilliesobject.Boulder;
+import hillbillies.model.hillbilliesobject.HillbilliesObject;
+import hillbillies.model.hillbilliesobject.Load;
+import hillbillies.model.hillbilliesobject.Log;
+import hillbillies.model.hillbilliesobject.unit.Unit;
+import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.util.ConnectedToBorder;
-import hillbilliesobject.Boulder;
-import hillbilliesobject.HillbilliesObject;
-import hillbilliesobject.Load;
-import hillbilliesobject.Log;
-import hillbilliesobject.unit.Unit;
-import hillbilliesobject.unit.UnitException;
 
 import java.util.ArrayList;
 import java.util.HashSet;

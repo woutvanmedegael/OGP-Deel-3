@@ -3,10 +3,10 @@ package hillbillies.part3.internal.providers;
 import java.util.List;
 import java.util.Set;
 
+import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.scheduler.Task;
 import hillbillies.model.world.Faction;
 import hillbillies.part2.internal.providers.IGameObjectInfoProvider;
-import hillbilliesobject.unit.Unit;
 
 public interface IGameObjectInfoProvider3 extends IGameObjectInfoProvider {
 

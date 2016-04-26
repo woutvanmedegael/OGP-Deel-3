@@ -15,16 +15,16 @@ import org.junit.Test;
 
 import hillbillies.model.NbCompare;
 import hillbillies.model.Position;
+import hillbillies.model.hillbilliesobject.CurrentState;
+import hillbillies.model.hillbilliesobject.unit.IllegalNameException;
+import hillbillies.model.hillbilliesobject.unit.Unit;
+import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.model.world.Cube;
 import hillbillies.model.world.Faction;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.tests.util.PositionAsserts;
-import hillbilliesobject.CurrentState;
-import hillbilliesobject.unit.IllegalNameException;
-import hillbilliesobject.unit.Unit;
-import hillbilliesobject.unit.UnitException;
 /**
  * Different tests on unit.
  * @value

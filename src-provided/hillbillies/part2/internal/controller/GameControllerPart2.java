@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
 import hillbillies.common.internal.controller.GameController;
 import hillbillies.common.internal.inputmodes.InputMode;
 import hillbillies.common.internal.selection.Selection;
+import hillbillies.model.hillbilliesobject.Boulder;
+import hillbillies.model.hillbilliesobject.Log;
+import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.Faction;
 import hillbillies.model.world.World;
 import hillbillies.part2.facade.IFacade;
@@ -24,9 +27,6 @@ import hillbillies.part2.internal.providers.WorldInfoProvider2;
 import hillbillies.part2.internal.ui.IHillbilliesView2;
 import hillbillies.part2.internal.ui.ViewProviders2;
 import hillbillies.part2.listener.TerrainChangeListener;
-import hillbilliesobject.Boulder;
-import hillbilliesobject.Log;
-import hillbilliesobject.unit.Unit;
 import ogp.framework.util.ModelException;
 
 public class GameControllerPart2 extends GameController<IHillbilliesView2> implements IGameController2 {

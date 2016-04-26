@@ -11,10 +11,10 @@ import hillbillies.common.internal.providers.ActionExecutor;
 import hillbillies.common.internal.providers.UnitInfoProvider;
 import hillbillies.common.internal.providers.WorldInfoProvider;
 import hillbillies.common.internal.ui.ViewProviders;
+import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.part1.facade.IFacade;
 import hillbillies.part1.internal.Part1Options;
 import hillbillies.part1.internal.map.EmptyMap;
-import hillbilliesobject.unit.Unit;
 import ogp.framework.util.ModelException;
 
 public class GameControllerPart1 extends GameController<IHillbilliesView1>

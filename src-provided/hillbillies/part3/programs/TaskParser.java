@@ -143,12 +143,6 @@ public class TaskParser<E, S, T> {
 		try {
 			visitor.visit(parser.task());
 			if (errors.isEmpty()) {
-				System.out.println(visitor.getName());
-				System.out.println(visitor.getPriority());
-				System.out.println(visitor.getActivity());
-				System.out.println(selectedCubes.get(0)[0]);
-				System.out.println(selectedCubes.get(0)[1]);
-				System.out.println(selectedCubes.get(0)[2]);
 				return Optional.ofNullable(factory.createTasks(visitor.getName(), visitor.getPriority(),
 						visitor.getActivity(), selectedCubes));
 			}

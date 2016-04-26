@@ -1,9 +1,9 @@
 package hillbillies.model;
 import java.util.ArrayList;
 
+import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.model.world.Cube;
 import hillbillies.model.world.World;
-import hillbilliesobject.unit.UnitException;
 /**
  * Class Position used to represent a position and different calculations with those positions.
  * @value

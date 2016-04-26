@@ -1,6 +1,6 @@
 package hillbillies.common.internal.providers;
 
-import hillbilliesobject.unit.Unit;
+import hillbillies.model.hillbilliesobject.unit.Unit;
 
 public interface ActionExecutor {
 

@@ -3,9 +3,9 @@ package hillbillies.part2.internal.controller;
 import java.util.function.Consumer;
 
 import hillbillies.common.internal.controller.UnitSelectionMode;
+import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.part1.internal.controller.ActionExecutorPart1;
 import hillbillies.part2.facade.IFacade;
-import hillbilliesobject.unit.Unit;
 import ogp.framework.util.ModelException;
 
 public class ActionExecutorPart2 extends ActionExecutorPart1 {

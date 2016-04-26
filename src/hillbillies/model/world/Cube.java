@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import hillbilliesobject.Boulder;
-import hillbilliesobject.HillbilliesObject;
-import hillbilliesobject.Log;
+import hillbillies.model.hillbilliesobject.Boulder;
+import hillbillies.model.hillbilliesobject.HillbilliesObject;
+import hillbillies.model.hillbilliesobject.Log;
 
 /**
  * @value
