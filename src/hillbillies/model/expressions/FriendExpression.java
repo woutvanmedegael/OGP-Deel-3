@@ -15,21 +15,20 @@ public class FriendExpression extends UnitExpression{
 	public Unit evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
 		Faction fact = unit.getFaction();
 		Set<Unit> units = world.getUnitsOfFaction(fact);
-		Random random = new Random();
 		Unit friend = null;
-		int index = random.nextInt(units.size());
-		int i=0;
+		Unit prevfriend = null;
 		for(Unit u: units)
 		{
-		    if (i == index)
-		         friend = u;
-		    i = i + 1;
+			friend = u;
+		    if (prevfriend==null || (unit.distanceTo(friend)<unit.distanceTo(prevfriend))){
+		    	prevfriend = friend;
+		    }
 		}
-		if (friend == null){
+		if (prevfriend == null){
 			//Idem: unit.interrupt()?
 			return null;
 		}
-		return friend;
+		return prevfriend;
 		
 	}
 

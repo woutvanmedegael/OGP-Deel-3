@@ -14,7 +14,7 @@ public class EnemyExpression extends UnitExpression {
 	@Override
 	public Unit evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
 		//get random Enemy factions
-		//TODO: kijke eens na of die faction niet echt verwijderd wordt van de facionlist
+		//TODO: kijken eens na of die faction niet echt verwijderd wordt van de facionlist
 		Set<Faction> factionList = world.getActiveFactions();
 		Random random = new Random();
 		Faction randomFaction = null;

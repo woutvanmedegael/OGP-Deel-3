@@ -9,8 +9,10 @@ public class SelectedExpression extends PositionExpression{
 	//WOUT
 	@Override
 	public Position evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
-		// TODO Auto-generated method stub
-		return null;
+		if (selectedCube==null){
+			throw new IllegalArgumentException();
+		}
+		return selectedCube;
 	}
 
 	

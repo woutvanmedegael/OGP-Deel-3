@@ -2375,10 +2375,16 @@ public boolean isMoving(){
 
 
 public double distanceTo(Load l) throws UnitException{
+	if (l==null){
+		return 0;
+	}
 	return this.getMyPosition().calculateDistance(new Position(l.getDoublePosition()[0],l.getDoublePosition()[1],l.getDoublePosition()[2], this.getWorld()));
 }
 
 public double distanceTo(Unit u) throws UnitException{
+	if (u==null){
+		return 0;
+	}
 	return this.getMyPosition().calculateDistance(new Position(u.getxpos(),u.getypos(),u.getzpos(), this.getWorld()));
 }
 

@@ -7,7 +7,6 @@ import hillbillies.model.world.WorldException;
 
 public abstract class BooleanExpression extends Expression{
 	
-	
 	@Override
 	public abstract Boolean evaluate(World world, Unit unit, Position selectedCube) throws WorldException;
 }

@@ -19,19 +19,16 @@ public class BoulderExpression extends PositionExpression {
 		Boulder boulder = null;
 		Boulder prevboulder=null;
 		Random random = new Random();
-		int index = random .nextInt(boulders.size());
-		int i=0;
 		
 		for(Boulder b : boulders)
 		{
-		    if (i == index){
-		        boulder = b;
-		        if (prevboulder==null || unit.distanceTo(b)>unit.distanceTo(prevboulder)){
-		        	prevboulder = boulder;
-		        }
+			boulder = b;
+		    if (unit.distanceTo(b)>unit.distanceTo(prevboulder)){
+		    	prevboulder = boulder;
 		    }
-		    i = i + 1;
 		}
+		   
+		
 		
 		if (prevboulder == null){
 			//een unit.interrupt() roepen ofzo?
