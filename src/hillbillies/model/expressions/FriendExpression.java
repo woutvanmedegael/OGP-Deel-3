@@ -15,12 +15,14 @@ public class FriendExpression extends UnitExpression{
 	public Unit evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
 		Faction fact = unit.getFaction();
 		Set<Unit> units = world.getUnitsOfFaction(fact);
+		units.remove(unit);
 		Unit friend = null;
 		Unit prevfriend = null;
 		for(Unit u: units)
 		{
+			
 			friend = u;
-		    if (prevfriend==null || (unit.distanceTo(friend)<unit.distanceTo(prevfriend))){
+		    if (!friend.equals(u) && (prevfriend==null || (unit.distanceTo(friend)<unit.distanceTo(prevfriend)))){
 		    	prevfriend = friend;
 		    }
 		}

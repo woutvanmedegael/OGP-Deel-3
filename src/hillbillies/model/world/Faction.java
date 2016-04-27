@@ -36,6 +36,10 @@ public class Faction {
 	 * Returns the units from this faction.
 	 */
 	public Set<Unit> getUnits(){
-		return units;
+		Set<Unit> myUnits= new HashSet<>();
+		for (Unit u: this.units){
+			myUnits.add(u);
+		}
+		return myUnits;
 	}
 }

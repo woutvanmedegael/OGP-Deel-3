@@ -8,9 +8,8 @@ import hillbillies.model.world.WorldException;
 public class BreakStatement extends Statement{
 	//WOUT
 	@Override
-	public void execute(World world, Unit unit, Position selectedCube) throws WorldException {
-		// TODO Auto-generated method stub
-		
+	public Boolean execute(World world, Unit unit, Position selectedCube) throws WorldException {
+		return false;
 	}
 
 	

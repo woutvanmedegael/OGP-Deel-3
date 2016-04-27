@@ -7,8 +7,8 @@ import hillbillies.model.world.World;
 public class AssignStatement extends Statement{
 
 	@Override
-	public void execute(World world, Unit unit, Position selectedCube) {
-		
+	public Boolean execute(World world, Unit unit, Position selectedCube) {
+		return true;
 		
 	}
 

@@ -134,7 +134,11 @@ public void deleteObject(HillbilliesObject obj){
  * Returns the objects that are currently occupying this cube.
  */
 public ArrayList<HillbilliesObject> getObjectsOnThisCube(){
-	return this.objectsOnThisCube;
+	ArrayList<HillbilliesObject> objects = new ArrayList<>();
+	for (HillbilliesObject h: this.objectsOnThisCube){
+		objects.add(h);
+	}
+	return objects;
 }
 /**
  * A boolean registering whether or not the cube is walkable, initialized at false.

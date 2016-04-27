@@ -18,8 +18,6 @@ public class BoulderExpression extends PositionExpression {
 		Set<Boulder> boulders = world.getBoulders();
 		Boulder boulder = null;
 		Boulder prevboulder=null;
-		Random random = new Random();
-		
 		for(Boulder b : boulders)
 		{
 			boulder = b;

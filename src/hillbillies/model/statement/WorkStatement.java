@@ -21,10 +21,10 @@ public class WorkStatement extends ActionStatement{
 	}
 	
 	@Override
-	public void execute(World world, Unit unit, Position selectedCube) throws WorldException {
+	public Boolean execute(World world, Unit unit, Position selectedCube) throws WorldException {
 		Position pos = position.evaluate(world, unit, selectedCube);
 		unit.workAt(pos.getCubexpos(), pos.getCubeypos(), pos.getCubezpos());
-		
+		return true;
 	}
 	
 	

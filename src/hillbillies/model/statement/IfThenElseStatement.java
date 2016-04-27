@@ -25,13 +25,13 @@ public class IfThenElseStatement extends Statement {
 
 
 	@Override
-	public void execute(World world, Unit unit, Position selectedCube) throws WorldException {
+	public Boolean execute(World world, Unit unit, Position selectedCube) throws WorldException {
 		if (condition.evaluate(world, unit, selectedCube)){
 			this.thenStatement.execute(world, unit, selectedCube);
 		} else {
 			this.elseStatement.execute(world, unit, selectedCube);
 		}
-		
+		return true;
 	}
 
 }

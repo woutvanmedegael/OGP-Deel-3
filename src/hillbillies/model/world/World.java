@@ -206,14 +206,20 @@ public class World {
 	 * Returns a set of all the boulders in this world.
 	 */
 	public Set<Boulder> getBoulders(){
-		return this.boulders;
+		Set<Boulder> myBoulders = new HashSet<>();
+		for (Boulder b: this.boulders)
+			myBoulders.add(b);
+		return myBoulders;
 	}
 	
 	/**
 	 * Returns a set of all the logs in this world.
 	 */
 	public Set<Log> getLogs(){
-		return logs;
+		Set<Log> myLogs = new HashSet<>();
+		for (Log b: this.logs)
+			myLogs.add(b);
+		return myLogs;
 	}
 	/**
 	 * Returns the dimension in the x direction.

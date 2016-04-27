@@ -7,9 +7,9 @@ import hillbillies.model.world.World;
 public class FollowStatement extends ActionStatement{
 	
 	@Override
-	public void execute(World world, Unit unit, Position selectedCube) {
+	public Boolean execute(World world, Unit unit, Position selectedCube) {
 		// TODO Auto-generated method stub
-		
+		return true;
 	}
 
 }
