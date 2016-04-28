@@ -33,6 +33,12 @@ public class WhileStatement extends Statement{
 		}
 		return true;
 	}
+
+
+	@Override
+	public Boolean containsSelected() {
+		return (condition.containsSelected() || body.containsSelected());
+	}
 	
 	
 

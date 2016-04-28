@@ -12,4 +12,10 @@ public class AssignStatement extends Statement{
 		
 	}
 
+	@Override
+	public Boolean containsSelected() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

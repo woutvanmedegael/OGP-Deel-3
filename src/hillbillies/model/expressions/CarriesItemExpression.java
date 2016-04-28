@@ -27,4 +27,9 @@ public class CarriesItemExpression extends BooleanExpression{
 		return unit;
 	}
 
+	@Override
+	public Boolean containsSelected() {
+		return unit.containsSelected();
+	}
+
 }

@@ -48,6 +48,12 @@ public class NextToExpression extends PositionExpression{
 		return positions.get(index);
 	}
 
+
+	@Override
+	public Boolean containsSelected() {
+		return position.containsSelected();
+	}
+
 	
 
 }

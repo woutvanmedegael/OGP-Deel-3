@@ -1,6 +1,5 @@
 package hillbillies.model.expressions;
 
-import java.util.Random;
 import java.util.Set;
 
 import hillbillies.model.Position;
@@ -17,21 +16,23 @@ public class FriendExpression extends UnitExpression{
 		Set<Unit> units = world.getUnitsOfFaction(fact);
 		units.remove(unit);
 		Unit friend = null;
-		Unit prevfriend = null;
 		for(Unit u: units)
 		{
-			
-			friend = u;
-		    if (!friend.equals(u) && (prevfriend==null || (unit.distanceTo(friend)<unit.distanceTo(prevfriend)))){
-		    	prevfriend = friend;
+		    if (friend==null || unit.distanceTo(friend)>unit.distanceTo(u)){
+		    	friend = u;
 		    }
 		}
-		if (prevfriend == null){
+		if (friend == null){
 			//Idem: unit.interrupt()?
 			return null;
 		}
-		return prevfriend;
+		return friend;
 		
+	}
+
+	@Override
+	public Boolean containsSelected() {
+		return false;
 	}
 
 	

@@ -26,6 +26,11 @@ public class WorkStatement extends ActionStatement{
 		unit.workAt(pos.getCubexpos(), pos.getCubeypos(), pos.getCubezpos());
 		return true;
 	}
+
+	@Override
+	public Boolean containsSelected() {
+		return position.containsSelected();
+	}
 	
 	
 }

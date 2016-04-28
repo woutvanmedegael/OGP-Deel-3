@@ -25,6 +25,12 @@ public class OrExpression extends BooleanExpression{
 	public Boolean evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
 		return (this.right.evaluate(world, unit, selectedCube) || this.left.evaluate(world, unit, selectedCube));
 	}
+
+
+	@Override
+	public Boolean containsSelected() {
+		return (right.containsSelected() || left.containsSelected());
+	}
 }
 
 	

@@ -25,6 +25,16 @@ public class MultipleStatement extends Statement{
 		return true;
 	}
 
+	@Override
+	public Boolean containsSelected() {
+		for (Statement s: this.statements){
+			if (s.containsSelected()){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	
 
 }

@@ -1,6 +1,5 @@
 package hillbillies.model.expressions;
 
-import java.util.Random;
 import java.util.Set;
 
 import hillbillies.model.Position;
@@ -17,22 +16,25 @@ public class BoulderExpression extends PositionExpression {
 	public Position evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
 		Set<Boulder> boulders = world.getBoulders();
 		Boulder boulder = null;
-		Boulder prevboulder=null;
 		for(Boulder b : boulders)
 		{
-			boulder = b;
-		    if (unit.distanceTo(b)>unit.distanceTo(prevboulder)){
-		    	prevboulder = boulder;
+		    if ((boulder==null) || unit.distanceTo(b)<unit.distanceTo(boulder)){
+		    	boulder = b;
 		    }
 		}
 		   
 		
 		
-		if (prevboulder == null){
+		if (boulder == null){
 			//een unit.interrupt() roepen ofzo?
 			return null;
 		}
-		return new Position(prevboulder.getDoublePosition()[0],prevboulder.getDoublePosition()[1],prevboulder.getDoublePosition()[2], world);
+		return new Position(boulder.getDoublePosition()[0],boulder.getDoublePosition()[1],boulder.getDoublePosition()[2], world);
+	}
+
+	@Override
+	public Boolean containsSelected() {
+		return false;
 	}
 
 	

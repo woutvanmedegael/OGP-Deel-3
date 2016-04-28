@@ -15,6 +15,11 @@ public class SelectedExpression extends PositionExpression{
 		return selectedCube;
 	}
 
+	@Override
+	public Boolean containsSelected() {
+		return true;
+	}
+
 	
 
 }

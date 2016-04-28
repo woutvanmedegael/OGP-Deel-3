@@ -24,6 +24,11 @@ public class IsFriendExpression extends BooleanExpression{
 			return (friend.evaluate(world, unit, selectedCube).getFaction()==unit.getFaction());
 		}
 
+		@Override
+		public Boolean containsSelected() {
+			return friend.containsSelected();
+		}
+
 	
 
 }

@@ -24,6 +24,11 @@ public class IsEnemyExpression extends BooleanExpression{
 		return (enemy.evaluate(world, unit, selectedCube).getFaction()!=unit.getFaction());
 	}
 
+	@Override
+	public Boolean containsSelected() {
+		return enemy.containsSelected();
+	}
+
 	
 
 }

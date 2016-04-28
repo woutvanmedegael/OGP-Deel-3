@@ -32,4 +32,9 @@ public class AndExpression extends BooleanExpression {
 		return right;
 	}
 
+	@Override
+	public Boolean containsSelected() {
+		return (right.containsSelected() || left.containsSelected());
+	}
+
 }

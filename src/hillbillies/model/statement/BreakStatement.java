@@ -12,5 +12,10 @@ public class BreakStatement extends Statement{
 		return false;
 	}
 
+	@Override
+	public Boolean containsSelected() {
+		return false;
+	}
+
 	
 }

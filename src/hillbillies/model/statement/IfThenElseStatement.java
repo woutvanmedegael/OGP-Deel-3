@@ -34,4 +34,10 @@ public class IfThenElseStatement extends Statement {
 		return true;
 	}
 
+
+	@Override
+	public Boolean containsSelected() {
+		return (condition.containsSelected() || thenStatement.containsSelected() || elseStatement.containsSelected());
+	}
+
 }

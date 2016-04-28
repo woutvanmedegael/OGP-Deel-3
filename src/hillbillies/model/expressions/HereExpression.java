@@ -12,6 +12,11 @@ public class HereExpression extends PositionExpression{
 		return new Position(unit.getxpos(),unit.getypos(),unit.getzpos(),world);
 	}
 
+	@Override
+	public Boolean containsSelected() {
+		return false;
+	}
+
 	
 
 
