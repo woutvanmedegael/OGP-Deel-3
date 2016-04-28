@@ -8,5 +8,6 @@ import hillbillies.model.world.WorldException;
 
 public abstract class Expression implements IContainsSelected{
 	
+	
 	public abstract Object evaluate(World world, Unit unit, Position selectedCube) throws WorldException;
 }
