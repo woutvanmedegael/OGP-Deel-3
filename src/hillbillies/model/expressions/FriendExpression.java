@@ -18,7 +18,7 @@ public class FriendExpression extends UnitExpression{
 		Unit friend = null;
 		for(Unit u: units)
 		{
-		    if (friend==null || unit.distanceTo(friend)>unit.distanceTo(u)){
+		    if (unit.distanceTo(friend)>unit.distanceTo(u)){
 		    	friend = u;
 		    }
 		}

@@ -1,20 +1,25 @@
 package hillbillies.model.scheduler;
 
 import java.util.ArrayList;
+import java.util.Set;
 
+import hillbillies.model.ITask;
 import hillbillies.model.Position;
+import hillbillies.model.SyntaxException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.statement.Statement;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class Task implements Comparable<Task>{
+public class Task implements Comparable<Task>,ITask{
 	
-	private final int priority;
-	private final String name;
-	private Unit assignedUnit = null;
-	private Position selectedCube;
+	
 	private final Statement statement;
+	private boolean executing = false;
+	private Unit assignedUnit = null;
+	private int priority = 0;
+	private String name = null;
+	private Set<Scheduler> schedulers = null;
 	
 	
 	/**
@@ -55,12 +60,10 @@ public class Task implements Comparable<Task>{
 		this.statement.execute(world, unit, selectedCube);
 		
 	}
-
-	private boolean executing = false;
 	
-	public Task(String name, int prio, Statement stat, Position selectedCube){
-		if (selectedCube==null){
-			this.checkSelectedKeyword();
+	public Task(String name, int prio, Statement stat, Position selectedCube) throws SyntaxException{
+		if (selectedCube==null && this.containsSelectedKeyword()){
+			throw new SyntaxException();
 		}
 		if (name==null || stat==null){
 			throw new IllegalArgumentException();
@@ -71,10 +74,8 @@ public class Task implements Comparable<Task>{
 		
 	}
 	
-	public void checkSelectedKeyword(){
-		if (statement.checkSelectedKeyword()){
-			throw new IllegalArgumentException();
-		}
+	public Boolean containsSelectedKeyword(){
+		return statement.containsSelected();
 	}
 
 
@@ -105,17 +106,49 @@ public class Task implements Comparable<Task>{
 			return 1;
 		}
 		return -1;
-	}
+	} 
 
 
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
-	public String toString() {
-		return "Task [priority=" + priority + ", name=" + name + "]";
+	public void assignUnit(Unit unit) {
+		this.assignedUnit = unit;
+		
 	}
+
+
+
+	@Override
+	public void setPriority(int newPrio) {
+		this.priority = newPrio;
+		
+	}
+
+
+
+	@Override
+	public void addScheduler(Scheduler scheduler) {
+		if (scheduler!=null){
+			this.schedulers.add(scheduler);
+		}
+		
+	}
+
+
+
+	@Override
+	public void removeScheduler(Scheduler scheduler) {
+		this.schedulers.remove(scheduler);
+	}
+
+
+
+	@Override
+	public void interrupt() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
 
 	
 }

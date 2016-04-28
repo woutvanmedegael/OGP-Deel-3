@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import hillbillies.model.hillbilliesobject.unit.Unit;
+import hillbillies.model.scheduler.Scheduler;
 /**
  * @value
  * @author Wout Van Medegael & Adriaan Van Gerven
@@ -16,6 +17,9 @@ public class Faction {
 	 * Set containing all units of this faction.
 	 */
 	private final Set<Unit> units = new HashSet<>();
+	
+	private final Scheduler schedulaaarrrrrrrr = new Scheduler();
+	
 	/**
 	 * Adds the given unit to this faction is made package accesible.
 	 * @throws WorldException 
@@ -42,4 +46,5 @@ public class Faction {
 		}
 		return myUnits;
 	}
+	
 }

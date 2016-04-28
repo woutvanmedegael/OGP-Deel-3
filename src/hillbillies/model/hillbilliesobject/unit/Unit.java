@@ -2383,7 +2383,7 @@ public double distanceTo(Load l) throws UnitException{
 
 public double distanceTo(Unit u) throws UnitException{
 	if (u==null){
-		return 0;
+		return Double.MAX_VALUE;
 	}
 	return this.getMyPosition().calculateDistance(new Position(u.getxpos(),u.getypos(),u.getzpos(), this.getWorld()));
 }

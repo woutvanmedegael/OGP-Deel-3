@@ -15,7 +15,7 @@ public class EnemyExpression extends UnitExpression {
 			filter(u -> u.getFaction()!=unit.getFaction());
 		Unit enemy = null;
 		for(Unit u: units){
-		   if ((enemy==null) || (unit.distanceTo(enemy)>unit.distanceTo(u))){
+		   if (unit.distanceTo(enemy)>unit.distanceTo(u)){
 			   enemy = u;
 		   }
 		}

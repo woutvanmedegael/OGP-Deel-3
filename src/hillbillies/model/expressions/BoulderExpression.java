@@ -18,7 +18,7 @@ public class BoulderExpression extends PositionExpression {
 		Boulder boulder = null;
 		for(Boulder b : boulders)
 		{
-		    if ((boulder==null) || unit.distanceTo(b)<unit.distanceTo(boulder)){
+		    if (unit.distanceTo(b)<unit.distanceTo(boulder)){
 		    	boulder = b;
 		    }
 		}

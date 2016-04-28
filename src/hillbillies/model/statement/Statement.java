@@ -12,8 +12,5 @@ import hillbillies.model.world.WorldException;
 public abstract class Statement implements IContainsSelected{
 	
 	public abstract Boolean execute(World world, Unit unit, Position selectedCube) throws WorldException ;
-	
-	public boolean checkSelectedKeyword(){
-		return true;
-	}
+
 }

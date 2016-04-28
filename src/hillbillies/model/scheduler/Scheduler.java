@@ -2,22 +2,30 @@ package hillbillies.model.scheduler;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Predicate;
 
-public class Scheduler {
+import hillbillies.model.IScheduler;
+
+public class Scheduler implements IScheduler{
 
 	private TreeSet<Task> tasks = new TreeSet<>();
 	
-	public void add(Task task){
+	@Override
+	public void addTask(Task task){
 		if (task!=null){
 			tasks.add(task);
+			task.addScheduler(this);
 		}
 	}
 	
-	public void remove(Task task){
+	@Override
+	public void removeTask(Task task){
 		if (task!=null){
 			tasks.remove(task);
+			task.removeScheduler(this);
 			}
 	}
 	
@@ -30,7 +38,6 @@ public class Scheduler {
 	
 	public Task getHighestPrio(){
 		return tasks.first();
-		//TODO check voor not being executed
 	}
 	
 	public ArrayList<Task> getTasks(){
@@ -43,14 +50,41 @@ public class Scheduler {
 		}
 		//TODO stop prevtask
 	}
+
 	
-	public boolean arePartOfScheduler(Collection<Task> tasks){
+	@Override
+	public boolean checkTaskPartOfScheduler(Collection<Task> Task) {
 		for (Task task : tasks){
 			if (!this.isPartOfScheduler(task)){
 				return false;
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public Task getHighestPrioNonActiveTask() {
+		for (Task t: this.tasks){
+			if (!t.isExecuting()){
+				return t;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public Collection<Task> allTasks() {
+		Set<Task> myTasks = new HashSet<>(this.tasks);
+		return myTasks;
+		
+	}
+
+	@Override
+	public Collection<Task> getTasksSatisfying(Predicate<Task> pred) {
+		Set<Task> myTasks = (Set<Task>)this.allTasks();
+		myTasks.stream().
+			filter(pred);
+		return myTasks;
 	}
 	
 	
