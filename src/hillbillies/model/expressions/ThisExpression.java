@@ -10,7 +10,13 @@ public class ThisExpression extends UnitExpression{
 	@Override
 	public Unit evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
 		// TODO Auto-generated method stub
-		return null;
+		return unit;
+	}
+
+	@Override
+	public Boolean containsSelected() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	

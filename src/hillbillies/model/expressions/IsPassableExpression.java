@@ -15,7 +15,9 @@ public class IsPassableExpression extends BooleanExpression{
 		return pos.isPassablePos();
 		
 	}
+	
 	private final PositionExpression positionExpression;
+	
 	public IsPassableExpression(Expression position) throws SyntaxException{
 		if (!(position instanceof PositionExpression)){
 			throw new SyntaxException();
@@ -28,7 +30,7 @@ public class IsPassableExpression extends BooleanExpression{
 	@Override
 	public Boolean containsSelected() {
 		// TODO Auto-generated method stub
-		return false;
+		return positionExpression.containsSelected();
 	}
 	
 	
