@@ -8,7 +8,6 @@ import hillbillies.model.world.WorldException;
 
 public class IsAliveExpression extends BooleanExpression {
 	//ADRIAAN
-	//TODO: hoe is de is alive geïmplementeerd ? Staat precies niks van in, zie facade deel 2
 	
 	private final UnitExpression unitExpression;
 	@Override

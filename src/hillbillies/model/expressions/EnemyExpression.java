@@ -8,6 +8,8 @@ import hillbillies.model.world.WorldException;
 
 public class EnemyExpression extends UnitExpression {
 
+	
+	
 	@Override
 	public Unit evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
 		Set<Unit> units = world.getUnits();

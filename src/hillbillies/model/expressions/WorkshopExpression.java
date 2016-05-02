@@ -13,6 +13,12 @@ public class WorkshopExpression extends PositionExpression{
 		return null;
 	}
 
+	@Override
+	public Boolean containsSelected() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 
 }
