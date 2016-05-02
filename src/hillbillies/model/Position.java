@@ -1,5 +1,6 @@
 package hillbillies.model;
 import java.util.ArrayList;
+import java.util.function.Predicate;
 
 import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.model.world.Cube;
@@ -333,7 +334,7 @@ public boolean equals(Object obj) {
  * @throws UnitException
  */
 //TODO: rename method
-public ArrayList<Position> getNeighbours() throws UnitException{
+public ArrayList<Position> getNeighbours(Predicate<Cube> condition) throws UnitException{
 	ArrayList<Position> neighbours = new ArrayList<>();
 	int[] pos = new int[]{-1,0,1};
 	for (int x: pos){
@@ -342,7 +343,7 @@ public ArrayList<Position> getNeighbours() throws UnitException{
 				if (Position.isValidPos(x+this.getxpos(), y+this.getypos(), z+this.getzpos(), this.world) && (x!=0 || y!=0 || z!=0)){
 					
 					Position neighbour = new Position(this.getxpos()+x,this.getypos()+y,this.getzpos()+z, this.world);
-					if (neighbour.getCube().isWalkable()){
+					if (condition.test(neighbour.getCube())){
 						neighbours.add(neighbour);
 					}
 					

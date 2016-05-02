@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Predicate;
 
 import hillbillies.model.Position;
+import hillbillies.model.world.Cube;
 import hillbillies.model.world.World;
 /**
  * @value
@@ -136,7 +138,7 @@ public class PathFinding {
 				calculatePath(current);
 				break;
 			}
-			for (Position pos : current.getPosition().getNeighbours()){
+			for (Position pos : current.getPosition().getNeighbours(c -> c.isWalkable())){
 				if (closedset.contains(pos)){
 					continue;
 				}
