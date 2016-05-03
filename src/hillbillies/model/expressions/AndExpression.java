@@ -6,17 +6,14 @@ import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class AndExpression extends BooleanExpression {
+public class AndExpression<L extends BooleanExpression, R extends BooleanExpression> extends BooleanExpression {
 	
-	private final BooleanExpression right;
-	private final BooleanExpression left;
+	private final R right;
+	private final L left;
 
-	public AndExpression(Expression left, Expression right) throws SyntaxException{
-		if (!(left instanceof BooleanExpression && right instanceof BooleanExpression)){
-			throw new SyntaxException();
-		}
-		this.right = (BooleanExpression) right;
-		this.left = (BooleanExpression) left;
+	public AndExpression(L left, R right) throws SyntaxException{
+		this.right = right;
+		this.left = left;
 	}
 	
 	@Override

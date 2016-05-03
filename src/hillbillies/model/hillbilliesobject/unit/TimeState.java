@@ -295,6 +295,28 @@ public void setTrackTimeWork(double trackTimeWork) {
 	assert isValidTrackTimeWork(trackTimeWork);
 	this.trackTimeWork = trackTimeWork;
 }
+/**
+ * Tracks the time of the unit following another unit since the last recalculation of the path
+ */
+public double trackTimeFollow= 0;
+/**
+ * returns the trackTimeFollow
+ * @return
+ */
+public double getTrackTimeFollow() {
+	return trackTimeFollow;
+}
+/**
+ * sets the trackTime follow to the given param.
+ * @param trackTimeFollow
+ */
+public void setTrackTimeFollow(double trackTimeFollow) {
+	assert trackTimeFollow>=0;
+	this.trackTimeFollow = trackTimeFollow;
+}
+
+
+
 
 
 }

@@ -3,12 +3,11 @@ package hillbillies.model;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Queue;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Predicate;
 
-import hillbillies.model.hillbilliesobject.unit.PathFinding.Node;
+import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.model.world.Cube;
 import hillbillies.model.world.World;
@@ -34,10 +33,11 @@ public class Dijkstra {
 	private Set<Position> closedset = new HashSet<>();
 	
 	
-	public Dijkstra(Predicate<Cube> condition, Position startPos) throws UnitException{
-		if (condition==null || startPos == null || startPos.getWorld()==null){
+	public Dijkstra(Predicate<Cube> condition, Unit unit) throws UnitException{
+		if (condition==null){
 			throw new IllegalArgumentException();
 		}
+		Position pos = new Position(unit.getxpos(),unit.getypos(),unit.getzpos(),unit.getWorld());
 		this.condition = condition;
 		this.startPos.setPositionAt(startPos);
 		this.startPos.setToMiddleOfCube();

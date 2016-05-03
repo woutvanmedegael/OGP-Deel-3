@@ -1245,7 +1245,7 @@ public void moveTo(int cubeX, int cubeY, int cubeZ) throws UnitException{
 			throw new UnitException();
 		}
 		if (this.getWorld() != null){
-			this.setPathFinder(new PathFinding(this.getWorld(), this.getMyPosition(),this.getGlobalTarget()));
+			this.setPathFinder(new PathFinding(this.getWorld(), this.getMyPosition(),this.getGlobalTarget(), false));
 		}
 		if (this.getPathFinder().getPath().isEmpty()){
 			this.setMyState(CurrentState.NEUTRAL);
@@ -1331,7 +1331,7 @@ private void calculateLocalTarget() throws UnitException{
 		this.setMyState(CurrentState.NEUTRAL);
 		this.setGlobalTarget(null);
 	} else if (!nextPos.isValidPos()){
-		this.setPathFinder(new PathFinding(this.myWorld,this.getMyPosition(),this.getGlobalTarget()));
+		this.setPathFinder(new PathFinding(this.myWorld,this.getMyPosition(),this.getGlobalTarget(), false));
 		calculateLocalTarget();
 	} else {
 		setLocalTargetAndSpeed(nextPos);
@@ -1353,6 +1353,11 @@ private void calculateLocalTarget() throws UnitException{
  * @throws WorldException 
  */
 public void advanceTime(double dt) throws WorldException{
+	
+	if (this.getMyState() != CurrentState.NEUTRAL){
+		System.out.println(this.getMyState());
+
+	}
 	while (this.getExperiencePoints()>=10){
 		this.setExperiencePoints(this.getExperiencePoints()-10);
 		improveProperty();
@@ -1378,6 +1383,7 @@ public void advanceTime(double dt) throws WorldException{
 	
 		case FOLLOWING:
 			this.follow(dt);
+			break;
 			
 	
 		case NEUTRAL:
@@ -1478,7 +1484,9 @@ private void move(double dt) throws WorldException{
  */
 private void updateLocationAndOrientation(double dt) throws WorldException {
 	double distance = this.getMyPosition().calculateDistance(this.getLocalTarget());
-	boolean hasArrivedAtLocalTarget = this.getSpeed()*dt>distance;
+	System.out.println(distance);
+	boolean hasArrivedAtLocalTarget = this.getSpeed()*dt>=distance;
+	System.out.println(hasArrivedAtLocalTarget);
 	if (hasArrivedAtLocalTarget){
 		this.getMyPosition().setPositionAt(this.getLocalTarget());
 	} else {
@@ -2073,7 +2081,7 @@ private static final int SIZE = DEFAULTSTATES.size();
 private void executeDefaultBehaviour() throws UnitException{
 	if (this.getDefaultBehaviourEnabled()){
 		Unit enemy=null;
-		for (Position neighbour : this.getMyPosition().getNeighbours()){
+		for (Position neighbour : this.getMyPosition().getNeighbours(l->true)){
 			for (HillbilliesObject o : neighbour.getCube().getObjectsOnThisCube()){
 				if (o instanceof Unit && ((Unit) o).getFaction()!=this.getFaction()){
 					enemy = (Unit) o;
@@ -2388,7 +2396,7 @@ public void startFalling() throws UnitException{
 public boolean isMoving(){
 	//TODO:
 	return (this.getMyState()==CurrentState.MOVING || (this.getMyState()==CurrentState.RESTING && !this.getMyPosition().Equals(this.getLocalTarget()))
-			|| (this.getMyState() == CurrentState.FOLLOWING) && !hasCatchedUp);
+			|| (this.getMyState() == CurrentState.FOLLOWING) && this.stoppedFollowing == false);
 }
 
 
@@ -2412,138 +2420,89 @@ public double distanceTo(Unit u) throws UnitException{
 
 //NEW FOLLOW
 private Unit targetUnit;
-public void startFollowing(Unit other) throws UnitException{
-	System.out.println("starts following other unit");
-	lastTargetPosition = other.getMyPosition();
-	if (!(this.getMyState()==CurrentState.DEFENDING || this.getMyState() == CurrentState.ATTACKING) && this.getHasRested()){
-		System.out.println("states are ok");
+
+public Unit getTargetUnit() {
+	return targetUnit;
+}
+
+public void setTargetUnit(Unit targetUnit) {
+	this.targetUnit = targetUnit;
+}
+
+public void startFollowing(Unit target) throws UnitException{
+	System.out.println("start following again");
+	if (target != null && !(this.getMyState()==CurrentState.DEFENDING || this.getMyState() == CurrentState.ATTACKING) && this.getHasRested()){
+		this.setGlobalTarget(null);
 		this.setMyState(CurrentState.FOLLOWING);
-		targetUnit = other;
-		System.out.println("_______XXXXXXXXXX______");
-		this.setPathFinder(new PathFinding(this.getWorld(), this.getMyPosition(),targetUnit.getMyPosition()));
+		setTargetUnit(target);
+		System.out.println(targetUnit.getMyPosition());
+		if (!(targetUnit.getMyPosition().isValidPos() && targetUnit.getMyPosition().isPassablePos())|| myWorld ==null){
+			throw new UnitException();
+			}
+		System.out.println("watskebeurt?");
+		this.setPathFinder(new PathFinding(this.getWorld(), this.getMyPosition(),this.getTargetUnit().getMyPosition(), true));
 		if (this.getPathFinder().getPath().isEmpty()){
-			this.setMyState(CurrentState.NEUTRAL);
-			this.setGlobalTarget(null);
 			return;
 		}
-		hasCatchedUp = false;
-		
-		
-		
+		calculateLocalTargetFollow();
+		System.out.println("nieuw local target:");
+		System.out.println(this.getLocalTarget());
+	}	
 	}
-	//nieuwe staat following
-	
-}
-//TE inefficient voor woorden
-//Verbeteringen: pas iets doorgeven als de andere beweegt: concreet is dat positie opslagen en vanaf dat die significant verschilt
-//             : pas iets doorgeven als de andere zijn cube heeft verandert
 private void follow(double dt) throws WorldException{
+	System.out.println("in de follow met positie "+ this.getMyPosition());
 	
-	//System.out.println("follow is called");
-	moveTowardsUnit(dt);
-	
-	
-	
-}
-private boolean hasCatchedUp = false;
+	if (myTimeState.getTrackTimeFollow() >=3){
+		startFollowing(this.getTargetUnit());
+		myTimeState.setTrackTimeFollow(0);
+		return;
+	}
+	myTimeState.setTrackTimeFollow(myTimeState.getTrackTimeFollow()+dt);
 
+	System.out.println("in de follow 1 " + this.getMyState());
+	determineLocalTargetFollow();
+	System.out.println("in de follow 2 " + this.getMyState());
+	System.out.println(this.getLocalTarget());
+	updateLocationAndOrientation(dt);
+	System.out.println("in de follow 3 " + this.getMyState());
 
-private Position lastTargetPosition;
-
-
-private void moveTowardsUnit(double dt) throws WorldException{
-	System.out.println("move towards is called");
-	if (lastTargetPosition.equals(targetUnit.getMyPosition())){
-		continueWithPath (dt);
 		
-	}
-	else{
-		hasCatchedUp = false;
-		lastTargetPosition = targetUnit.getMyPosition();
-		walkNewPath(dt);
-	}
-	
-//	this.setPathFinder(new PathFinding(this.getWorld(), this.getMyPosition(),targetUnit.getMyPosition()));
-//	if (this.getPathFinder().getPath().isEmpty()){
-//		System.out.println("has catched up");
-//		hasCatchedUp = true;
-//		return;
-//	}
-//	hasCatchedUp = false;
-//	
-//	Position nextPos = this.getPathFinder().moveToNextPos();
-//	
-//	if (!nextPos.isValidPos()){
-//		this.setPathFinder(new PathFinding(this.myWorld,this.getMyPosition(),targetUnit.getMyPosition()));
-//		moveTowardsUnit(dt);
-//	} else {
-//		setLocalTargetAndSpeed(nextPos);
-//	}
-//	double distance = this.getMyPosition().calculateDistance(this.getLocalTarget());
-//	boolean hasArrivedAtLocalTarget = this.getSpeed()*dt>distance;
-//	if (hasArrivedAtLocalTarget){
-//		this.getMyPosition().setPositionAt(this.getLocalTarget());
-//	} else {
-//		double velocity = this.getSpeed();
-//		double velocityx = velocity*(this.getLocalTarget().getxpos()-this.getxpos())/distance;
-//		double velocityy = velocity*(this.getLocalTarget().getypos()-this.getypos())/distance;
-//		double velocityz = velocity*(this.getLocalTarget().getzpos()-this.getzpos())/distance;
-//		this.getMyPosition().incrPosition(velocityx*dt, velocityy*dt, velocityz*dt);
-//		this.setOrientation((float) Math.atan2(velocityy,velocityx));
-//	}
-//	if (this.getMyPosition().getCube()!=this.getParentCube()){
-//		this.setParentCube(this.getMyPosition(), this.getWorld());
-//	}
 }
-private void continueWithPath(double dt) throws WorldException{
-	System.out.println("continue with path ");
-	if (this.getMyPosition().getCube().equals(targetUnit.getMyPosition().getCube())){
-		hasCatchedUp = true;
-		System.out.println(" we staan op dezelfde cube");
-		return;
-	}
-	if (this.getPathFinder().getPath().isEmpty()){
-		//TODO: wat als pat leeg is en niet op bestemming geraakt
-		System.out.println("pat is leeg :(");
-		return;
-	}
-	System.out.println("continue with path 2 ");
-
-	hasCatchedUp = false;
+private boolean stoppedFollowing = false;
+private void calculateLocalTargetFollow() throws UnitException{
 	Position nextPos = this.getPathFinder().moveToNextPos();
-	
-	if (!nextPos.isValidPos()){
-		System.out.println("continue with path 4 ");
-
-		walkNewPath(dt);
-		}
-	else{
-		System.out.println("continue with path 5 ");
-
+	stoppedFollowing =false;
+	if (nextPos == null){
+		//er is geen path gevonden
+		stoppedFollowing= true;
+		System.out.println("geen path wat nu ?");
+	} else if (!nextPos.isValidPos()){
+		this.setPathFinder(new PathFinding(this.myWorld,this.getMyPosition(),this.getTargetUnit().getMyPosition(),true));
+		calculateLocalTargetFollow();
+		System.out.println("nextPos isn't valid lad");
+	} else {
+		System.out.println("local target set to");
+		System.out.println(nextPos);
 		setLocalTargetAndSpeed(nextPos);
-		updateLocationAndOrientation(dt);
 	}
 }
-private void walkNewPath(double dt) throws WorldException{
-	this.setPathFinder(new PathFinding(this.myWorld,this.getMyPosition(),lastTargetPosition));
-	if (this.getPathFinder().getPath().isEmpty()){
-		//er is geen pad gevonden
-		return;
-	}
-	
-	Position nextPos = this.getPathFinder().moveToNextPos();
-	if (!nextPos.isValidPos()){
-		walkNewPath(dt);
+private void determineLocalTargetFollow() throws UnitException{
+	if (this.getMyPosition().Equals(this.getLocalTarget())){
+		if (this.getPathFinder().hasArrived() && !stoppedFollowing){
+			this.setExperiencePoints(this.getExperiencePoints()+1);
+			this.stoppedFollowing = true;
+			this.setSpeed(0);
+			startFollowing(this.getTargetUnit());
 		}
-	else{
-		setLocalTargetAndSpeed(nextPos);
-		updateLocationAndOrientation(dt);
+		else if (!stoppedFollowing){
+			this.setExperiencePoints(this.getExperiencePoints()+1);
+			calculateLocalTargetFollow();
+		}
 	}
-	
-	
 }
-	
+
 }
+
 
 
 

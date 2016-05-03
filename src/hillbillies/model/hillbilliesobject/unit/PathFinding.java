@@ -41,11 +41,17 @@ public class PathFinding {
 	/**
 	 * Sets the world, and starts the pathfinding algorithm.
 	 */
-	public PathFinding(World world, Position start, Position target) throws UnitException{
+	public PathFinding(World world, Position start, Position target, Boolean followPath) throws UnitException{
 		this.world = world;
 		Position pos = new Position(start.getxpos(),start.getypos(),start.getzpos(),world);
 		pos.setToMiddleOfCube();
+		Position targ = new Position(target.getxpos(),target.getypos(),target.getzpos(),target.getWorld());
+		targ.setToMiddleOfCube();
 		this.calculateFastestPath(pos, target);
+		System.out.println(this.path);
+		if (followPath && !this.path.isEmpty()){
+			this.path.remove(0);
+		}
 	}
 	
 	/**
@@ -198,5 +204,10 @@ public class PathFinding {
 	ArrayList<Position> getPath(){
 		return this.path;
 	}
+	
+	Boolean hasArrived(){
+		return this.path.isEmpty();
+	}
+	
 	
 }
