@@ -45,6 +45,7 @@ public class Scheduler implements IScheduler{
 	}
 	
 	public void replaceTask(Task prevtask, Task newtask){
+		prevtask.removeScheduler(this);
 		if (tasks.remove(prevtask)){
 			tasks.add(newtask);
 		}
@@ -86,6 +87,8 @@ public class Scheduler implements IScheduler{
 			filter(pred);
 		return myTasks;
 	}
+	
+	
 	
 	
 	

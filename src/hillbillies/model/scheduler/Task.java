@@ -1,6 +1,7 @@
 package hillbillies.model.scheduler;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 import hillbillies.model.ITask;
@@ -15,13 +16,22 @@ public class Task implements Comparable<Task>,ITask{
 	
 	
 	private final Statement statement;
-	private boolean executing = false;
 	private Unit assignedUnit = null;
 	private int priority = 0;
 	private String name = null;
-	private Set<Scheduler> schedulers = null;
+	private Set<Scheduler> schedulers = new HashSet<Scheduler>();
 	
 	
+	
+
+
+
+	public Set<Scheduler> getSchedulers() {
+		return schedulers;
+	}
+
+
+
 	/**
 	 * @return the assignedUnit
 	 */
@@ -44,17 +54,9 @@ public class Task implements Comparable<Task>,ITask{
 	 * @return the executing
 	 */
 	public boolean isExecuting() {
-		return executing;
+		return this.getAssignedUnit() !=null;
 	}
 
-
-
-	/**
-	 * @param executing the executing to set
-	 */
-	public void setExecuting(boolean executing) {
-		this.executing = executing;
-	}
 
 	public void execute(World world, Unit unit, Position selectedCube) throws WorldException{
 		this.statement.execute(world, unit, selectedCube);
@@ -71,6 +73,7 @@ public class Task implements Comparable<Task>,ITask{
 		this.priority = prio;
 		this.name = name;
 		this.statement = stat;
+		
 		
 	}
 	
@@ -144,6 +147,26 @@ public class Task implements Comparable<Task>,ITask{
 
 	@Override
 	public void interrupt() {
+		this.statement.(false);
+		this.assignUnit(null);
+		if (this.getPriority() >0){
+				this.setPriority(this.getPriority()/2);
+		}
+		else if (this.getPriority() < 0){
+			if (this.getPriority() > Integer.MIN_VALUE/2){
+			this.setPriority(this.getPriority()*2);}
+			else{
+				this.setPriority(Integer.MIN_VALUE);
+			}
+		}
+		else{
+			this.setPriority(-1);
+		}
+		for (Scheduler scheduler:this.schedulers){
+			scheduler.removeTask(this);
+			scheduler.addTask(this);
+			
+		}
 		// TODO Auto-generated method stub
 		
 	}

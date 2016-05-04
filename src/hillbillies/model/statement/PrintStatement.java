@@ -22,7 +22,6 @@ public class PrintStatement extends Statement{
 	}
 	private final Expression stuffToPrint;
 	public PrintStatement(Expression value){
-		
 		this.stuffToPrint = value;
 	}
 

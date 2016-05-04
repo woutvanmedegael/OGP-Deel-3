@@ -5,6 +5,7 @@ import java.util.Set;
 
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.scheduler.Scheduler;
+import hillbillies.model.scheduler.Task;
 /**
  * @value
  * @author Wout Van Medegael & Adriaan Van Gerven
@@ -18,7 +19,7 @@ public class Faction {
 	 */
 	private final Set<Unit> units = new HashSet<>();
 	
-	private final Scheduler schedulaaarrrrrrrr = new Scheduler();
+	private final Scheduler scheduler= new Scheduler();
 	
 	/**
 	 * Adds the given unit to this faction is made package accesible.
@@ -46,5 +47,10 @@ public class Faction {
 		}
 		return myUnits;
 	}
+	
+	public Task getNextTask(){
+		return scheduler.getHighestPrioNonActiveTask();
+	}
+	
 	
 }
