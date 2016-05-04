@@ -1354,7 +1354,7 @@ private void calculateLocalTarget() throws UnitException{
  */
 public void advanceTime(double dt) throws WorldException{
 	
-	if (this.getMyState() != CurrentState.NEUTRAL){
+	if (this.getMyState() == CurrentState.FOLLOWING){
 		System.out.println(this.getMyState());
 
 	}
@@ -1484,9 +1484,7 @@ private void move(double dt) throws WorldException{
  */
 private void updateLocationAndOrientation(double dt) throws WorldException {
 	double distance = this.getMyPosition().calculateDistance(this.getLocalTarget());
-	System.out.println(distance);
 	boolean hasArrivedAtLocalTarget = this.getSpeed()*dt>=distance;
-	System.out.println(hasArrivedAtLocalTarget);
 	if (hasArrivedAtLocalTarget){
 		this.getMyPosition().setPositionAt(this.getLocalTarget());
 	} else {
@@ -2430,27 +2428,21 @@ public void setTargetUnit(Unit targetUnit) {
 }
 
 public void startFollowing(Unit target) throws UnitException{
-	System.out.println("start following again");
 	if (target != null && !(this.getMyState()==CurrentState.DEFENDING || this.getMyState() == CurrentState.ATTACKING) && this.getHasRested()){
 		this.setGlobalTarget(null);
 		this.setMyState(CurrentState.FOLLOWING);
 		setTargetUnit(target);
-		System.out.println(targetUnit.getMyPosition());
 		if (!(targetUnit.getMyPosition().isValidPos() && targetUnit.getMyPosition().isPassablePos())|| myWorld ==null){
 			throw new UnitException();
 			}
-		System.out.println("watskebeurt?");
 		this.setPathFinder(new PathFinding(this.getWorld(), this.getMyPosition(),this.getTargetUnit().getMyPosition(), true));
 		if (this.getPathFinder().getPath().isEmpty()){
 			return;
 		}
 		calculateLocalTargetFollow();
-		System.out.println("nieuw local target:");
-		System.out.println(this.getLocalTarget());
-	}	
+	}
 	}
 private void follow(double dt) throws WorldException{
-	System.out.println("in de follow met positie "+ this.getMyPosition());
 	
 	if (myTimeState.getTrackTimeFollow() >=3){
 		startFollowing(this.getTargetUnit());
@@ -2459,12 +2451,8 @@ private void follow(double dt) throws WorldException{
 	}
 	myTimeState.setTrackTimeFollow(myTimeState.getTrackTimeFollow()+dt);
 
-	System.out.println("in de follow 1 " + this.getMyState());
 	determineLocalTargetFollow();
-	System.out.println("in de follow 2 " + this.getMyState());
-	System.out.println(this.getLocalTarget());
 	updateLocationAndOrientation(dt);
-	System.out.println("in de follow 3 " + this.getMyState());
 
 		
 }
@@ -2475,14 +2463,10 @@ private void calculateLocalTargetFollow() throws UnitException{
 	if (nextPos == null){
 		//er is geen path gevonden
 		stoppedFollowing= true;
-		System.out.println("geen path wat nu ?");
 	} else if (!nextPos.isValidPos()){
 		this.setPathFinder(new PathFinding(this.myWorld,this.getMyPosition(),this.getTargetUnit().getMyPosition(),true));
 		calculateLocalTargetFollow();
-		System.out.println("nextPos isn't valid lad");
 	} else {
-		System.out.println("local target set to");
-		System.out.println(nextPos);
 		setLocalTargetAndSpeed(nextPos);
 	}
 }

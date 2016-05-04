@@ -47,8 +47,7 @@ public class PathFinding {
 		pos.setToMiddleOfCube();
 		Position targ = new Position(target.getxpos(),target.getypos(),target.getzpos(),target.getWorld());
 		targ.setToMiddleOfCube();
-		this.calculateFastestPath(pos, target);
-		System.out.println(this.path);
+		this.calculateFastestPath(pos, targ);
 		if (followPath && !this.path.isEmpty()){
 			this.path.remove(0);
 		}
