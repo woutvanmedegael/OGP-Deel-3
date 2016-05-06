@@ -1,7 +1,11 @@
 package hillbillies.model.expressions;
 
+import java.util.function.Predicate;
+
+import hillbillies.model.Dijkstra;
 import hillbillies.model.Position;
 import hillbillies.model.hillbilliesobject.unit.Unit;
+import hillbillies.model.world.Cube;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
@@ -9,14 +13,25 @@ public class WorkshopExpression extends PositionExpression{
 	//ADRIAAN
 	@Override
 	public Position evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
-		// TODO Auto-generated method stub
-		return null;
+		Predicate<Cube> myPredicate = new Predicate<Cube>(){
+
+			@Override
+			public boolean test(Cube t) {
+				if (t.getIntTerrainType()==3){
+					return true;
+				}
+				return false;
+			}
+			
+		};
+		Dijkstra dijkstra = new Dijkstra(myPredicate, unit);
+		Position pos = dijkstra.findClosestPosition();
+		return pos;
 	}
 
 	@Override
 	public Boolean containsSelected() {
-		// TODO Auto-generated method stub
-		return null;
+		return false;
 	}
 
 	

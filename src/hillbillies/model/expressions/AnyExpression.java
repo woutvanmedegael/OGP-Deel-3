@@ -1,9 +1,13 @@
 package hillbillies.model.expressions;
 
 import java.util.Set;
+import java.util.function.Predicate;
 
+import hillbillies.model.Dijkstra;
 import hillbillies.model.Position;
+import hillbillies.model.hillbilliesobject.HillbilliesObject;
 import hillbillies.model.hillbilliesobject.unit.Unit;
+import hillbillies.model.world.Cube;
 import hillbillies.model.world.Faction;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
@@ -12,25 +16,30 @@ public class AnyExpression extends UnitExpression{
 	//ADRIAAN
 	@Override
 	public Unit evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
-		Set<Unit> units = world.getUnits();
-		Unit testUnit= null;
-		Unit closestUnit = null;
-		for(Unit u: units)
-		{
-			if (!(u== unit)){
-			testUnit= u;
-		    if (closestUnit==null || (unit.distanceTo(testUnit)<unit.distanceTo(closestUnit))){
-		    	closestUnit = testUnit;
-		    }
-		}
-		}
-		if (closestUnit == null){
-			//Idem: unit.interrupt()?
+		Predicate<Cube> myPredicate = new Predicate<Cube>(){
+
+			@Override
+			public boolean test(Cube t) {
+				for (HillbilliesObject h : t.getObjectsOnThisCube()){
+					if (h instanceof Unit){
+						return true;
+					}
+				}
+				return false;
+			}
+			
+		};
+		Dijkstra dijkstra = new Dijkstra(myPredicate, unit);
+		Position pos = dijkstra.findClosestPosition();
+		if (pos==null){
 			return null;
 		}
-		
-		return closestUnit;
-		
+		for (HillbilliesObject h : pos.getCube().getObjectsOnThisCube()){
+			if (h instanceof Unit){
+				return (Unit) h;
+			}
+		}
+		throw new WorldException();		
 	}
 
 	@Override

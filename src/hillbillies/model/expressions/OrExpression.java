@@ -6,18 +6,15 @@ import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class OrExpression extends BooleanExpression{
+public class OrExpression<L extends BooleanExpression, R extends BooleanExpression> extends BooleanExpression{
 	//WOUT
 	
-	private final BooleanExpression right;
-	private final BooleanExpression left;
+	private final R right;
+	private final L left;
 	
-	public OrExpression(Expression left, Expression right) throws SyntaxException{
-		if (!(left instanceof BooleanExpression && right instanceof BooleanExpression)){
-			throw new SyntaxException();	
-		}
-		this.right = (BooleanExpression) right;
-		this.left = (BooleanExpression) left;
+	public OrExpression(L left, R right) throws SyntaxException{
+		this.right = right;
+		this.left = left;
 	}
 	
 	

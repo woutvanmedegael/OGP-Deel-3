@@ -6,21 +6,18 @@ import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class IsAliveExpression extends BooleanExpression {
+public class IsAliveExpression<T extends UnitExpression> extends BooleanExpression {
 	//ADRIAAN
 	
-	private final UnitExpression unitExpression;
+	private final T unitExpression;
 	@Override
 	public Boolean evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
 		Unit myUnit = this.unitExpression.evaluate(world, unit, selectedCube);
 		return !(myUnit.getCurrentHP()==0);
 		
 	}
-	public IsAliveExpression(Expression unit) throws SyntaxException{
-		if (!(unit instanceof UnitExpression)){
-			throw new SyntaxException();
-		}
-		this.unitExpression = (UnitExpression) unit;
+	public IsAliveExpression(T unit) throws SyntaxException{
+		this.unitExpression = unit;
 	}
 
 	@Override

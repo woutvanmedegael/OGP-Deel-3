@@ -21,11 +21,11 @@ public class AndExpression<L extends BooleanExpression, R extends BooleanExpress
 		return (right.evaluate(world, unit, selectedCube) && left.evaluate(world, unit, selectedCube));
 	}
 
-	public Expression getLeft() {
+	public L getLeft() {
 		return left;
 	}
 
-	public Expression getRight() {
+	public R getRight() {
 		return right;
 	}
 

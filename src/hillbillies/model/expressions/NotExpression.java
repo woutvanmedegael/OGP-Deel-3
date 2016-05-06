@@ -6,7 +6,7 @@ import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class NotExpression extends BooleanExpression{
+public class NotExpression<T extends BooleanExpression> extends BooleanExpression{
 	//ADRIAAN
 	@Override
 	public Boolean evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
@@ -14,12 +14,9 @@ public class NotExpression extends BooleanExpression{
 		
 		return (!notExpression.evaluate(world, unit, selectedCube));
 	}
-	private final BooleanExpression notExpression;
-	public NotExpression(Expression notExpr) throws SyntaxException{
-		if (!(notExpr instanceof BooleanExpression)){
-			throw new SyntaxException();
-		}
-		this.notExpression = (BooleanExpression)notExpr;
+	private final T notExpression;
+	public NotExpression(T notExpr) throws SyntaxException{
+		this.notExpression = notExpr;
 		
 	}
 	@Override

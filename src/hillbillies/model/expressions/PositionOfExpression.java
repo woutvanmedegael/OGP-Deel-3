@@ -6,14 +6,11 @@ import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class PositionOfExpression extends PositionExpression{
-	private final UnitExpression unit;
+public class PositionOfExpression<T extends UnitExpression> extends PositionExpression{
+	private final T unit;
 	
-	public PositionOfExpression(Expression unit) throws SyntaxException{
-		if (!(unit instanceof UnitExpression)  ){
-			throw new SyntaxException();
-		}
-		this.unit = (UnitExpression) unit;
+	public PositionOfExpression(T unit) throws SyntaxException{
+		this.unit = unit;
 		
 	}
 	@Override

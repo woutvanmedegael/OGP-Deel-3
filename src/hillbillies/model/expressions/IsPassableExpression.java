@@ -6,7 +6,7 @@ import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class IsPassableExpression extends BooleanExpression{
+public class IsPassableExpression<T extends PositionExpression> extends BooleanExpression{
 	//ADRIAAN
 	@Override
 	public Boolean evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
@@ -16,13 +16,10 @@ public class IsPassableExpression extends BooleanExpression{
 		
 	}
 	
-	private final PositionExpression positionExpression;
+	private final T positionExpression;
 	
-	public IsPassableExpression(Expression position) throws SyntaxException{
-		if (!(position instanceof PositionExpression)){
-			throw new SyntaxException();
-		}
-		this.positionExpression = (PositionExpression)position;
+	public IsPassableExpression(T position) throws SyntaxException{
+		this.positionExpression = position;
 		
 	}
 	

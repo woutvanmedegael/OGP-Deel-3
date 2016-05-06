@@ -9,16 +9,13 @@ import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class NextToExpression extends PositionExpression{
+public class NextToExpression<T extends PositionExpression> extends PositionExpression{
 	//WOUT
 	
-	private PositionExpression position;
+	private T position;
 	
-	public NextToExpression(Expression pos) throws SyntaxException{
-		if (!(pos instanceof PositionExpression)){
-			throw new SyntaxException();
-		}
-		this.position = (PositionExpression) pos;
+	public NextToExpression(T pos) throws SyntaxException{
+		this.position = pos;
 	}
 	
 	

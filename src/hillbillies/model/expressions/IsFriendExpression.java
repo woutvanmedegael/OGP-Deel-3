@@ -6,16 +6,13 @@ import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class IsFriendExpression extends BooleanExpression{
+public class IsFriendExpression<T extends UnitExpression> extends BooleanExpression{
 	//WOUT
 	
-		private UnitExpression friend;
+		private T friend;
 		
-		public IsFriendExpression(Expression friend) throws SyntaxException{
-			if (!(friend instanceof UnitExpression)){
-				throw new SyntaxException();
-			}
-			this.friend = (UnitExpression) friend;
+		public IsFriendExpression(T friend) throws SyntaxException{
+			this.friend = friend;
 			
 		}
 		

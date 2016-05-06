@@ -6,17 +6,14 @@ import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class CarriesItemExpression extends BooleanExpression{
+public class CarriesItemExpression<T extends UnitExpression> extends BooleanExpression{
 	
 	
 	
-	private final UnitExpression unit;
+	private final T unit;
 
-	public CarriesItemExpression(Expression unit) throws SyntaxException{
-		if (!(unit instanceof UnitExpression)){
-			throw new SyntaxException();
-		}
-		this.unit = (UnitExpression) unit;
+	public CarriesItemExpression(T unit) throws SyntaxException{
+		this.unit = unit;
 	}
 	
 	@Override
@@ -25,7 +22,7 @@ public class CarriesItemExpression extends BooleanExpression{
 		return (myUnit.isCarryingBoulder() || myUnit.isCarryingLog());
 	}
 
-	public UnitExpression getUnit() {
+	public T getUnit() {
 		return unit;
 	}
 

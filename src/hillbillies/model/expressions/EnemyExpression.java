@@ -22,30 +22,25 @@ public class EnemyExpression extends UnitExpression {
 			@Override
 			public boolean test(Cube t) {
 				for (HillbilliesObject h : t.getObjectsOnThisCube()){
-					if (h instanceof Unit){
-						if (((Unit) h).getFaction()!=unit.getFaction()){
-							return true;
-						}
+					if (h instanceof Unit && ((Unit) h).getFaction()!=unit.getFaction()){
+						return true;
 					}
 				}
 				return false;
 			}
 			
 		};
-		Dijkstra mijnDijkstra = new Dijkstra(myPredicate, unit);
-		Set<Unit> units = world.getUnits();
-		units.stream().
-			filter(u -> u.getFaction()!=unit.getFaction());
-		Unit enemy = null;
-		for(Unit u: units){
-		   if (unit.distanceTo(enemy)>unit.distanceTo(u)){
-			   enemy = u;
-		   }
+		Dijkstra dijkstra = new Dijkstra(myPredicate, unit);
+		Position pos = dijkstra.findClosestPosition();
+		if (pos==null){
+			return null;
 		}
-		if (enemy == null){
-			throw new WorldException();
+		for (HillbilliesObject h : pos.getCube().getObjectsOnThisCube()){
+			if (h instanceof Unit && ((Unit) h).getFaction()!=unit.getFaction()){
+				return (Unit) h;
+			}
 		}
-		return enemy;
+		throw new WorldException();
 		
 	}
 
