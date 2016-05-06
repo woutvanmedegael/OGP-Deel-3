@@ -25,8 +25,7 @@ public class WorkshopExpression extends PositionExpression{
 			
 		};
 		Dijkstra dijkstra = new Dijkstra(myPredicate, unit);
-		Position pos = dijkstra.findClosestPosition();
-		return pos;
+		return dijkstra.findClosestPosition();
 	}
 
 	@Override
