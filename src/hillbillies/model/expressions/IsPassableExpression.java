@@ -1,5 +1,6 @@
 package hillbillies.model.expressions;
 
+import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
 import hillbillies.model.SyntaxException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
@@ -9,9 +10,9 @@ import hillbillies.model.world.WorldException;
 public class IsPassableExpression<T extends PositionExpression> extends BooleanExpression{
 	//ADRIAAN
 	@Override
-	public Boolean evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
+	public Boolean evaluate(ContextWrapper c) throws WorldException {
 		// TODO Auto-generated method stub
-		Position pos = positionExpression.evaluate(world, unit, selectedCube);
+		Position pos = positionExpression.evaluate(c);
 		return pos.isPassablePos();
 		
 	}

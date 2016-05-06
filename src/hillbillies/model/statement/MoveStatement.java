@@ -1,5 +1,6 @@
 package hillbillies.model.statement;
 
+import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
 import hillbillies.model.SyntaxException;
 import hillbillies.model.expressions.Expression;
@@ -9,27 +10,23 @@ import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class MoveStatement extends ActionStatement {
+public class MoveStatement<T extends PositionExpression> extends ActionStatement {
 	//ADRIAAN
 	@Override
-	public Boolean execute(World world, Unit unit, Position selectedCube) throws WorldException {
-		Position target = positionExpression.evaluate(world, unit, selectedCube);
-		unit.moveTo(target.getCubexpos(), target.getCubeypos(), target.getCubezpos());
+	public Boolean execute(ContextWrapper c) throws WorldException {
+		Position target = positionExpression.evaluate(c);
+		c.getExecutingUnit().moveTo(target.getCubexpos(), target.getCubeypos(), target.getCubezpos());
 		
 		return true;
 	}
-	private final PositionExpression positionExpression;
-	public MoveStatement(Expression position) throws SyntaxException{
-		if (!(position instanceof PositionExpression)){
-			throw new SyntaxException();
-		}
-		positionExpression = (PositionExpression)position;
+	private final T positionExpression;
+	public MoveStatement(T position) throws SyntaxException{
+		positionExpression = position;
 	}
 
 	@Override
 	public Boolean containsSelected() {
-		// TODO Auto-generated method stub
-		return null;
+		return positionExpression.containsSelected();
 	}
 	
 

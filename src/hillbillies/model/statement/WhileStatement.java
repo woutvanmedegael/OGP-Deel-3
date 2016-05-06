@@ -1,5 +1,6 @@
 package hillbillies.model.statement;
 
+import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
 import hillbillies.model.SyntaxException;
 import hillbillies.model.expressions.BooleanExpression;
@@ -26,10 +27,10 @@ public class WhileStatement extends Statement{
 
 	
 	@Override
-	public Boolean execute(World world, Unit unit, Position selectedCube) throws WorldException {
+	public Boolean execute(ContextWrapper c) throws WorldException {
 		Boolean noBreakCalled = true;
-		while (this.condition.evaluate(world, unit, selectedCube) && noBreakCalled){
-			noBreakCalled = this.body.execute(world, unit, selectedCube);
+		while (this.condition.evaluate(c) && noBreakCalled){
+			noBreakCalled = this.body.execute(c);
 		}
 		return true;
 	}

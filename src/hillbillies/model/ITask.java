@@ -8,7 +8,7 @@ import hillbillies.model.world.WorldException;
 
 public interface ITask extends Comparable<Task> {
 	
-	public void execute(World world, Unit unit, Position selectedCube) throws WorldException;
+	public void execute(World world, Unit unit) throws WorldException;
 	public boolean isExecuting();
 	public void assignUnit(Unit unit);
 	public void setPriority(int newPrio);

@@ -3,10 +3,12 @@ package hillbillies.model.expressions;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import hillbillies.model.ContextWrapper;
 import hillbillies.model.Dijkstra;
 import hillbillies.model.Position;
 import hillbillies.model.hillbilliesobject.HillbilliesObject;
 import hillbillies.model.hillbilliesobject.unit.Unit;
+import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.model.world.Cube;
 import hillbillies.model.world.Faction;
 import hillbillies.model.world.World;
@@ -15,7 +17,7 @@ import hillbillies.model.world.WorldException;
 public class AnyExpression extends UnitExpression{
 	//ADRIAAN
 	@Override
-	public Unit evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
+	public Unit evaluate(ContextWrapper c) throws WorldException{
 		Predicate<Cube> myPredicate = new Predicate<Cube>(){
 
 			@Override
@@ -29,7 +31,7 @@ public class AnyExpression extends UnitExpression{
 			}
 			
 		};
-		Dijkstra dijkstra = new Dijkstra(myPredicate, unit);
+		Dijkstra dijkstra = new Dijkstra(myPredicate, c.getExecutingUnit());
 		Position pos = dijkstra.findClosestPosition();
 		if (pos==null){
 			return null;

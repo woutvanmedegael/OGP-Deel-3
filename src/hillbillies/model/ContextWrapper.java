@@ -10,16 +10,16 @@ import hillbillies.model.world.World;
 
 public class ContextWrapper {
 	private Unit executingUnit = null;
-	private Cube selectedCube;
+	private Position selectedPos;
 	private World thisWorld = null;
 	
 	private final Map<String, Expression<Object>> assignMapper = new HashMap<String, Expression<Object>>();	
 	
-	public Cube getSelecteCube(){
-		return selectedCube;
+	public Position getSelectedPos(){
+		return selectedPos;
 	}
-	public void setSelectedCube(Cube selectedCube){
-		this.selectedCube = selectedCube;
+	public void setSelectedPos(Position selectedPos){
+		this.selectedPos = selectedPos;
 	}
 	
 	public Unit getExecutingUnit() {
@@ -34,7 +34,7 @@ public class ContextWrapper {
 	public void setThisWorld(World thisWorld) {
 		this.thisWorld = thisWorld;
 	}
-	public void addNewVariable(String key,Expression value){
+	public void addNewVariable(String key,Expression<Object> value){
 		assignMapper.put(key, value);
 	}
 	

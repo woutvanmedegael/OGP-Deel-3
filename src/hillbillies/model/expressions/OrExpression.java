@@ -1,5 +1,6 @@
 package hillbillies.model.expressions;
 
+import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
 import hillbillies.model.SyntaxException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
@@ -19,8 +20,8 @@ public class OrExpression<L extends BooleanExpression, R extends BooleanExpressi
 	
 	
 	@Override
-	public Boolean evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
-		return (this.right.evaluate(world, unit, selectedCube) || this.left.evaluate(world, unit, selectedCube));
+	public Boolean evaluate(ContextWrapper c) throws WorldException {
+		return (this.right.evaluate(c) || this.left.evaluate(c));
 	}
 
 

@@ -3,8 +3,6 @@
  */
 package hillbillies.model.statement;
 
-
-
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.IContainsSelected;
 import hillbillies.model.world.WorldException;

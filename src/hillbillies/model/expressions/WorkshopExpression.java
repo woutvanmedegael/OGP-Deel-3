@@ -2,6 +2,7 @@ package hillbillies.model.expressions;
 
 import java.util.function.Predicate;
 
+import hillbillies.model.ContextWrapper;
 import hillbillies.model.Dijkstra;
 import hillbillies.model.Position;
 import hillbillies.model.hillbilliesobject.unit.Unit;
@@ -12,7 +13,7 @@ import hillbillies.model.world.WorldException;
 public class WorkshopExpression extends PositionExpression{
 	//ADRIAAN
 	@Override
-	public Position evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
+	public Position evaluate(ContextWrapper c) throws WorldException {
 		Predicate<Cube> myPredicate = new Predicate<Cube>(){
 
 			@Override
@@ -24,7 +25,7 @@ public class WorkshopExpression extends PositionExpression{
 			}
 			
 		};
-		Dijkstra dijkstra = new Dijkstra(myPredicate, unit);
+		Dijkstra dijkstra = new Dijkstra(myPredicate, c.getExecutingUnit());
 		return dijkstra.findClosestPosition();
 	}
 

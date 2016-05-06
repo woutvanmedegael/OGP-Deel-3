@@ -1,17 +1,18 @@
 package hillbillies.model.statement;
 
+import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
 import hillbillies.model.expressions.Expression;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class PrintStatement extends Statement{
+public class PrintStatement<T extends Expression<Object>> extends Statement{
 	//ADRIAAN
 	@Override
-	public Boolean execute(World world, Unit unit, Position selectedCube) throws WorldException {
+	public Boolean execute(ContextWrapper c) throws WorldException {
 		// TODO Auto-generated method stub
-		System.out.println(stuffToPrint.evaluate(world, unit, selectedCube));
+		System.out.println(stuffToPrint.evaluate(c));
 		return true;
 	}
 
@@ -20,8 +21,8 @@ public class PrintStatement extends Statement{
 		// TODO Auto-generated method stub
 		return stuffToPrint.containsSelected();
 	}
-	private final Expression stuffToPrint;
-	public PrintStatement(Expression value){
+	private final T stuffToPrint;
+	public PrintStatement(T value){
 		this.stuffToPrint = value;
 	}
 

@@ -3,6 +3,7 @@ package hillbillies.model.expressions;
 import java.util.ArrayList;
 import java.util.Random;
 
+import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
 import hillbillies.model.SyntaxException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
@@ -20,7 +21,9 @@ public class NextToExpression<T extends PositionExpression> extends PositionExpr
 	
 	
 	@Override
-	public Position evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
+	public Position evaluate(ContextWrapper c) throws WorldException {
+		Unit unit = c.getExecutingUnit();
+		World world = c.getThisWorld();
 		ArrayList<Position> positions = new ArrayList<>();
 		int xpos = (int)unit.getxpos();
 		int ypos = (int)unit.getypos();

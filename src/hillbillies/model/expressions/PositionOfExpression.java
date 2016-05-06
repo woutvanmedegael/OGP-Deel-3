@@ -1,5 +1,6 @@
 package hillbillies.model.expressions;
 
+import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
 import hillbillies.model.SyntaxException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
@@ -14,9 +15,9 @@ public class PositionOfExpression<T extends UnitExpression> extends PositionExpr
 		
 	}
 	@Override
-	public Position evaluate(World world,Unit unit, Position selectedCube) throws WorldException {
-		Unit myUnit = this.unit.evaluate(world, unit, selectedCube);
-		return new Position(myUnit.getxpos(), myUnit.getypos(), myUnit.getzpos(), world);
+	public Position evaluate(ContextWrapper c) throws WorldException {
+		Unit myUnit = this.unit.evaluate(c);
+		return new Position(myUnit.getxpos(), myUnit.getypos(), myUnit.getzpos(), c.getThisWorld());
 	}
 	@Override
 	public Boolean containsSelected() {

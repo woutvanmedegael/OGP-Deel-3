@@ -1,5 +1,6 @@
 package hillbillies.model.expressions;
 
+import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
 import hillbillies.model.SyntaxException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
@@ -11,14 +12,14 @@ public class AndExpression<L extends BooleanExpression, R extends BooleanExpress
 	private final R right;
 	private final L left;
 
-	public AndExpression(L left, R right) throws SyntaxException{
+	public AndExpression(L left, R right){
 		this.right = right;
 		this.left = left;
 	}
 	
 	@Override
-	public Boolean evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
-		return (right.evaluate(world, unit, selectedCube) && left.evaluate(world, unit, selectedCube));
+	public Boolean evaluate(ContextWrapper c) throws WorldException{
+		return (right.evaluate(c) && left.evaluate(c));
 	}
 
 	public L getLeft() {

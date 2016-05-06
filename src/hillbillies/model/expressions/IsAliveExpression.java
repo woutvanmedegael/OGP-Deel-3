@@ -1,5 +1,6 @@
 package hillbillies.model.expressions;
 
+import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
 import hillbillies.model.SyntaxException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
@@ -11,8 +12,8 @@ public class IsAliveExpression<T extends UnitExpression> extends BooleanExpressi
 	
 	private final T unitExpression;
 	@Override
-	public Boolean evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
-		Unit myUnit = this.unitExpression.evaluate(world, unit, selectedCube);
+	public Boolean evaluate(ContextWrapper c) throws WorldException{
+		Unit myUnit = this.unitExpression.evaluate(c);
 		return !(myUnit.getCurrentHP()==0);
 		
 	}

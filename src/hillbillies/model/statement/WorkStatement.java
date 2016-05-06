@@ -1,5 +1,6 @@
 package hillbillies.model.statement;
 
+import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
 import hillbillies.model.SyntaxException;
 import hillbillies.model.expressions.Expression;
@@ -9,21 +10,18 @@ import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class WorkStatement extends ActionStatement{
+public class WorkStatement<T extends PositionExpression> extends ActionStatement{
 	
-	private PositionExpression position;
+	private T position;
 	
-	public WorkStatement(Expression pos) throws SyntaxException{
-		if (!(pos instanceof PositionExpression)){
-			throw new SyntaxException();
-		}
-		this.position = (PositionExpression) pos;
+	public WorkStatement(T pos) throws SyntaxException{
+		this.position = pos;
 	}
 	
 	@Override
-	public Boolean execute(World world, Unit unit, Position selectedCube) throws WorldException {
-		Position pos = position.evaluate(world, unit, selectedCube);
-		unit.workAt(pos.getCubexpos(), pos.getCubeypos(), pos.getCubezpos());
+	public Boolean execute(ContextWrapper c) throws WorldException {
+		Position pos = position.evaluate(c);
+		c.getExecutingUnit().workAt(pos.getCubexpos(), pos.getCubeypos(), pos.getCubezpos());
 		return true;
 	}
 

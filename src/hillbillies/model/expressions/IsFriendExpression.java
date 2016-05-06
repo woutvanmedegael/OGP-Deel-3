@@ -1,5 +1,6 @@
 package hillbillies.model.expressions;
 
+import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
 import hillbillies.model.SyntaxException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
@@ -17,8 +18,8 @@ public class IsFriendExpression<T extends UnitExpression> extends BooleanExpress
 		}
 		
 		@Override
-		public Boolean evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
-			return (friend.evaluate(world, unit, selectedCube).getFaction()==unit.getFaction());
+		public Boolean evaluate(ContextWrapper c) throws WorldException {
+			return (friend.evaluate(c).getFaction()==c.getExecutingUnit().getFaction());
 		}
 
 		@Override

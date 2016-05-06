@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import hillbillies.model.ContextWrapper;
 import hillbillies.model.ITask;
 import hillbillies.model.Position;
 import hillbillies.model.SyntaxException;
@@ -20,6 +21,7 @@ public class Task implements Comparable<Task>,ITask{
 	private int priority = 0;
 	private String name = null;
 	private Set<Scheduler> schedulers = new HashSet<Scheduler>();
+	private final ContextWrapper contextWrapper = new ContextWrapper();
 	
 	
 	
@@ -58,13 +60,15 @@ public class Task implements Comparable<Task>,ITask{
 	}
 
 
-	public void execute(World world, Unit unit, Position selectedCube) throws WorldException{
-		this.statement.execute(world, unit, selectedCube);
+	public void execute(World world, Unit unit) throws WorldException{
+		this.contextWrapper.setExecutingUnit(unit);
+		this.contextWrapper.setThisWorld(world);
+		this.statement.execute(this.contextWrapper);
 		
 	}
 	
-	public Task(String name, int prio, Statement stat, Position selectedCube) throws SyntaxException{
-		if (selectedCube==null && this.containsSelectedKeyword()){
+	public Task(String name, int prio, Statement stat, Position selectedPos) throws SyntaxException{
+		if (selectedPos==null && this.containsSelectedKeyword()){
 			throw new SyntaxException();
 		}
 		if (name==null || stat==null){
@@ -73,6 +77,7 @@ public class Task implements Comparable<Task>,ITask{
 		this.priority = prio;
 		this.name = name;
 		this.statement = stat;
+		this.contextWrapper.setSelectedPos(selectedPos);
 		
 		
 	}
@@ -147,7 +152,7 @@ public class Task implements Comparable<Task>,ITask{
 
 	@Override
 	public void interrupt() {
-		this.statement.(false);
+		// TODO set statements op not-executed.
 		this.assignUnit(null);
 		if (this.getPriority() >0){
 				this.setPriority(this.getPriority()/2);
@@ -167,7 +172,6 @@ public class Task implements Comparable<Task>,ITask{
 			scheduler.addTask(this);
 			
 		}
-		// TODO Auto-generated method stub
 		
 	}
 	

@@ -1,5 +1,6 @@
 package hillbillies.model.expressions;
 
+import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
 import hillbillies.model.SyntaxException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
@@ -11,14 +12,14 @@ public class IsEnemyExpression<T extends UnitExpression> extends BooleanExpressi
 	
 	private T enemy;
 	
-	public IsEnemyExpression(T enemy) throws SyntaxException{
+	public IsEnemyExpression(T enemy){
 		this.enemy = enemy;
 		
 	}
 	
 	@Override
-	public Boolean evaluate(World world, Unit unit, Position selectedCube) throws WorldException {
-		return (enemy.evaluate(world, unit, selectedCube).getFaction()!=unit.getFaction());
+	public Boolean evaluate(ContextWrapper c) throws WorldException{
+		return (enemy.evaluate(c).getFaction()!=c.getExecutingUnit().getFaction());
 	}
 
 	@Override

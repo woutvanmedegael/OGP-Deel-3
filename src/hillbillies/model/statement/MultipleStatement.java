@@ -2,6 +2,7 @@ package hillbillies.model.statement;
 
 import java.util.List;
 
+import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.World;
@@ -17,9 +18,9 @@ public class MultipleStatement extends Statement{
 	}
 	
 	@Override
-	public Boolean execute(World world, Unit unit, Position selectedCube) throws WorldException {
+	public Boolean execute(ContextWrapper c) throws WorldException {
 		for (Statement s: this.statements){
-			if (!s.execute(world, unit, selectedCube))
+			if (!s.execute(c))
 				return false;
 		}
 		return true;

@@ -1,5 +1,6 @@
 package hillbillies.model.statement;
 
+import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
 import hillbillies.model.SyntaxException;
 import hillbillies.model.expressions.Expression;
@@ -9,12 +10,12 @@ import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class FollowStatement extends ActionStatement{
+public class FollowStatement<T extends UnitExpression> extends ActionStatement{
 	
 	@Override
-	public Boolean execute(World world, Unit unit, Position selectedCube) throws  WorldException {
+	public Boolean execute(ContextWrapper c) throws  WorldException {
 		// TODO Auto-generated method stub
-		unit.startFollowing(this.unitExpression.evaluate(world, unit, selectedCube));
+		c.getExecutingUnit().startFollowing(this.unitExpression.evaluate(c));
 		return true;
 	}
 
@@ -23,12 +24,9 @@ public class FollowStatement extends ActionStatement{
 		// TODO Auto-generated method stub
 		return unitExpression.containsSelected();
 	}
-	private final UnitExpression unitExpression;
-	public FollowStatement(Expression unit) throws SyntaxException{
-		if (!(unit instanceof UnitExpression)){
-			throw new SyntaxException();
-		}
-		this.unitExpression = (UnitExpression)unit;
+	private final T unitExpression;
+	public FollowStatement(T unit) throws SyntaxException{
+		this.unitExpression = unit;
 		
 		
 		
