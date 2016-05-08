@@ -1,3 +1,4 @@
+package hillbillies.model;
 import java.util.ArrayList;
 
 import hillbillies.model.expressions.Expression;

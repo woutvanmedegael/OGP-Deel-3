@@ -43,5 +43,11 @@ public class ContextWrapper {
 		return assignMapper.get(key);
 	}
 	
+	public void clear(){
+		this.assignMapper.clear();
+		this.executingUnit = null;
+		this.thisWorld = null;
+	}
+	
 	
 }

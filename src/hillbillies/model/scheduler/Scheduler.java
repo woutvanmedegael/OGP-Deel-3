@@ -3,6 +3,7 @@ package hillbillies.model.scheduler;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Predicate;
@@ -49,7 +50,6 @@ public class Scheduler implements IScheduler{
 		if (tasks.remove(prevtask)){
 			tasks.add(newtask);
 		}
-		//TODO stop prevtask
 	}
 
 	
@@ -88,6 +88,9 @@ public class Scheduler implements IScheduler{
 		return myTasks;
 	}
 	
+	public Iterator<Task> getIterator(){
+		return this.tasks.iterator();
+	}
 	
 	
 	

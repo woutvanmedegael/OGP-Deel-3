@@ -15,6 +15,7 @@ import hillbillies.model.hillbilliesobject.CurrentState;
 import hillbillies.model.hillbilliesobject.HillbilliesObject;
 import hillbillies.model.hillbilliesobject.Load;
 import hillbillies.model.hillbilliesobject.Log;
+import hillbillies.model.scheduler.Task;
 import hillbillies.model.world.Cube;
 import hillbillies.model.world.Faction;
 import hillbillies.model.world.TerrainType;
@@ -1253,6 +1254,8 @@ public void moveTo(int cubeX, int cubeY, int cubeZ) throws UnitException{
 			return;
 		}
 		calculateLocalTarget();
+	} else {
+		interrupt();
 	}
 }
 
@@ -1354,10 +1357,7 @@ private void calculateLocalTarget() throws UnitException{
  */
 public void advanceTime(double dt) throws WorldException{
 	
-	if (this.getMyState() == CurrentState.FOLLOWING){
-		System.out.println(this.getMyState());
-
-	}
+	
 	while (this.getExperiencePoints()>=10){
 		this.setExperiencePoints(this.getExperiencePoints()-10);
 		improveProperty();
@@ -1406,8 +1406,7 @@ public void advanceTime(double dt) throws WorldException{
 				this.rest(dt);
 			}
 			break;
-			//TODO hier this.attacking
-/*		case ATTACKING:
+		case ATTACKING:
 			if (this.getMyTimeState().getAttackTime()>1){
 				this.attack(this.getDefender());
 				break;
@@ -1415,7 +1414,7 @@ public void advanceTime(double dt) throws WorldException{
 				double attackTime = (this.getMyTimeState().getAttackTime()+dt);
 				this.getMyTimeState().setAttackTime(attackTime);
 				break;
-			}*/
+			}
 		case FALLING:
 			this.fall(dt);
 	default:
@@ -1590,6 +1589,8 @@ public void workAt(int x, int y, int z) throws UnitException{
 		this.setMyState(CurrentState.WORKING);
 		this.getMyTimeState().setTrackTimeWork(0);
 		this.setOrientation((float) Math.atan2(y-this.getMyPosition().getypos()+0.5, x-this.getMyPosition().getxpos()+0.5));
+	} else {
+		interrupt();
 	}
 }
 
@@ -1723,6 +1724,8 @@ public void startResting(){
 		this.setHasRested(false);
 		this.getMyTimeState().setTimeRested(0);
 		
+	} else {
+		interrupt();
 	}
 }
 
@@ -1740,15 +1743,15 @@ public void startResting(){
  * 		| then this.getDefender().startDefending(this)
  */
 public void startAttacking(Unit defender) throws UnitException{
-	//TODO: aangepast
-	this.startFollowing(defender);
-/*	if (targetWithinReach(defender) && !(this.getMyState() == CurrentState.DEFENDING || this.getMyState() == CurrentState.ATTACKING ||
+	if (targetWithinReach(defender) && !(this.getMyState() == CurrentState.DEFENDING || this.getMyState() == CurrentState.ATTACKING ||
 			this.getFaction()==defender.getFaction() || this.getMyState() == CurrentState.FALLING) && !defender.isFalling()){
 		this.setDefender(defender);
 		this.setMyState(CurrentState.ATTACKING);
 		this.setOrientation((float) Math.atan2(this.getDefender().getypos()-this.getypos(), this.getDefender().getxpos()-this.getxpos()));
 		this.getMyTimeState().setAttackTime(0);
-	}*/
+	} else {
+		interrupt();
+	}
 }
 
 /**
@@ -2059,6 +2062,7 @@ private static final int SIZE = DEFAULTSTATES.size();
 
 /**
  * Determines what default behaviour the unit executes.
+ * @throws WorldException 
  * @post If default is enabled this function randomly puts the unit in a default state.
  * 		 | if (this.isDefaultBehaviourEnabled())
  * 		 | then new.getMyState() in DEFAULTSTATES
@@ -2072,12 +2076,18 @@ private static final int SIZE = DEFAULTSTATES.size();
  * @effect If a unit starts working, a random adjacent position within the world is picked to work on.
  * 		 | Pos = random valid adjacent position
  * 		 | this.workAt(Pos.getCubeXpos(),Pos.getCubeYPos(),Pos.getCubeZPos())
- * @throws UnitException
- *			Throws an exception if Position(...) throws an exception.
  * @note UnitException won't be thrown.
  */
-private void executeDefaultBehaviour() throws UnitException{
+private void executeDefaultBehaviour() throws WorldException{
 	if (this.getDefaultBehaviourEnabled()){
+		if (myTask == null){
+			this.setMyTask(this.getFaction().getNextTask());
+		}
+		
+		if (myTask!=null){
+			myTask.execute(this.getWorld(),this);
+		} else {
+		
 		Unit enemy=null;
 		for (Position neighbour : this.getMyPosition().getNeighbours(l->true)){
 			for (HillbilliesObject o : neighbour.getCube().getObjectsOnThisCube()){
@@ -2113,6 +2123,7 @@ private void executeDefaultBehaviour() throws UnitException{
 			this.workAt(this.getCubeXpos()+x, this.getCubeYpos()+y, this.getCubeZpos()+z);
 		} else if (state == CurrentState.ATTACKING){
 			this.startAttacking(enemy);
+		}
 		}
 	}
 }
@@ -2392,7 +2403,6 @@ public void startFalling() throws UnitException{
 
  */
 public boolean isMoving(){
-	//TODO:
 	return (this.getMyState()==CurrentState.MOVING || (this.getMyState()==CurrentState.RESTING && !this.getMyPosition().Equals(this.getLocalTarget()))
 			|| (this.getMyState() == CurrentState.FOLLOWING) && this.stoppedFollowing == false);
 }
@@ -2441,6 +2451,9 @@ public void startFollowing(Unit target) throws UnitException{
 		}
 		calculateLocalTargetFollow();
 	}
+	else {
+		interrupt();
+	}
 	}
 
 private void follow(double dt) throws WorldException{
@@ -2484,6 +2497,21 @@ private void determineLocalTargetFollow() throws UnitException{
 			calculateLocalTargetFollow();
 		}
 	}
+}
+
+private Task myTask = null;
+
+public Task getMyTask(){
+	return this.myTask;
+}
+
+private void setMyTask(Task myTask){
+	this.myTask = myTask;
+}
+
+public void interrupt(){
+	myTask.interrupt();
+	this.setMyTask(null);
 }
 
 }

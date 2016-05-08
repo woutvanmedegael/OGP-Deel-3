@@ -52,5 +52,9 @@ public class Faction {
 		return scheduler.getHighestPrioNonActiveTask();
 	}
 	
+	public Scheduler getScheduler(){
+		return this.scheduler;
+	}
+	
 	
 }

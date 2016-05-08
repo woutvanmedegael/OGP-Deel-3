@@ -7,6 +7,7 @@ import java.util.Set;
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.ITask;
 import hillbillies.model.Position;
+import hillbillies.model.SubType;
 import hillbillies.model.SyntaxException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.statement.Statement;
@@ -23,11 +24,7 @@ public class Task implements Comparable<Task>,ITask{
 	private String name = null;
 	private Set<Scheduler> schedulers = new HashSet<Scheduler>();
 	private final ContextWrapper contextWrapper = new ContextWrapper();
-	
-	
-	
-
-
+	private final SubType tree;
 
 	public Set<Scheduler> getSchedulers() {
 		return schedulers;
@@ -61,10 +58,14 @@ public class Task implements Comparable<Task>,ITask{
 	}
 
 
-	public void execute(World world, Unit unit) throws WorldException, WrongVariableException{
+	public void execute(World world, Unit unit) throws WorldException{
 		this.contextWrapper.setExecutingUnit(unit);
 		this.contextWrapper.setThisWorld(world);
-		this.statement.executeNext(this.contextWrapper);
+		try {
+			this.statement.executeNext(this.contextWrapper);
+		} catch (WrongVariableException e) {
+			e.printStackTrace();
+		}
 		
 	}
 	
@@ -76,6 +77,7 @@ public class Task implements Comparable<Task>,ITask{
 		this.name = name;
 		this.statement = stat;
 		this.contextWrapper.setSelectedPos(selectedPos);
+		this.tree = new SubType(stat);
 		
 		
 	}
@@ -150,7 +152,8 @@ public class Task implements Comparable<Task>,ITask{
 
 	@Override
 	public void interrupt() {
-		// TODO set statements op not-executed.
+		this.statement.setExecuted(false);
+		this.contextWrapper.clear();
 		this.assignUnit(null);
 		if (this.getPriority() >0){
 				this.setPriority(this.getPriority()/2);
@@ -171,6 +174,13 @@ public class Task implements Comparable<Task>,ITask{
 			
 		}
 		
+	}
+	
+	public Boolean isWellFormed(){
+		ArrayList<String> variables = new ArrayList<>();
+		Boolean unassignedVariables = this.tree.containsUnassignedVariable(variables);
+		Boolean uncoveredBreak = this.tree.containsUncoveredBreak();
+		return !(unassignedVariables || uncoveredBreak);
 	}
 	
 	
