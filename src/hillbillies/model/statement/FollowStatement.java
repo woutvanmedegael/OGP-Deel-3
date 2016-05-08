@@ -13,9 +13,10 @@ import hillbillies.model.world.WorldException;
 public class FollowStatement<T extends UnitExpression> extends ActionStatement{
 	
 	@Override
-	public Boolean execute(ContextWrapper c) throws  WorldException {
+	public Boolean executeNext(ContextWrapper c) throws  WorldException, WrongVariableException {
 		// TODO Auto-generated method stub
-		c.getExecutingUnit().startFollowing(this.unitExpression.evaluate(c));
+		c.getExecutingUnit().startFollowing(this.unitExpression.evaluateUnit(c));
+		this.setExecuted(true);
 		return true;
 	}
 
@@ -31,6 +32,11 @@ public class FollowStatement<T extends UnitExpression> extends ActionStatement{
 		
 		
 		
+	}
+
+	@Override
+	public Expression<?> getExpression() {
+		return (Expression)this.unitExpression;
 	}
 
 }

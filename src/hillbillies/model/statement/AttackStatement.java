@@ -1,5 +1,7 @@
 package hillbillies.model.statement;
 
+import java.util.ArrayList;
+
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
 import hillbillies.model.SyntaxException;
@@ -24,8 +26,14 @@ public class AttackStatement<T extends UnitExpression> extends ActionStatement{
 	}
 
 	@Override
-	public Boolean execute(ContextWrapper context) throws WorldException {
-		context.getExecutingUnit().startAttacking(unitExpression.evaluate(context));
+	public Boolean executeNext(ContextWrapper context) throws WorldException, WrongVariableException {
+		context.getExecutingUnit().startAttacking(unitExpression.evaluateUnit(context));
+		this.setExecuted(true);
 		return true;
+	}
+
+	@Override
+	public Expression<?> getExpression() {
+		return (Expression<?>)this.unitExpression;
 	}
 }

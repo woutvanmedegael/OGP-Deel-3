@@ -1,9 +1,12 @@
 package hillbillies.model.expressions;
 
+import java.util.ArrayList;
+
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
 import hillbillies.model.SyntaxException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
+import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
@@ -20,14 +23,22 @@ public class OrExpression<L extends BooleanExpression, R extends BooleanExpressi
 	
 	
 	@Override
-	public Boolean evaluate(ContextWrapper c) throws WorldException {
-		return (this.right.evaluate(c) || this.left.evaluate(c));
+	public Boolean evaluateBoolean(ContextWrapper c) throws WorldException, WrongVariableException {
+		return (this.right.evaluateBoolean(c) || this.left.evaluateBoolean(c));
 	}
 
 
 	@Override
 	public Boolean containsSelected() {
 		return (right.containsSelected() || left.containsSelected());
+	}
+	
+	@Override
+	public ArrayList<Expression<?>> getExpressions() {
+		ArrayList<Expression<?>> expressions = new ArrayList<>();
+		expressions.add(this.right);
+		expressions.add(this.left);
+		return expressions;
 	}
 }
 

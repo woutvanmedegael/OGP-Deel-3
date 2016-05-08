@@ -18,11 +18,13 @@ public class MultipleStatement extends Statement{
 	}
 	
 	@Override
-	public Boolean execute(ContextWrapper c) throws WorldException {
+	public Boolean executeNext(ContextWrapper c) throws WorldException, WrongVariableException {
 		for (Statement s: this.statements){
-			if (!s.execute(c))
-				return false;
+			if (!s.hasBeenExecuted()){
+				return (s.executeNext(c));
+			}
 		}
+		this.setExecuted(true);
 		return true;
 	}
 
@@ -34,6 +36,18 @@ public class MultipleStatement extends Statement{
 			}
 		}
 		return false;
+	}
+	
+	public List<Statement> getStatements(){
+		return this.statements;
+	}
+	
+	@Override
+	public void setExecuted(Boolean b){
+		super.setExecuted(b);
+		for (Statement s: this.statements){
+			s.setExecuted(b);
+		}
 	}
 
 	

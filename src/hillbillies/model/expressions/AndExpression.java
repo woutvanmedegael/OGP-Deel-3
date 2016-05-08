@@ -1,13 +1,18 @@
 package hillbillies.model.expressions;
 
+import java.util.ArrayList;
+
 import hillbillies.model.ContextWrapper;
+import hillbillies.model.IContainsSelected;
+import hillbillies.model.ITask;
 import hillbillies.model.Position;
 import hillbillies.model.SyntaxException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
+import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class AndExpression<L extends BooleanExpression, R extends BooleanExpression> extends BooleanExpression {
+public class AndExpression<L extends IBooleanExpression & IContainsSelected, R extends IBooleanExpression & IContainsSelected> extends BooleanExpression{
 	
 	private final R right;
 	private final L left;
@@ -18,8 +23,8 @@ public class AndExpression<L extends BooleanExpression, R extends BooleanExpress
 	}
 	
 	@Override
-	public Boolean evaluate(ContextWrapper c) throws WorldException{
-		return (right.evaluate(c) && left.evaluate(c));
+	public Boolean evaluateBoolean(ContextWrapper c) throws WorldException, WrongVariableException{
+		return (right.evaluateBoolean(c) && left.evaluateBoolean(c));
 	}
 
 	public L getLeft() {
@@ -33,6 +38,14 @@ public class AndExpression<L extends BooleanExpression, R extends BooleanExpress
 	@Override
 	public Boolean containsSelected() {
 		return (right.containsSelected() || left.containsSelected());
+	}
+
+	@Override
+	public ArrayList<Expression<?>> getExpressions() {
+		ArrayList<Expression<?>> expressions = new ArrayList<>();
+		expressions.add((Expression<?>) left);
+		expressions.add((Expression<?>) right);
+		return expressions;
 	}
 
 }

@@ -1613,7 +1613,7 @@ private Position getWorkPosition(){
  * 			The position to set it to.
  */
 private void setWorkPosition(Position workPosition){
-	this.workPosition=workPosition;
+	this.workPosition = workPosition;
 }
 
 /**

@@ -10,6 +10,7 @@ import hillbillies.model.Position;
 import hillbillies.model.SyntaxException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.statement.Statement;
+import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
@@ -60,17 +61,14 @@ public class Task implements Comparable<Task>,ITask{
 	}
 
 
-	public void execute(World world, Unit unit) throws WorldException{
+	public void execute(World world, Unit unit) throws WorldException, WrongVariableException{
 		this.contextWrapper.setExecutingUnit(unit);
 		this.contextWrapper.setThisWorld(world);
-		this.statement.execute(this.contextWrapper);
+		this.statement.executeNext(this.contextWrapper);
 		
 	}
 	
 	public Task(String name, int prio, Statement stat, Position selectedPos) throws SyntaxException{
-		if (selectedPos==null && this.containsSelectedKeyword()){
-			throw new SyntaxException();
-		}
 		if (name==null || stat==null){
 			throw new IllegalArgumentException();
 		}

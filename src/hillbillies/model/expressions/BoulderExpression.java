@@ -1,5 +1,6 @@
 package hillbillies.model.expressions;
 
+import java.util.ArrayList;
 import java.util.function.Predicate;
 
 import hillbillies.model.ContextWrapper;
@@ -15,7 +16,7 @@ public class BoulderExpression extends PositionExpression {
 	
 	
 	@Override
-	public Position evaluate(ContextWrapper c) throws WorldException {
+	public Position evaluatePosition(ContextWrapper c) throws WorldException {
 		Predicate<Cube> myPredicate = new Predicate<Cube>(){
 
 			@Override
@@ -34,6 +35,11 @@ public class BoulderExpression extends PositionExpression {
 	@Override
 	public Boolean containsSelected() {
 		return false;
+	}
+
+	@Override
+	public ArrayList<Expression<?>> getExpressions() {
+		return new ArrayList<Expression<?>>();
 	}
 
 	

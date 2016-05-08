@@ -1,5 +1,7 @@
 package hillbillies.model.expressions;
 
+import java.util.ArrayList;
+
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
 import hillbillies.model.hillbilliesobject.unit.Unit;
@@ -9,13 +11,18 @@ import hillbillies.model.world.WorldException;
 public class HereExpression extends PositionExpression{
 	
 	@Override
-	public Position evaluate(ContextWrapper c) throws WorldException {
+	public Position evaluatePosition(ContextWrapper c) throws WorldException {
 		return new Position(c.getExecutingUnit().getxpos(),c.getExecutingUnit().getypos(),c.getExecutingUnit().getzpos(),c.getThisWorld());
 	}
 
 	@Override
 	public Boolean containsSelected() {
 		return false;
+	}
+	
+	@Override
+	public ArrayList<Expression<?>> getExpressions() {
+		return new ArrayList<Expression<?>>();
 	}
 
 	

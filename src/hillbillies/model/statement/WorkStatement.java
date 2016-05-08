@@ -19,15 +19,21 @@ public class WorkStatement<T extends PositionExpression> extends ActionStatement
 	}
 	
 	@Override
-	public Boolean execute(ContextWrapper c) throws WorldException {
-		Position pos = position.evaluate(c);
+	public Boolean executeNext(ContextWrapper c) throws WorldException, WrongVariableException {
+		Position pos = position.evaluatePosition(c);
 		c.getExecutingUnit().workAt(pos.getCubexpos(), pos.getCubeypos(), pos.getCubezpos());
+		this.setExecuted(true);
 		return true;
 	}
 
 	@Override
 	public Boolean containsSelected() {
 		return position.containsSelected();
+	}
+
+	@Override
+	public Expression<?> getExpression() {
+		return (Expression<?>)this.position;
 	}
 	
 	

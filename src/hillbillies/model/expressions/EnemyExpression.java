@@ -1,5 +1,6 @@
 package hillbillies.model.expressions;
 
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -17,7 +18,7 @@ public class EnemyExpression extends UnitExpression {
 	
 	
 	@Override
-	public Unit evaluate(ContextWrapper c) throws WorldException {
+	public Unit evaluateUnit(ContextWrapper c) throws WorldException {
 		Predicate<Cube> myPredicate = new Predicate<Cube>(){
 
 			@Override
@@ -48,6 +49,11 @@ public class EnemyExpression extends UnitExpression {
 	@Override
 	public Boolean containsSelected() {
 		return false;
+	}
+	
+	@Override
+	public ArrayList<Expression<?>> getExpressions() {
+		return new ArrayList<Expression<?>>();
 	}
 
 }

@@ -14,6 +14,7 @@ public class WhileStatement extends Statement{
 	
 	private final BooleanExpression condition;
 	private final Statement body;
+	private Boolean isEvaluated = false;
 	
 	
 	public WhileStatement(Expression condition, Statement body) throws SyntaxException{
@@ -27,10 +28,25 @@ public class WhileStatement extends Statement{
 
 	
 	@Override
-	public Boolean execute(ContextWrapper c) throws WorldException {
-		Boolean noBreakCalled = true;
-		while (this.condition.evaluate(c) && noBreakCalled){
-			noBreakCalled = this.body.execute(c);
+	public Boolean executeNext(ContextWrapper c) throws WorldException, WrongVariableException {
+		if (isEvaluated){
+			Boolean noBreakCalled = body.executeNext(c);
+			if (!noBreakCalled){
+				this.setExecuted(true);
+			}
+			if (body.hasBeenExecuted()){
+				this.setExecuted(false);
+				this.isEvaluated = false;
+			}
+			return true;
+		}
+		if (condition.evaluateBoolean(c)){
+			this.isEvaluated = true;
+			body.executeNext(c);
+			return true;
+		}
+		else {
+			this.setExecuted(true);
 		}
 		return true;
 	}
@@ -39,6 +55,20 @@ public class WhileStatement extends Statement{
 	@Override
 	public Boolean containsSelected() {
 		return (condition.containsSelected() || body.containsSelected());
+	}
+	
+	public BooleanExpression getCondition(){
+		return this.condition;
+	}
+	
+	public Statement getBody(){
+		return this.body;
+	}
+	
+	@Override
+	public void setExecuted(Boolean b){
+		super.setExecuted(b);
+		this.body.setExecuted(b);
 	}
 	
 	

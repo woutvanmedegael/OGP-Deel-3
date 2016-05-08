@@ -1,5 +1,7 @@
 package hillbillies.model.expressions;
 
+import java.util.ArrayList;
+
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.IContainsSelected;
 import hillbillies.model.Position;
@@ -9,6 +11,5 @@ import hillbillies.model.world.WorldException;
 
 public abstract class Expression<T> implements IContainsSelected{
 	
-	
-	public abstract T evaluate(ContextWrapper c) throws WorldException;
+	public abstract ArrayList<Expression<?>> getExpressions();
 }

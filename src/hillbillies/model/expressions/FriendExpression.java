@@ -1,5 +1,6 @@
 package hillbillies.model.expressions;
 
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -16,7 +17,7 @@ import hillbillies.model.world.WorldException;
 public class FriendExpression extends UnitExpression{
 	//WOUT
 	@Override
-	public Unit evaluate(ContextWrapper c) throws WorldException {
+	public Unit evaluateUnit(ContextWrapper c) throws WorldException {
 		Predicate<Cube> myPredicate = new Predicate<Cube>(){
 
 			@Override
@@ -47,6 +48,11 @@ public class FriendExpression extends UnitExpression{
 	@Override
 	public Boolean containsSelected() {
 		return false;
+	}
+	
+	@Override
+	public ArrayList<Expression<?>> getExpressions() {
+		return new ArrayList<Expression<?>>();
 	}
 
 	

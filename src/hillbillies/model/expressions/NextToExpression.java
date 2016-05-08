@@ -21,7 +21,7 @@ public class NextToExpression<T extends PositionExpression> extends PositionExpr
 	
 	
 	@Override
-	public Position evaluate(ContextWrapper c) throws WorldException {
+	public Position evaluatePosition(ContextWrapper c) throws WorldException {
 		Unit unit = c.getExecutingUnit();
 		World world = c.getThisWorld();
 		ArrayList<Position> positions = new ArrayList<>();
@@ -52,6 +52,13 @@ public class NextToExpression<T extends PositionExpression> extends PositionExpr
 	@Override
 	public Boolean containsSelected() {
 		return position.containsSelected();
+	}
+	
+	@Override
+	public ArrayList<Expression<?>> getExpressions() {
+		ArrayList<Expression<?>> expressions = new ArrayList<>();
+		expressions.add(this.position);
+		return expressions;
 	}
 
 	

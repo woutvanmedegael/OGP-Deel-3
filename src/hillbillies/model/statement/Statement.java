@@ -9,6 +9,15 @@ import hillbillies.model.world.WorldException;
 
 public abstract class Statement implements IContainsSelected{
 	
-	public abstract Boolean execute(ContextWrapper context) throws WorldException ;
+	private Boolean executed = false;
 	
+	public abstract Boolean executeNext(ContextWrapper context) throws WorldException, WrongVariableException ;
+	
+	public Boolean hasBeenExecuted(){
+		return this.executed;
+	}
+	
+	public void setExecuted(Boolean b){
+		this.executed = b;
+	}
 }

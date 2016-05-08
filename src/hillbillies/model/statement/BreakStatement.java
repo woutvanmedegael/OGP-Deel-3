@@ -9,7 +9,8 @@ import hillbillies.model.world.WorldException;
 public class BreakStatement extends Statement{
 	//WOUT
 	@Override
-	public Boolean execute(ContextWrapper c) throws WorldException {
+	public Boolean executeNext(ContextWrapper c) throws WorldException {
+		this.setExecuted(true);
 		return false;
 	}
 
