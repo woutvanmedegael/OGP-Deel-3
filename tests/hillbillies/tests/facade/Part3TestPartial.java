@@ -51,7 +51,7 @@ public class Part3TestPartial {
 		List<Task> tasks = TaskParser.parseTasksFromString(
 				"name: \"work task\"\npriority: 1\nactivities: work selected;", facade.createTaskFactory(),
 				Collections.singletonList(new int[] { 1, 1, 1 }));
-
+		
 		// tasks are created
 		assertNotNull(tasks);
 		// there's exactly one task
@@ -83,7 +83,9 @@ public class Part3TestPartial {
 		int n = (int) (time / step);
 		for (int i = 0; i < n; i++)
 			facade.advanceTime(world, step);
-		facade.advanceTime(world, time - n * step);
+		//TODO : wtf g kunnen die geen testen schrijven ofwat ?!
+		if (time-n*step>0){
+		facade.advanceTime(world, time - n * step);}
 	}
 
 }

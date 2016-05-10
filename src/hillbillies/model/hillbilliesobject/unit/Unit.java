@@ -2095,7 +2095,6 @@ private void executeDefaultBehaviour(double dt) throws WorldException{
 				dt-=0.001;
 			}
 		} else {
-		
 		Unit enemy=null;
 		for (Position neighbour : this.getMyPosition().getNeighbours(l->true)){
 			for (HillbilliesObject o : neighbour.getCube().getObjectsOnThisCube()){

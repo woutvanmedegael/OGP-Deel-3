@@ -280,6 +280,7 @@ public class Facade implements IFacade {
 		try{
 			world.advanceTime(dt);
 		} catch (WorldException e){
+			e.printStackTrace();
 			throw new ModelException();
 		}
 	}
