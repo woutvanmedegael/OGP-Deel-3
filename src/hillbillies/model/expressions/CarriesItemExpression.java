@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
-import hillbillies.model.SyntaxException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;
@@ -16,7 +15,10 @@ public class CarriesItemExpression<T extends UnitExpression> extends BooleanExpr
 	
 	private final T unit;
 
-	public CarriesItemExpression(T unit) throws SyntaxException{
+	public CarriesItemExpression(T unit) throws WorldException{
+		if (unit==null){
+			throw new WorldException();
+		}
 		this.unit = unit;
 	}
 	

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
-import hillbillies.model.SyntaxException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;
@@ -15,7 +14,10 @@ public class IsFriendExpression<T extends UnitExpression> extends BooleanExpress
 	
 		private T friend;
 		
-		public IsFriendExpression(T friend) throws SyntaxException{
+		public IsFriendExpression(T friend) throws WorldException{
+			if (friend==null){
+				throw new WorldException();
+			}
 			this.friend = friend;
 			
 		}

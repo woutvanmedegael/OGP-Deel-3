@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
-import hillbillies.model.SyntaxException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;
@@ -16,7 +15,10 @@ public class OrExpression<L extends BooleanExpression, R extends BooleanExpressi
 	private final R right;
 	private final L left;
 	
-	public OrExpression(L left, R right) throws SyntaxException{
+	public OrExpression(L left, R right) throws WorldException{
+		if (left==null || right==null){
+			throw new WorldException();
+		}
 		this.right = right;
 		this.left = left;
 	}

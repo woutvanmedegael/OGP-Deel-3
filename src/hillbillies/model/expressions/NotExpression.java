@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
-import hillbillies.model.SyntaxException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;
@@ -19,7 +18,10 @@ public class NotExpression<T extends BooleanExpression> extends BooleanExpressio
 		return (!notExpression.evaluateBoolean(c));
 	}
 	private final T notExpression;
-	public NotExpression(T notExpr) throws SyntaxException{
+	public NotExpression(T notExpr) throws WorldException{
+		if (notExpr==null){
+			throw new WorldException();
+		}
 		this.notExpression = notExpr;
 		
 	}

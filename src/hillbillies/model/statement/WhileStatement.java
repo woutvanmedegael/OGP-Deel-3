@@ -2,27 +2,26 @@ package hillbillies.model.statement;
 
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
-import hillbillies.model.SyntaxException;
 import hillbillies.model.expressions.BooleanExpression;
 import hillbillies.model.expressions.Expression;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class WhileStatement extends Statement{
+public class WhileStatement<T extends BooleanExpression> extends Statement{
 	//WOUT
 	
-	private final BooleanExpression condition;
+	private final T condition;
 	private final Statement body;
 	private Boolean isEvaluated = false;
 	
 	
-	public WhileStatement(Expression condition, Statement body) throws SyntaxException{
-		if (!(condition instanceof BooleanExpression)){
-			throw new SyntaxException();
+	public WhileStatement(T condition, Statement body) throws WorldException{
+		if (condition==null || body==null){
+			throw new WorldException();
 		}
 		
-		this.condition = (BooleanExpression) condition;
+		this.condition = condition;
 		this.body = body;
 	}
 

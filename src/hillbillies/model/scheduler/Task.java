@@ -8,7 +8,6 @@ import hillbillies.model.ContextWrapper;
 import hillbillies.model.ITask;
 import hillbillies.model.Position;
 import hillbillies.model.SubType;
-import hillbillies.model.SyntaxException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.statement.Statement;
 import hillbillies.model.statement.WrongVariableException;
@@ -56,11 +55,27 @@ public class Task implements Comparable<Task>,ITask{
 	public boolean isExecuting() {
 		return this.getAssignedUnit() !=null;
 	}
+	
+	public void setUnit(Unit executingUnit){
+		this.contextWrapper.setExecutingUnit(executingUnit);
+	}
+	
+	public void setWorld(World thisWorld){
+		this.contextWrapper.setThisWorld(thisWorld);
+	}
+	
+	public Boolean hasFinished(){
+		return this.statement.hasBeenExecuted();
+	}
+	
+	public void removeFromSchedulers(){
+		for (Scheduler s: this.getSchedulers()){
+			s.removeTask(this);
+		}
+	}
 
 
-	public void execute(World world, Unit unit) throws WorldException{
-		this.contextWrapper.setExecutingUnit(unit);
-		this.contextWrapper.setThisWorld(world);
+	public void execute() throws WorldException{
 		try {
 			this.statement.executeNext(this.contextWrapper);
 		} catch (WrongVariableException e) {
@@ -69,7 +84,7 @@ public class Task implements Comparable<Task>,ITask{
 		
 	}
 	
-	public Task(String name, int prio, Statement stat, Position selectedPos) throws SyntaxException{
+	public Task(String name, int prio, Statement stat, Position selectedPos){
 		if (name==null || stat==null){
 			throw new IllegalArgumentException();
 		}

@@ -11,7 +11,7 @@ import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class PrintStatement<T extends Expression<Object>> extends Statement{
+public class PrintStatement<T extends Expression<?>> extends Statement{
 	//ADRIAAN
 	@Override
 	public Boolean executeNext(ContextWrapper c) throws WorldException {
@@ -43,7 +43,10 @@ public class PrintStatement<T extends Expression<Object>> extends Statement{
 		return stuffToPrint.containsSelected();
 	}
 	private final T stuffToPrint;
-	public PrintStatement(T value){
+	public PrintStatement(T value) throws WorldException{
+		if (value==null){
+			throw new WorldException();
+		}
 		this.stuffToPrint = value;
 	}
 	

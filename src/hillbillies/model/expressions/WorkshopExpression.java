@@ -12,7 +12,7 @@ import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
 public class WorkshopExpression extends PositionExpression{
-	//ADRIAAN
+	
 	@Override
 	public Position evaluatePosition(ContextWrapper c) throws WorldException {
 		Predicate<Cube> myPredicate = new Predicate<Cube>(){

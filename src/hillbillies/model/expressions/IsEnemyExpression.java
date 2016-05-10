@@ -3,11 +3,7 @@ package hillbillies.model.expressions;
 import java.util.ArrayList;
 
 import hillbillies.model.ContextWrapper;
-import hillbillies.model.Position;
-import hillbillies.model.SyntaxException;
-import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.statement.WrongVariableException;
-import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
 public class IsEnemyExpression<T extends UnitExpression> extends BooleanExpression{
@@ -15,7 +11,10 @@ public class IsEnemyExpression<T extends UnitExpression> extends BooleanExpressi
 	
 	private T enemy;
 	
-	public IsEnemyExpression(T enemy){
+	public IsEnemyExpression(T enemy) throws WorldException{
+		if (enemy==null){
+			throw new WorldException();
+		}
 		this.enemy = enemy;
 		
 	}

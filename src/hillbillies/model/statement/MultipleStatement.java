@@ -13,7 +13,12 @@ public class MultipleStatement extends Statement{
 	
 	private final List<Statement> statements;
 	
-	public MultipleStatement(List<Statement> statements){
+	public MultipleStatement(List<Statement> statements) throws WorldException{
+		if (statements==null){
+			throw new WorldException();
+		}
+		System.out.println("initialized on");
+		System.out.println(statements);
 		this.statements = statements;
 	}
 	
@@ -21,6 +26,7 @@ public class MultipleStatement extends Statement{
 	public Boolean executeNext(ContextWrapper c) throws WorldException, WrongVariableException {
 		for (Statement s: this.statements){
 			if (!s.hasBeenExecuted()){
+				System.out.println(s);
 				return (s.executeNext(c));
 			}
 		}

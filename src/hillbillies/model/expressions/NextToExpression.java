@@ -5,8 +5,8 @@ import java.util.Random;
 
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
-import hillbillies.model.SyntaxException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
+import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
@@ -15,19 +15,22 @@ public class NextToExpression<T extends PositionExpression> extends PositionExpr
 	
 	private T position;
 	
-	public NextToExpression(T pos) throws SyntaxException{
+	public NextToExpression(T pos) throws WorldException{
+		if (pos==null){
+			throw new WorldException();
+		}
 		this.position = pos;
 	}
 	
 	
 	@Override
-	public Position evaluatePosition(ContextWrapper c) throws WorldException {
-		Unit unit = c.getExecutingUnit();
+	public Position evaluatePosition(ContextWrapper c) throws WorldException, WrongVariableException {
+		Position pos = this.position.evaluatePosition(c);
 		World world = c.getThisWorld();
 		ArrayList<Position> positions = new ArrayList<>();
-		int xpos = (int)unit.getxpos();
-		int ypos = (int)unit.getypos();
-		int zpos = (int)unit.getzpos();
+		int xpos = (int)pos.getxpos();
+		int ypos = (int)pos.getypos();
+		int zpos = (int)pos.getzpos();
 		for (int x = xpos-1; x<xpos+2; x++){
 			for (int y = ypos-1; x<ypos+2; x++){
 				for (int z = zpos-1; x<zpos+2; x++){

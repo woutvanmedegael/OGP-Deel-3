@@ -6,7 +6,6 @@ import hillbillies.model.ContextWrapper;
 import hillbillies.model.IContainsSelected;
 import hillbillies.model.ITask;
 import hillbillies.model.Position;
-import hillbillies.model.SyntaxException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;
@@ -17,7 +16,10 @@ public class AndExpression<L extends IBooleanExpression & IContainsSelected, R e
 	private final R right;
 	private final L left;
 
-	public AndExpression(L left, R right){
+	public AndExpression(L left, R right) throws WorldException{
+		if (left==null || right==null){
+			throw new WorldException();
+		}
 		this.right = right;
 		this.left = left;
 	}

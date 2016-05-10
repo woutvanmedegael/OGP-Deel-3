@@ -9,7 +9,7 @@ import hillbillies.model.world.WorldException;
 
 public interface ITask extends Comparable<Task> {
 	
-	public void execute(World world, Unit unit) throws WorldException, WrongVariableException;
+	public void execute() throws WorldException, WrongVariableException;
 	public boolean isExecuting();
 	public void assignUnit(Unit unit);
 	public void setPriority(int newPrio);
@@ -18,5 +18,7 @@ public interface ITask extends Comparable<Task> {
 	public void addScheduler(Scheduler scheduler);
 	public void removeScheduler(Scheduler scheduler);
 	public void interrupt();
+	public void setUnit(Unit executingUnit);
+	public void setWorld(World thisWorld);
 	
 }

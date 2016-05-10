@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
-import hillbillies.model.SyntaxException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;
@@ -20,7 +19,10 @@ public class IsAliveExpression<T extends UnitExpression> extends BooleanExpressi
 		return !(myUnit.getCurrentHP()==0);
 		
 	}
-	public IsAliveExpression(T unit) throws SyntaxException{
+	public IsAliveExpression(T unit) throws WorldException{
+		if (unit==null){
+			throw new WorldException();
+		}
 		this.unitExpression = unit;
 	}
 

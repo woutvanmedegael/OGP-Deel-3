@@ -2,7 +2,6 @@ package hillbillies.model.statement;
 
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
-import hillbillies.model.SyntaxException;
 import hillbillies.model.expressions.Expression;
 import hillbillies.model.expressions.PositionExpression;
 import hillbillies.model.hillbilliesobject.unit.Unit;
@@ -14,7 +13,10 @@ public class WorkStatement<T extends PositionExpression> extends ActionStatement
 	
 	private T position;
 	
-	public WorkStatement(T pos) throws SyntaxException{
+	public WorkStatement(T pos) throws WorldException{
+		if (pos==null){
+			throw new WorldException();
+		}
 		this.position = pos;
 	}
 	

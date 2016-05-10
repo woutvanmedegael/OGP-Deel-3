@@ -15,7 +15,9 @@ public class SelectedExpression extends PositionExpression{
 		if (c.getSelectedPos()==null){
 			throw new IllegalArgumentException();
 		}
-		return c.getSelectedPos();
+		Position pos = c.getSelectedPos();
+		pos.setWorld(c.getThisWorld());
+		return pos;
 	}
 
 	@Override

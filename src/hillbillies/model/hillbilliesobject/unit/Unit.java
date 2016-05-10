@@ -1356,7 +1356,7 @@ private void calculateLocalTarget() throws UnitException{
  * @throws WorldException 
  */
 public void advanceTime(double dt) throws WorldException{
-	
+
 	
 	while (this.getExperiencePoints()>=10){
 		this.setExperiencePoints(this.getExperiencePoints()-10);
@@ -1372,9 +1372,7 @@ public void advanceTime(double dt) throws WorldException{
 	}
 	this.getMyTimeState().setTimeSinceRest(timeSinceRest);
 	//nieuw voor A3 testen
-
-	this.defaultBehaviourEnabled = false;
-
+	
 	switch (this.getMyState()){
 	
 	
@@ -1390,7 +1388,7 @@ public void advanceTime(double dt) throws WorldException{
 			if ((getGlobalTarget() != null && !getGlobalTarget().Equals(this.getMyPosition()))){
 				this.setMyState(CurrentState.MOVING);
 			} else {
-				this.executeDefaultBehaviour();
+				this.executeDefaultBehaviour(dt);
 			}
 			break;
 		case MOVING:
@@ -2078,14 +2076,24 @@ private static final int SIZE = DEFAULTSTATES.size();
  * 		 | this.workAt(Pos.getCubeXpos(),Pos.getCubeYPos(),Pos.getCubeZPos())
  * @note UnitException won't be thrown.
  */
-private void executeDefaultBehaviour() throws WorldException{
+private void executeDefaultBehaviour(double dt) throws WorldException{
 	if (this.getDefaultBehaviourEnabled()){
-		if (myTask == null){
+		if (myTask == null || myTask.hasFinished()){
+			if (myTask!=null){
+				myTask.removeFromSchedulers();
+			}
 			this.setMyTask(this.getFaction().getNextTask());
+			if (myTask!=null){
+				myTask.setUnit(this);
+				myTask.setWorld(this.getWorld());
+			}
 		}
 		
 		if (myTask!=null){
-			myTask.execute(this.getWorld(),this);
+			while (dt>0 && this.getMyState()==CurrentState.NEUTRAL){
+				myTask.execute();
+				dt-=0.001;
+			}
 		} else {
 		
 		Unit enemy=null;

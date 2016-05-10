@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
-import hillbillies.model.SyntaxException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;
@@ -22,7 +21,10 @@ public class IsPassableExpression<T extends PositionExpression> extends BooleanE
 	
 	private final T positionExpression;
 	
-	public IsPassableExpression(T position) throws SyntaxException{
+	public IsPassableExpression(T position) throws WorldException{
+		if (position==null){
+			throw new WorldException();
+		}
 		this.positionExpression = position;
 		
 	}

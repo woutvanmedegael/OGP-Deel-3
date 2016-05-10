@@ -2,7 +2,6 @@ package hillbillies.model.statement;
 
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
-import hillbillies.model.SyntaxException;
 import hillbillies.model.expressions.BooleanExpression;
 import hillbillies.model.expressions.Expression;
 import hillbillies.model.hillbilliesobject.unit.Unit;
@@ -17,10 +16,17 @@ public class IfThenElseStatement<T extends BooleanExpression> extends Statement 
 	private boolean isEvaluated = false;
 	private boolean enteredBody = false;
 	
-	public IfThenElseStatement(T ifExpr, Statement thenStat, Statement elseStat) throws SyntaxException{
+	public IfThenElseStatement(T ifExpr, Statement thenStat, Statement elseStat) throws WorldException{
+		if (ifExpr==null || thenStat==null){
+			throw new WorldException();
+		}
 		this.condition = ifExpr;
 		this.thenStatement = thenStat;
+		if (elseStat==null){
+			this.elseStatement = new NullStatement();
+		} else {
 		this.elseStatement = elseStat;
+		}
 	}
 
 

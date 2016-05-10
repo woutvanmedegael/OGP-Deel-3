@@ -13,7 +13,7 @@ public class ContextWrapper {
 	private Position selectedPos;
 	private World thisWorld = null;
 	
-	private final Map<String, Expression<?>> assignMapper = new HashMap<String, Expression<?>>();	
+	private final Map<String, Object> assignMapper = new HashMap<String, Object>();	
 	
 	public Position getSelectedPos(){
 		return selectedPos;
@@ -34,12 +34,11 @@ public class ContextWrapper {
 	public void setThisWorld(World thisWorld) {
 		this.thisWorld = thisWorld;
 	}
-	public void addNewVariable(String key,Expression<?> expr){
+	public void addNewVariable(String key,Object expr){
 		assignMapper.put(key, expr);
 	}
 	
-	public Expression<?> returnVariable(String key){
-	
+	public Object returnVariable(String key){
 		return assignMapper.get(key);
 	}
 	

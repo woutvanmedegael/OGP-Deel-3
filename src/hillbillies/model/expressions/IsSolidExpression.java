@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
-import hillbillies.model.SyntaxException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;
@@ -15,11 +14,15 @@ public class IsSolidExpression<T extends PositionExpression> extends BooleanExpr
 	@Override
 	public Boolean evaluateBoolean(ContextWrapper c) throws WorldException, WrongVariableException {
 		Position pos = positionExpression.evaluatePosition(c);
+		System.out.println(pos.getWorld());
 		return (!pos.isPassablePos());
 	}
 private final T positionExpression;
 	
-	public IsSolidExpression(T position) throws SyntaxException{
+	public IsSolidExpression(T position) throws WorldException{
+		if (position==null){
+			throw new WorldException();
+		}
 		this.positionExpression = position;
 		
 	}
