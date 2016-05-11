@@ -52,6 +52,9 @@ public class Part3TestPartial {
 				"name: \"work task\"\npriority: 1\nactivities: work selected;", facade.createTaskFactory(),
 				Collections.singletonList(new int[] { 1, 1, 1 }));
 		
+		for (Task t: tasks){
+			System.out.println(facade.isWellFormed(t));
+		}
 		// tasks are created
 		assertNotNull(tasks);
 		// there's exactly one task

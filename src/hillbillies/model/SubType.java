@@ -42,6 +42,7 @@ public class SubType {
 		}
 		else if (stat instanceof AssignStatement){
 			this.type = 2;
+			this.variableName = ((AssignStatement) stat).getVariableName();
 		}
 		else if (stat instanceof BreakStatement){
 			this.type = 3;
@@ -73,6 +74,7 @@ public class SubType {
 	public SubType(Expression<?> expr){
 		if (expr instanceof ReadVariableExpression){
 			this.type = 7;
+			this.variableName = ((ReadVariableExpression) expr).getVariableName();
 		}
 		else if (expr instanceof SelectedExpression){
 			this.type = 8;
@@ -101,6 +103,9 @@ public class SubType {
 		if (this.type == 3){
 			return true;
 		}
+		if (this.type == 6){
+			return false;
+		}
 		for (SubType s : this.statementTree.getSubTypes()){
 			if (s.getType()!=6 && s.containsUncoveredBreak()){
 				return true;
@@ -128,7 +133,7 @@ public class SubType {
 	
 	public boolean containsUnassignedVariable(ArrayList<String> variables){
 		if (this.type == 7 && !variables.contains(this.variableName)){
-			return false;
+			return true;
 		}
 		else if (this.type == 2){
 			variables.add(this.variableName);

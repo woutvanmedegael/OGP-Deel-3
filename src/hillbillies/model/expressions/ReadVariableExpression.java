@@ -53,5 +53,9 @@ public class ReadVariableExpression extends Expression<Object> implements IBoole
 		ArrayList<Expression<?>> list = new ArrayList<Expression<?>>();
 		return list;
 	}
+	
+	public String getVariableName(){
+		return this.variable;
+	}
 
 }

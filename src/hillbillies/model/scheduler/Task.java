@@ -200,6 +200,7 @@ public class Task implements Comparable<Task>,ITask{
 		ArrayList<String> variables = new ArrayList<>();
 		Boolean unassignedVariables = this.tree.containsUnassignedVariable(variables);
 		Boolean uncoveredBreak = this.tree.containsUncoveredBreak();
+		System.out.println(uncoveredBreak);
 		return !(unassignedVariables || uncoveredBreak);
 	}
 	
