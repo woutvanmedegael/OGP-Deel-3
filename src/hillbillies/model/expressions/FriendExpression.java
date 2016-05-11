@@ -34,7 +34,8 @@ public class FriendExpression extends UnitExpression{
 		Dijkstra dijkstra = new Dijkstra(myPredicate, c.getExecutingUnit());
 		Position pos = dijkstra.findClosestPosition();
 		if (pos==null){
-			return null;
+			c.getExecutingUnit().interrupt();
+			throw new WorldException();
 		}
 		for (HillbilliesObject h : pos.getCube().getObjectsOnThisCube()){
 			if (h instanceof Unit && ((Unit) h).getFaction()==c.getExecutingUnit().getFaction()){

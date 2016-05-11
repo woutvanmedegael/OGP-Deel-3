@@ -25,6 +25,7 @@ public class Scheduler implements IScheduler{
 	@Override
 	public void removeTask(Task task){
 		System.out.println("in remove task");
+		System.out.println(this.getTasks().size());
 		if (task!=null){
 			System.out.println("in de if ");
 			tasks.remove(task);
@@ -32,6 +33,7 @@ public class Scheduler implements IScheduler{
 			task.removeScheduler(this);
 			System.out.println("succesvol zichzelf verwijderd");
 			}
+		System.out.println("na de if in remove " + this.getTasks().size());
 	}
 	
 	public boolean isPartOfScheduler(Task task){

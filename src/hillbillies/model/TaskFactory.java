@@ -133,7 +133,11 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 
 	@Override
 	public Statement createMoveTo(Expression<?> position, SourceLocation sourceLocation) {
+		
 		try{
+			if (position instanceof ReadVariableExpression){
+				return new MoveStatement<ReadVariableExpression>((ReadVariableExpression) position);
+			}
 			return new MoveStatement<PositionExpression>((PositionExpression) position);
 		} catch (WorldException s){
 			s.printStackTrace();

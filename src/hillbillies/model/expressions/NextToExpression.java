@@ -26,14 +26,15 @@ public class NextToExpression<T extends PositionExpression> extends PositionExpr
 	@Override
 	public Position evaluatePosition(ContextWrapper c) throws WorldException, WrongVariableException {
 		Position pos = this.position.evaluatePosition(c);
+		System.out.println("pos waar hij naartoe wilt" +pos);
 		World world = c.getThisWorld();
 		ArrayList<Position> positions = new ArrayList<>();
 		int xpos = (int)pos.getxpos();
 		int ypos = (int)pos.getypos();
 		int zpos = (int)pos.getzpos();
 		for (int x = xpos-1; x<xpos+2; x++){
-			for (int y = ypos-1; x<ypos+2; x++){
-				for (int z = zpos-1; x<zpos+2; x++){
+			for (int y = ypos-1; y<ypos+2; y++){
+				for (int z = zpos-1; z<zpos+2; z++){
 					if (Position.posWithinWorld(x, y, z, world) && world.getCube(x, y, z).isWalkable()){
 						if (x!=0 || y!=0 || z!=0){
 							positions.add(new Position(x,y,z,world));
@@ -44,10 +45,11 @@ public class NextToExpression<T extends PositionExpression> extends PositionExpr
 		}
 		Random rand = new Random();
 		if (positions.size()==0){
-			//Again, unit.interrupt()?
-			return null;
+			c.getExecutingUnit().interrupt();
+			throw new WorldException();
 		}
 		int index = rand.nextInt(positions.size());
+		System.out.println("gevonden pos" + positions.get(index));
 		return positions.get(index);
 	}
 

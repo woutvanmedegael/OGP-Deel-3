@@ -68,7 +68,12 @@ public class Task implements Comparable<Task>,ITask{
 		return this.statement.hasBeenExecuted();
 	}
 	
-	public void removeFromSchedulers(){
+	public void finishTask(){
+		this.statement.setExecuted(false);
+		this.removeFromSchedulers();
+	}
+	
+	private void removeFromSchedulers(){
 		for (Scheduler s: this.getSchedulers()){
 			s.removeTask(this);
 		}

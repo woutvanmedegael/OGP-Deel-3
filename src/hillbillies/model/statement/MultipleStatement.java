@@ -17,8 +17,6 @@ public class MultipleStatement extends Statement{
 		if (statements==null){
 			throw new WorldException();
 		}
-		System.out.println("initialized on");
-		System.out.println(statements);
 		this.statements = statements;
 	}
 	
@@ -26,7 +24,6 @@ public class MultipleStatement extends Statement{
 	public Boolean executeNext(ContextWrapper c) throws WorldException, WrongVariableException {
 		for (Statement s: this.statements){
 			if (!s.hasBeenExecuted()){
-				System.out.println(s);
 				return (s.executeNext(c));
 			}
 		}

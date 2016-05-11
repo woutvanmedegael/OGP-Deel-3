@@ -1,11 +1,13 @@
 package hillbillies.model.statement;
 
 import hillbillies.model.ContextWrapper;
+import hillbillies.model.IContainsSelected;
 import hillbillies.model.expressions.Expression;
+import hillbillies.model.expressions.IUnitExpression;
 import hillbillies.model.expressions.UnitExpression;
 import hillbillies.model.world.WorldException;
 
-public class AttackStatement<T extends UnitExpression> extends ActionStatement{
+public class AttackStatement<T extends IUnitExpression & IContainsSelected> extends ActionStatement{
 	
 	private T unitExpression;
 	

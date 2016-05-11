@@ -39,9 +39,9 @@ public class Dijkstra {
 		}
 		Position pos = new Position(unit.getxpos(),unit.getypos(),unit.getzpos(),unit.getWorld());
 		this.condition = condition;
-		this.startPos.setPositionAt(startPos);
+		this.startPos.setPositionAt(pos);
 		this.startPos.setToMiddleOfCube();
-		this.startPos.setWorld(startPos.getWorld());
+		this.startPos.setWorld(pos.getWorld());
 		if (!startPos.getCube().isPassable()){
 			throw new IllegalArgumentException();
 		}

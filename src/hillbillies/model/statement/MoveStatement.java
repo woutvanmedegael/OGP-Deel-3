@@ -1,12 +1,14 @@
 package hillbillies.model.statement;
 
 import hillbillies.model.ContextWrapper;
+import hillbillies.model.IContainsSelected;
 import hillbillies.model.Position;
 import hillbillies.model.expressions.Expression;
+import hillbillies.model.expressions.IPositionExpression;
 import hillbillies.model.expressions.PositionExpression;
 import hillbillies.model.world.WorldException;
 
-public class MoveStatement<T extends PositionExpression> extends ActionStatement {
+public class MoveStatement<T extends IPositionExpression & IContainsSelected> extends ActionStatement {
 	//ADRIAAN
 	@Override
 	public Boolean executeNext(ContextWrapper c) throws WorldException, WrongVariableException {

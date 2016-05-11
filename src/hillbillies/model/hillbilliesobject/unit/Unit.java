@@ -2079,18 +2079,24 @@ private static final int SIZE = DEFAULTSTATES.size();
 private void executeDefaultBehaviour(double dt) throws WorldException{
 	if (this.getDefaultBehaviourEnabled()){
 		if (myTask == null || myTask.hasFinished()){
+			System.out.println(this.getMyTask());
+			System.out.println("has finished or picking new task");
+			System.out.println(this.getFaction().getScheduler().getTasks().size());
 			if (myTask!=null){
-				myTask.removeFromSchedulers();
-			}
+				myTask.finishTask();
+				}
 			this.setMyTask(this.getFaction().getNextTask());
 			if (myTask!=null){
 				myTask.setUnit(this);
 				myTask.setWorld(this.getWorld());
+				System.out.println("zou false moeten geven");
+				System.out.println(myTask.hasFinished());
 			}
 		}
 		
 		if (myTask!=null){
-			while (dt>0 && this.getMyState()==CurrentState.NEUTRAL){
+			while (dt>0 && this.getMyState()==CurrentState.NEUTRAL && !this.getMyTask().hasFinished()){
+				System.out.println("executing");
 				myTask.execute();
 				dt-=0.001;
 			}
