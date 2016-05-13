@@ -10,7 +10,7 @@ import hillbillies.model.expressions.BoulderExpression;
 import hillbillies.model.expressions.CarriesItemExpression;
 import hillbillies.model.expressions.EnemyExpression;
 import hillbillies.model.expressions.Expression;
-import hillbillies.model.expressions.FalseExpr;
+import hillbillies.model.expressions.FalseExpression;
 import hillbillies.model.expressions.FriendExpression;
 import hillbillies.model.expressions.HereExpression;
 import hillbillies.model.expressions.IsAliveExpression;
@@ -28,7 +28,7 @@ import hillbillies.model.expressions.PositionOfExpression;
 import hillbillies.model.expressions.ReadVariableExpression;
 import hillbillies.model.expressions.SelectedExpression;
 import hillbillies.model.expressions.ThisExpression;
-import hillbillies.model.expressions.TrueExpr;
+import hillbillies.model.expressions.TrueExpression;
 import hillbillies.model.expressions.UnitExpression;
 import hillbillies.model.expressions.WorkshopExpression;
 import hillbillies.model.hillbilliesobject.unit.UnitException;
@@ -352,12 +352,12 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 
 	@Override
 	public Expression<?> createTrue(SourceLocation sourceLocation) {
-		return new TrueExpr();
+		return new TrueExpression();
 	}
 
 	@Override
 	public Expression<?> createFalse(SourceLocation sourceLocation) {
-		return new FalseExpr();
+		return new FalseExpression();
 	}
 
 	@Override

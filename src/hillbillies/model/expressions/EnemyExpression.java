@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Dijkstra;
 import hillbillies.model.Position;
+import hillbillies.model.TaskInterruptionException;
 import hillbillies.model.hillbilliesobject.HillbilliesObject;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.Cube;
@@ -35,15 +36,14 @@ public class EnemyExpression extends UnitExpression {
 		Dijkstra dijkstra = new Dijkstra(myPredicate, c.getExecutingUnit());
 		Position pos = dijkstra.findClosestPosition();
 		if (pos==null){
-			c.getExecutingUnit().interrupt();
-			throw new WorldException();
+			throw new TaskInterruptionException();
 		}
 		for (HillbilliesObject h : pos.getCube().getObjectsOnThisCube()){
 			if (h instanceof Unit && ((Unit) h).getFaction()!=c.getExecutingUnit().getFaction()){
 				return (Unit) h;
 			}
 		}
-		throw new WorldException();
+		throw new TaskInterruptionException();
 		
 	}
 

@@ -2,9 +2,11 @@ package hillbillies.model.statement;
 
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.IContainsSelected;
+import hillbillies.model.TaskInterruptionException;
 import hillbillies.model.expressions.Expression;
 import hillbillies.model.expressions.IUnitExpression;
 import hillbillies.model.expressions.UnitExpression;
+import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.model.world.WorldException;
 
 public class AttackStatement<T extends IUnitExpression & IContainsSelected> extends ActionStatement{
@@ -25,9 +27,13 @@ public class AttackStatement<T extends IUnitExpression & IContainsSelected> exte
 	}
 
 	@Override
-	public Boolean executeNext(ContextWrapper context) throws WorldException, WrongVariableException {
+	public Boolean executeNext(ContextWrapper context) throws WorldException, WrongVariableException{
+		try{
 		context.getExecutingUnit().startAttacking(unitExpression.evaluateUnit(context));
 		this.setExecuted(true);
+		} catch (TaskInterruptionException t){
+			context.getExecutingUnit().interrupt();
+		}
 		return true;
 	}
 

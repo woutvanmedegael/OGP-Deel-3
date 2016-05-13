@@ -12,7 +12,7 @@ import hillbillies.model.IScheduler;
 
 public class Scheduler implements IScheduler{
 
-	private TreeSet<Task> tasks = new TreeSet<>();
+	private ArrayList<Task> tasks = new ArrayList<>();
 	
 	@Override
 	public void addTask(Task task){
@@ -24,16 +24,10 @@ public class Scheduler implements IScheduler{
 	
 	@Override
 	public void removeTask(Task task){
-		System.out.println("in remove task");
-		System.out.println(this.getTasks().size());
 		if (task!=null){
-			System.out.println("in de if ");
 			tasks.remove(task);
-			System.out.println("succesvol verwijderd uit deze scheduler");
 			task.removeScheduler(this);
-			System.out.println("succesvol zichzelf verwijderd");
 			}
-		System.out.println("na de if in remove " + this.getTasks().size());
 	}
 	
 	public boolean isPartOfScheduler(Task task){
@@ -44,7 +38,13 @@ public class Scheduler implements IScheduler{
 	}
 	
 	public Task getHighestPrio(){
-		return tasks.first();
+		Task highestPrio = null;
+		for (Task t: this.tasks){
+			if (highestPrio==null || highestPrio.getPriority()<t.getPriority()){
+				highestPrio = t;
+			}
+		}
+		return highestPrio;
 	}
 	
 	public ArrayList<Task> getTasks(){
@@ -71,12 +71,13 @@ public class Scheduler implements IScheduler{
 
 	@Override
 	public Task getHighestPrioNonActiveTask() {
+		Task highestPrio = null;
 		for (Task t: this.tasks){
-			if (!t.isExecuting()){
-				return t;
+			if (!t.isExecuting() && (highestPrio==null || highestPrio.getPriority()<t.getPriority())){
+				highestPrio = t;
 			}
 		}
-		return null;
+		return highestPrio;
 	}
 
 	@Override
@@ -95,7 +96,35 @@ public class Scheduler implements IScheduler{
 	}
 	
 	public Iterator<Task> getIterator(){
-		return this.tasks.iterator();
+		return new Iterator<Task>(){
+			
+			private boolean[] handledTasks = new boolean[tasks.size()];
+			private int nbTasksHandled;
+			
+			@Override
+			public boolean hasNext() {
+				return (nbTasksHandled<tasks.size());
+			}
+
+			@Override
+			public Task next() {
+				Task highestPrio = null;
+				for (int i=0;i<tasks.size();i++){
+					if (!handledTasks[i]){
+						if (highestPrio==null || (tasks.get(i).getPriority()>highestPrio.getPriority())){
+							highestPrio = tasks.get(i);
+						}
+					}
+				}
+				if (highestPrio!=null){
+					handledTasks[tasks.indexOf(highestPrio)]=true;
+					nbTasksHandled++;
+				}
+				
+				return highestPrio;
+			}
+			
+		};
 	}
 	
 	

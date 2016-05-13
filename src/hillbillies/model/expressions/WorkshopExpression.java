@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Dijkstra;
 import hillbillies.model.Position;
+import hillbillies.model.TaskInterruptionException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.Cube;
 import hillbillies.model.world.World;
@@ -30,7 +31,7 @@ public class WorkshopExpression extends PositionExpression{
 		Position pos = dijkstra.findClosestPosition();
 		if (pos==null){
 			c.getExecutingUnit().interrupt();
-			throw new WorldException();
+			throw new TaskInterruptionException();
 		}
 		return pos;
 	}

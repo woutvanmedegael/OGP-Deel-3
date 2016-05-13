@@ -15,7 +15,6 @@ public class IsSolidExpression<T extends PositionExpression> extends BooleanExpr
 	public Boolean evaluateBoolean(ContextWrapper c) throws WorldException, WrongVariableException {
 		Position pos = positionExpression.evaluatePosition(c);
 		Boolean b = !pos.isPassablePos();
-		System.out.println(b);
 		return b;
 	}
 private final T positionExpression;

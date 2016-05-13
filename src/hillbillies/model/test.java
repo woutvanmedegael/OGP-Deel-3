@@ -1,6 +1,8 @@
 package hillbillies.model;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -27,25 +29,22 @@ public class test {
 	private static final int TYPE_WORKSHOP = 3;
 
 	public static void main(String[] args) throws WorldException, ModelException {
-		Facade facade = new Facade();
-		int[][][] types = new int[3][3][3];
-		types[1][1][0] = TYPE_ROCK;
-		types[1][1][1] = TYPE_ROCK;
-		types[1][1][2] = TYPE_TREE;
-		types[2][2][2] = TYPE_WORKSHOP;
+		Task task1 = new Task("ablk", 10, null, null);
+		Task task2 = new Task(null, 20, null, null);
+		Task task3 = new Task(null, -5, null, null);
+		Scheduler scheduler = new Scheduler();
+		scheduler.addTask(task1);
+		scheduler.addTask(task2);
+		scheduler.addTask(task3);
+		Iterator<Task> it = scheduler.getIterator();
+		System.out.println(it.hasNext());
+		System.out.println(it.next().getPriority());
+		System.out.println(it.hasNext());
+		System.out.println(it.next().getPriority());
+		System.out.println(it.hasNext());
+		System.out.println(it.next().getPriority());
+		System.out.println(it.hasNext());
 
-		World world = facade.createWorld(types, new DefaultTerrainChangeListener());
-		Unit unit = facade.createUnit("Test", new int[] { 0, 0, 0 }, 50, 50, 50, 50, true);
-		facade.addUnit(unit, world);
-
-
-		List<Task> tasks = TaskParser.parseTasksFromString(
-				"name: \"operate workshop\"\npriority : -10\nactivities : moveTo workshop; work selected;", facade.createTaskFactory(),
-				Collections.emptyList());
-		System.out.println("starting iteration");
-		System.out.println(tasks.get(0).isWellFormed());
-		System.out.println("contains selected");
-		System.out.println(tasks.get(0).containsSelectedKeyword());
 
 	}
 

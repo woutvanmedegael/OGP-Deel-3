@@ -20,4 +20,5 @@ public abstract class Statement implements IContainsSelected{
 	public void setExecuted(Boolean b){
 		this.executed = b;
 	}
+	
 }

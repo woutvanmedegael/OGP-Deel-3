@@ -5,6 +5,7 @@ import java.util.Random;
 
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
+import hillbillies.model.TaskInterruptionException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;
@@ -26,7 +27,6 @@ public class NextToExpression<T extends PositionExpression> extends PositionExpr
 	@Override
 	public Position evaluatePosition(ContextWrapper c) throws WorldException, WrongVariableException {
 		Position pos = this.position.evaluatePosition(c);
-		System.out.println("pos waar hij naartoe wilt" +pos);
 		World world = c.getThisWorld();
 		ArrayList<Position> positions = new ArrayList<>();
 		int xpos = (int)pos.getxpos();
@@ -45,11 +45,10 @@ public class NextToExpression<T extends PositionExpression> extends PositionExpr
 		}
 		Random rand = new Random();
 		if (positions.size()==0){
-			c.getExecutingUnit().interrupt();
-			throw new WorldException();
+			throw new TaskInterruptionException();
+
 		}
 		int index = rand.nextInt(positions.size());
-		System.out.println("gevonden pos" + positions.get(index));
 		return positions.get(index);
 	}
 

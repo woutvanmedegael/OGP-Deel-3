@@ -188,21 +188,19 @@ public class Task implements Comparable<Task>,ITask{
 		else{
 			this.setPriority(-1);
 		}
-		for (Scheduler scheduler:this.schedulers){
-			scheduler.removeTask(this);
-			scheduler.addTask(this);
 			
-		}
-		
 	}
+		
+	
 	
 	public Boolean isWellFormed(){
 		ArrayList<String> variables = new ArrayList<>();
 		Boolean unassignedVariables = this.tree.containsUnassignedVariable(variables);
 		Boolean uncoveredBreak = this.tree.containsUncoveredBreak();
-		System.out.println(uncoveredBreak);
 		return !(unassignedVariables || uncoveredBreak);
 	}
+	
+	
 	
 	
 

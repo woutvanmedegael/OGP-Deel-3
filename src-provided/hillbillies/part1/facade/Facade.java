@@ -2,6 +2,7 @@ package hillbillies.part1.facade;
 
 
 
+import hillbillies.model.TaskInterruptionException;
 import hillbillies.model.hillbilliesobject.CurrentState;
 import hillbillies.model.hillbilliesobject.unit.IllegalNameException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
@@ -188,7 +189,7 @@ public class Facade implements IFacade{
 	public void moveTo(Unit unit, int[] cube) throws ModelException {
 		try {
 			unit.moveTo(cube[0], cube[1], cube[2]);
-		} catch (UnitException e) {
+		} catch (UnitException | TaskInterruptionException e) {
 			throw new ModelException();
 
 		}
@@ -198,7 +199,7 @@ public class Facade implements IFacade{
 	public void work(Unit unit) throws ModelException {
 		try {
 			unit.workAt(0,0,0);
-		} catch (UnitException e) {
+		} catch (UnitException | TaskInterruptionException e) {
 			throw new ModelException();
 		}
 	}
@@ -212,7 +213,7 @@ public class Facade implements IFacade{
 	public void fight(Unit attacker, Unit defender) throws ModelException {
 		try {
 			attacker.startAttacking(defender);
-		} catch (UnitException e) {
+		} catch (UnitException | TaskInterruptionException e) {
 			throw new ModelException();
 		}
 	}
@@ -224,7 +225,11 @@ public class Facade implements IFacade{
 
 	@Override
 	public void rest(Unit unit) throws ModelException {
-		unit.startResting();
+		try {
+			unit.startResting();
+		} catch (TaskInterruptionException e) {
+			throw new ModelException();
+		}
 	}
 
 	@Override

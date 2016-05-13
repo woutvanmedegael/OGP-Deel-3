@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
+import hillbillies.model.TaskInterruptionException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;

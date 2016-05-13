@@ -2,6 +2,7 @@ package hillbillies.model.statement;
 
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.IContainsSelected;
+import hillbillies.model.TaskInterruptionException;
 import hillbillies.model.expressions.Expression;
 import hillbillies.model.expressions.IUnitExpression;
 import hillbillies.model.expressions.UnitExpression;
@@ -11,9 +12,12 @@ public class FollowStatement<T extends IUnitExpression & IContainsSelected> exte
 	
 	@Override
 	public Boolean executeNext(ContextWrapper c) throws  WorldException, WrongVariableException {
-		// TODO Auto-generated method stub
+		try{
 		c.getExecutingUnit().startFollowing(this.unitExpression.evaluateUnit(c));
 		this.setExecuted(true);
+		} catch (TaskInterruptionException t){
+			c.getExecutingUnit().interrupt();
+		}
 		return true;
 	}
 

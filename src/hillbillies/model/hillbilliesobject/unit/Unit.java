@@ -10,6 +10,7 @@ import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.model.NbCompare;
 import hillbillies.model.Position;
+import hillbillies.model.TaskInterruptionException;
 import hillbillies.model.hillbilliesobject.Boulder;
 import hillbillies.model.hillbilliesobject.CurrentState;
 import hillbillies.model.hillbilliesobject.HillbilliesObject;
@@ -1234,8 +1235,9 @@ private boolean isValidMove(int[] move) throws UnitException{
  * 		  | calculateLocalTarget()
  * @throws UnitException
  * 		  An exception is thrown if any of the coordinates is an invalid position for the cube
+ * @throws TaskInterruptionException 
  */
-public void moveTo(int cubeX, int cubeY, int cubeZ) throws UnitException{
+public void moveTo(int cubeX, int cubeY, int cubeZ) throws UnitException, TaskInterruptionException{
 	if (!(this.getMyState()==CurrentState.DEFENDING || this.getMyState() == CurrentState.ATTACKING) && this.getHasRested()){
 		this.setMyState(CurrentState.MOVING);
 		if (!Position.isValidPos(cubeX, cubeY, cubeZ, this.getWorld())){
@@ -1251,11 +1253,14 @@ public void moveTo(int cubeX, int cubeY, int cubeZ) throws UnitException{
 		if (this.getPathFinder().getPath().isEmpty()){
 			this.setMyState(CurrentState.NEUTRAL);
 			this.setGlobalTarget(null);
+			if (this.getMyTask()==null){
+				throw new TaskInterruptionException();
+			}
 			return;
 		}
 		calculateLocalTarget();
 	} else {
-		interrupt();
+		throw new TaskInterruptionException();
 	}
 }
 
@@ -1356,7 +1361,6 @@ private void calculateLocalTarget() throws UnitException{
  * @throws WorldException 
  */
 public void advanceTime(double dt) throws WorldException{
-
 	
 	while (this.getExperiencePoints()>=10){
 		this.setExperiencePoints(this.getExperiencePoints()-10);
@@ -1576,19 +1580,20 @@ private void determineLocalTarget() throws UnitException{
  * 		 | and this.getOrientation()==Math.atan2(y-this.getMyPosition().getypos()+0.5, x-this.getMyPosition().getxpos()+0.5)
  * @throws UnitException
  * 		Throws a unit exception if the workposition isn't adjacent.
+ * @throws TaskInterruptionException 
  * 
  */
-public void workAt(int x, int y, int z) throws UnitException{
+public void workAt(int x, int y, int z) throws UnitException, TaskInterruptionException{
 	if ((this.getMyState() == CurrentState.RESTING && this.getHasRested()) || this.getMyState() == CurrentState.NEUTRAL){
 		this.setWorkPosition(new Position(x,y,z,this.getWorld()));
 		if (!this.getWorkPosition().isAdjacent(this.getMyPosition())){
-			throw new UnitException();
+			//throw new UnitException();
 		}
 		this.setMyState(CurrentState.WORKING);
 		this.getMyTimeState().setTrackTimeWork(0);
 		this.setOrientation((float) Math.atan2(y-this.getMyPosition().getypos()+0.5, x-this.getMyPosition().getxpos()+0.5));
 	} else {
-		interrupt();
+		throw new TaskInterruptionException();
 	}
 }
 
@@ -1710,12 +1715,13 @@ private void finishWork() throws WorldException{
 
 /**
  * Initiates resting for this unit.
+ * @throws TaskInterruptionException 
  * @post If the unit wasn't fighting or already resting, the unit has started resting.
  * 		| if (this.getMyState()==CurrentState.MOVING || this.getMyState()==CurrentState.NEUTRAL || this.getMyState()==CurrentState.WORKING)
  * 		| then new.getMyState()==CurrentState.RESTING and new.getMyTimeState().getTrackTimeRest()==0 
  * 		|	and new.getHasRested()==false and new.getMyTimeState().getTimeRested()==0
  */
-public void startResting(){
+public void startResting() throws TaskInterruptionException{
 	if (this.getMyState()==CurrentState.MOVING || this.getMyState() == CurrentState.NEUTRAL || this.getMyState() == CurrentState.WORKING){
 		this.setMyState(CurrentState.RESTING);
 		this.getMyTimeState().setTrackTimeRest(0);
@@ -1723,13 +1729,14 @@ public void startResting(){
 		this.getMyTimeState().setTimeRested(0);
 		
 	} else {
-		interrupt();
+		throw new TaskInterruptionException();
 	}
 }
 
 /**
  * Initiates this units attack of the defender.		
  * @throws UnitException 
+ * @throws TaskInterruptionException 
  * @post If the unit wasn't already defending or attacking and defender is within reach,
  * 		 the unit starts attacking defender and turns to him.
  * 		| if (!(this.getMyState()==CurrentState.DEFENDING || this.getMyState()==CurrentState.ATTACKING) && targetWithinReach(defender))
@@ -1740,7 +1747,7 @@ public void startResting(){
  * 		| if (!(this.getMyState()==CurrentState.DEFENDING || this.getMyState()==CurrentState.ATTACKING) && targetWithinReach(this.getDefender()))
  * 		| then this.getDefender().startDefending(this)
  */
-public void startAttacking(Unit defender) throws UnitException{
+public void startAttacking(Unit defender) throws UnitException, TaskInterruptionException{
 	if (targetWithinReach(defender) && !(this.getMyState() == CurrentState.DEFENDING || this.getMyState() == CurrentState.ATTACKING ||
 			this.getFaction()==defender.getFaction() || this.getMyState() == CurrentState.FALLING) && !defender.isFalling()){
 		this.setDefender(defender);
@@ -1748,7 +1755,7 @@ public void startAttacking(Unit defender) throws UnitException{
 		this.setOrientation((float) Math.atan2(this.getDefender().getypos()-this.getypos(), this.getDefender().getxpos()-this.getxpos()));
 		this.getMyTimeState().setAttackTime(0);
 	} else {
-		interrupt();
+		throw new TaskInterruptionException();
 	}
 }
 
@@ -2054,11 +2061,6 @@ private void hasRestedMinimumTime(double dt) {
 private static final List<CurrentState> DEFAULTSTATES = Arrays.asList(CurrentState.WORKING, CurrentState.MOVING, CurrentState.RESTING);
 
 /**
- * A final variable containing the size of DEFAULTSTATES
- */
-private static final int SIZE = DEFAULTSTATES.size();
-
-/**
  * Determines what default behaviour the unit executes.
  * @throws WorldException 
  * @post If default is enabled this function randomly puts the unit in a default state.
@@ -2079,9 +2081,6 @@ private static final int SIZE = DEFAULTSTATES.size();
 private void executeDefaultBehaviour(double dt) throws WorldException{
 	if (this.getDefaultBehaviourEnabled()){
 		if (myTask == null || myTask.hasFinished()){
-			System.out.println(this.getMyTask());
-			System.out.println("has finished or picking new task");
-			System.out.println(this.getFaction().getScheduler().getTasks().size());
 			if (myTask!=null){
 				myTask.finishTask();
 				}
@@ -2089,14 +2088,12 @@ private void executeDefaultBehaviour(double dt) throws WorldException{
 			if (myTask!=null){
 				myTask.setUnit(this);
 				myTask.setWorld(this.getWorld());
-				System.out.println("zou false moeten geven");
-				System.out.println(myTask.hasFinished());
 			}
 		}
 		
 		if (myTask!=null){
-			while (dt>0 && this.getMyState()==CurrentState.NEUTRAL && !this.getMyTask().hasFinished()){
-				System.out.println("executing");
+			while (this.getMyTask()!=null && dt>0 && this.getMyState()==CurrentState.NEUTRAL && !this.getMyTask().hasFinished()){
+				
 				myTask.execute();
 				dt-=0.001;
 			}
@@ -2221,7 +2218,9 @@ private int experiencePoints =0;
  * 		| then (new.getStrength()==this.getStrength()+1 || new.getAgility()==this.getAgility()+1 || new.getToughness()==this.getToughness()+1)
  */
 private void improveProperty(){
-	 	int prevprop = this.getToughness()+this.getAgility()+this.getStrength();
+	 	this.getToughness();
+		this.getAgility();
+		this.getStrength();
 
 		int prevMaxHP = this.getMaxHP();
 		int prevMaxSP = this.getMaxSP();
@@ -2253,7 +2252,9 @@ private void improveProperty(){
 		}
 		this.setCurrentHP(this.getMaxHP()-prevMaxHP+this.getCurrentHP());
 		this.setCurrentSP(this.getMaxSP()-prevMaxSP+this.getCurrentSP());
-	 	int newprop = this.getToughness()+this.getAgility()+this.getStrength();
+	 	this.getToughness();
+		this.getAgility();
+		this.getStrength();
 
 	}
 
@@ -2450,7 +2451,7 @@ public void setTargetUnit(Unit targetUnit) {
 	this.targetUnit = targetUnit;
 }
 
-public void startFollowing(Unit target) throws UnitException{
+public void startFollowing(Unit target) throws UnitException, TaskInterruptionException{
 	if (target != null && !(this.getMyState()==CurrentState.DEFENDING || this.getMyState() == CurrentState.ATTACKING) && this.getHasRested()){
 		this.setGlobalTarget(null);
 		this.setMyState(CurrentState.FOLLOWING);
@@ -2465,7 +2466,7 @@ public void startFollowing(Unit target) throws UnitException{
 		calculateLocalTargetFollow();
 	}
 	else {
-		interrupt();
+		throw new TaskInterruptionException();
 	}
 	}
 
@@ -2497,7 +2498,7 @@ private void calculateLocalTargetFollow() throws UnitException{
 		setLocalTargetAndSpeed(nextPos);
 	}
 }
-private void determineLocalTargetFollow() throws UnitException{
+private void determineLocalTargetFollow() throws UnitException, TaskInterruptionException{
 	if (this.getMyPosition().Equals(this.getLocalTarget())){
 		if (this.getPathFinder().hasArrived() && !stoppedFollowing){
 			this.setExperiencePoints(this.getExperiencePoints()+1);
@@ -2523,9 +2524,13 @@ private void setMyTask(Task myTask){
 }
 
 public void interrupt(){
-	myTask.interrupt();
+	if (myTask!=null){
+		myTask.interrupt();
+	}
 	this.setMyTask(null);
 }
+
+
 
 }
 

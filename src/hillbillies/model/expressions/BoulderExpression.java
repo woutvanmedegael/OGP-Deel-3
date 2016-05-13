@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Dijkstra;
 import hillbillies.model.Position;
+import hillbillies.model.TaskInterruptionException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.Cube;
 import hillbillies.model.world.World;
@@ -16,7 +17,7 @@ public class BoulderExpression extends PositionExpression {
 	
 	
 	@Override
-	public Position evaluatePosition(ContextWrapper c) throws WorldException {
+	public Position evaluatePosition(ContextWrapper c) throws WorldException{
 		Predicate<Cube> myPredicate = new Predicate<Cube>(){
 
 			@Override
@@ -31,8 +32,7 @@ public class BoulderExpression extends PositionExpression {
 		Dijkstra dijkstra = new Dijkstra(myPredicate, c.getExecutingUnit());
 		Position pos = dijkstra.findClosestPosition();
 		if (pos==null){
-			c.getExecutingUnit().interrupt();
-			throw new WorldException();
+			throw new TaskInterruptionException();
 		}
 		return pos;
 	}
