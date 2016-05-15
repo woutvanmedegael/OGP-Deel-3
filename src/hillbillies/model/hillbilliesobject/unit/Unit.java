@@ -1780,7 +1780,6 @@ public boolean isFalling(){
  * 								!(Math.abs(this.getCubeZpos()-defender.getCubeZpos())>1))
  */
 private boolean targetWithinReach(Unit defender){
-	assert (defender!=null);
 	if (Math.abs(this.getCubeXpos()-defender.getCubeXpos())>1){
 		return false;
 	} else if (Math.abs(this.getCubeYpos()-defender.getCubeYpos())>1){
@@ -2084,7 +2083,7 @@ private void executeDefaultBehaviour(double dt) throws WorldException{
 	if (this.getDefaultBehaviourEnabled()){
 		if (myTask == null || myTask.hasFinished()){
 			if (myTask!=null){
-				myTask.finishTask();
+				myTask.terminate();
 				}
 			this.setMyTask(this.getFaction().getNextTask(this));
 			if (myTask!=null){
@@ -2420,7 +2419,7 @@ public void startFalling() throws UnitException{
  */
 public boolean isMoving(){
 	return (this.getMyState()==CurrentState.MOVING || (this.getMyState()==CurrentState.RESTING && !this.getMyPosition().Equals(this.getLocalTarget()))
-			|| (this.getMyState() == CurrentState.FOLLOWING) && this.stoppedFollowing == false);
+			|| this.getMyState() == CurrentState.FOLLOWING);
 }
 
 
@@ -2461,6 +2460,11 @@ public void startFollowing(Unit target) throws UnitException, TaskInterruptionEx
 		if (!(targetUnit.getMyPosition().isValidPos() && targetUnit.getMyPosition().isPassablePos())|| myWorld ==null){
 			throw new UnitException();
 			}
+		if (this.getMyPosition().isAdjacent(target.getMyPosition())){
+			this.setMyState(CurrentState.NEUTRAL);
+			this.setTargetUnit(null);
+			return;
+		}
 		this.setPathFinder(new PathFinding(this.getWorld(), this.getMyPosition(),this.getTargetUnit().getMyPosition(), true));
 		if (this.getPathFinder().getPath().isEmpty()){
 			throw new TaskInterruptionException();
@@ -2474,11 +2478,7 @@ public void startFollowing(Unit target) throws UnitException, TaskInterruptionEx
 
 private void follow(double dt) throws WorldException{
 	
-	if (myTimeState.getTrackTimeFollow() >=3){
-		startFollowing(this.getTargetUnit());
-		myTimeState.setTrackTimeFollow(0);
-		return;
-	}
+	
 	myTimeState.setTrackTimeFollow(myTimeState.getTrackTimeFollow()+dt);
 
 	determineLocalTargetFollow();
@@ -2486,13 +2486,9 @@ private void follow(double dt) throws WorldException{
 
 		
 }
-private boolean stoppedFollowing = false;
 private void calculateLocalTargetFollow() throws UnitException{
 	Position nextPos = this.getPathFinder().moveToNextPos();
-	stoppedFollowing =false;
-	if (nextPos == null){
-		stoppedFollowing= true;
-	} else if (!nextPos.isValidPos()){
+	if (!nextPos.isValidPos()){
 		this.setPathFinder(new PathFinding(this.myWorld,this.getMyPosition(),this.getTargetUnit().getMyPosition(),true));
 		calculateLocalTargetFollow();
 	} else {
@@ -2501,14 +2497,17 @@ private void calculateLocalTargetFollow() throws UnitException{
 }
 private void determineLocalTargetFollow() throws UnitException, TaskInterruptionException{
 	if (this.getMyPosition().Equals(this.getLocalTarget())){
-		if (this.getPathFinder().hasArrived() && !stoppedFollowing){
-			this.setExperiencePoints(this.getExperiencePoints()+1);
-			this.stoppedFollowing = true;
+		this.setExperiencePoints(this.getExperiencePoints()+1);
+		if (this.getPathFinder().hasArrived()){
 			this.setSpeed(0);
 			startFollowing(this.getTargetUnit());
 		}
-		else if (!stoppedFollowing){
-			this.setExperiencePoints(this.getExperiencePoints()+1);
+		else {
+			if (myTimeState.getTrackTimeFollow() >=3){
+				startFollowing(this.getTargetUnit());
+				myTimeState.setTrackTimeFollow(0);
+				return;
+			}
 			calculateLocalTargetFollow();
 		}
 	}

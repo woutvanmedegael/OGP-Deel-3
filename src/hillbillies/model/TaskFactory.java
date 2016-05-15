@@ -62,7 +62,6 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 				tasks.add(new Task(name, priority, activity, pos));
 			}
 		} catch (Exception e){
-			System.out.println(e.getMessage());
 		}
 		return tasks;
 	}

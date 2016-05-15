@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.IContainsSelected;
-import hillbillies.model.ITask;
 import hillbillies.model.Position;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.statement.WrongVariableException;

@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Raw;
 import hillbillies.model.ContextWrapper;
-import hillbillies.model.ITask;
 import hillbillies.model.Position;
 import hillbillies.model.SubType;
 import hillbillies.model.hillbilliesobject.unit.Unit;
@@ -14,7 +15,7 @@ import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class Task implements Comparable<Task>,ITask{
+public class Task implements Comparable<Task>{
 	
 	
 	private final Statement statement;
@@ -71,11 +72,6 @@ public class Task implements Comparable<Task>,ITask{
 		return this.statement.hasBeenExecuted();
 	}
 	
-	public void finishTask(){
-		this.statement.setExecuted(false);
-		this.removeFromSchedulers();
-	}
-	
 	private void removeFromSchedulers(){
 		for (Scheduler s: this.getSchedulers()){
 			s.removeTask(this);
@@ -128,7 +124,6 @@ public class Task implements Comparable<Task>,ITask{
 		return name;
 	}
 
-	@Override
 	public int compareTo(Task task){
 		if (this.equals(task)){
 			return 0;
@@ -140,15 +135,7 @@ public class Task implements Comparable<Task>,ITask{
 	} 
 
 
-	@Override
-	public void assignUnit(Unit unit) {
-		this.assignedUnit = unit;
-		
-	}
 
-
-
-	@Override
 	public void setPriority(int newPrio) {
 		this.priority = newPrio;
 		
@@ -156,7 +143,7 @@ public class Task implements Comparable<Task>,ITask{
 
 
 
-	@Override
+
 	public void addScheduler(Scheduler scheduler) {
 		if (scheduler!=null){
 			this.schedulers.add(scheduler);
@@ -166,20 +153,18 @@ public class Task implements Comparable<Task>,ITask{
 
 
 
-	@Override
+
 	public void removeScheduler(Scheduler scheduler) {
 		this.schedulers.remove(scheduler);
 	}
 
 
 
-	@Override
 	public void interrupt() {
 		this.statement.setExecuted(false);
 		this.setExecuting(false);
-		this.setAssignedUnit(null);
 		this.contextWrapper.clear();
-		this.assignUnit(null);
+		this.setAssignedUnit(null);
 		if (this.getPriority() >0){
 				this.setPriority(this.getPriority()/2);
 		}
@@ -204,6 +189,35 @@ public class Task implements Comparable<Task>,ITask{
 		Boolean uncoveredBreak = this.tree.containsUncoveredBreak();
 		return !(unassignedVariables || uncoveredBreak);
 	}
+	
+	/**
+	 * Terminate this Task.
+	 *
+	 * @post   This Task  is terminated.
+	 *       | new.isTerminated()
+	 * @post   ...
+	 *       | ...
+	 */
+	 public void terminate() {
+		 this.statement.setExecuted(false);
+		 this.removeFromSchedulers();
+		 this.isTerminated = true;
+	 }
+	 
+	 /**
+	  * Return a boolean indicating whether or not this Task
+	  * is terminated.
+	  */
+	 @Basic @Raw
+	 public boolean isTerminated() {
+		 return this.isTerminated;
+	 }
+	 
+	 /**
+	  * Variable registering whether this person is terminated.
+	  */
+	 private boolean isTerminated = false;
+	 
 	
 	
 	

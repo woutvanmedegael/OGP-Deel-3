@@ -38,8 +38,22 @@ public class Scheduler implements IScheduler{
 		return tasks.contains(task);
 	}
 	
+	private Task getHighestPriorityOf(Task t, Task u){
+		if (t==null){
+			return u;
+		}
+		if (u==null){
+			return t;
+		}
+		if (t.getPriority()>=u.getPriority()){
+			return t;
+		}
+		return u;
+	}
+	
 	public Task getHighestPrio(){
 		Task highestPrio = null;
+		this.tasks.stream().filter(t->!t.isExecuting()).reduce(null,(t,u)->));
 		for (Task t: this.tasks){
 			if (highestPrio==null || highestPrio.getPriority()<t.getPriority()){
 				highestPrio = t;
@@ -77,7 +91,7 @@ public class Scheduler implements IScheduler{
 	public Task getHighestPrioNonActiveTask(Unit u) {
 		Task highestPrio = null;
 		for (Task t: this.tasks){
-			if (!t.isExecuting() && (highestPrio==null || highestPrio.getPriority()<t.getPriority())){
+			if (!t.isExecuting() && (highestPrio==null || highestPrio.getPriority()<t.getPriority()) && !t.isTerminated()){
 				if (t.getAssignedUnit()==null || t.getAssignedUnit()==u){
 					highestPrio = t;
 				}

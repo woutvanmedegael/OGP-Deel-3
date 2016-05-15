@@ -370,13 +370,11 @@ public class Facade implements IFacade {
 
 	@Override
 	public Set<Unit> getUnitsOfFaction(Faction faction) throws ModelException {
-		// TODO Auto-generated method stub
 		return faction.getUnits();
 	}
 
 	@Override
 	public Set<Faction> getActiveFactions(World world) throws ModelException {
-		// TODO Auto-generated method stub
 		return world.getActiveFactions();
 	}
 

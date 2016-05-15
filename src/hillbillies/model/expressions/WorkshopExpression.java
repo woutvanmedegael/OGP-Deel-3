@@ -16,18 +16,8 @@ public class WorkshopExpression extends PositionExpression{
 	
 	@Override
 	public Position evaluatePosition(ContextWrapper c) throws WorldException {
-		Predicate<Cube> myPredicate = new Predicate<Cube>(){
-
-			@Override
-			public boolean test(Cube t) {
-				if (t.getIntTerrainType()==3){
-					return true;
-				}
-				return false;
-			}
-			
-		};
-		Dijkstra dijkstra = new Dijkstra(myPredicate, c.getExecutingUnit());
+		
+		Dijkstra dijkstra = new Dijkstra(t->t.getIntTerrainType()==3, c.getExecutingUnit());
 		Position pos = dijkstra.findClosestPosition();
 		if (pos==null){
 			throw new TaskInterruptionException();
