@@ -48,8 +48,8 @@ public class Faction {
 		return myUnits;
 	}
 	
-	public Task getNextTask(){
-		return scheduler.getHighestPrioNonActiveTask();
+	public Task getNextTask(Unit u){
+		return scheduler.getHighestPrioNonActiveTask(u);
 	}
 	
 	public Scheduler getScheduler(){

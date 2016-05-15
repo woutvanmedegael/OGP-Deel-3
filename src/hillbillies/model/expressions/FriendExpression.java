@@ -24,7 +24,7 @@ public class FriendExpression extends UnitExpression{
 			@Override
 			public boolean test(Cube t) {
 				for (HillbilliesObject h : t.getObjectsOnThisCube()){
-					if (h instanceof Unit && ((Unit) h).getFaction()==c.getExecutingUnit().getFaction()){
+					if (h instanceof Unit && ((Unit) h).getFaction()==c.getExecutingUnit().getFaction() && h!=c.getExecutingUnit()){
 						return true;
 					}
 				}
@@ -34,11 +34,13 @@ public class FriendExpression extends UnitExpression{
 		};
 		Dijkstra dijkstra = new Dijkstra(myPredicate, c.getExecutingUnit());
 		Position pos = dijkstra.findClosestPosition();
+		System.out.println("friend found?");
 		if (pos==null){
 			throw new TaskInterruptionException();
 		}
 		for (HillbilliesObject h : pos.getCube().getObjectsOnThisCube()){
-			if (h instanceof Unit && ((Unit) h).getFaction()==c.getExecutingUnit().getFaction()){
+			if (h instanceof Unit && ((Unit) h).getFaction()==c.getExecutingUnit().getFaction() && h!=c.getExecutingUnit()){
+				System.out.println("friend found");
 				return (Unit) h;
 			}
 		}

@@ -1253,7 +1253,7 @@ public void moveTo(int cubeX, int cubeY, int cubeZ) throws UnitException, TaskIn
 		if (this.getPathFinder().getPath().isEmpty()){
 			this.setMyState(CurrentState.NEUTRAL);
 			this.setGlobalTarget(null);
-			if (this.getMyTask()==null){
+			if (this.getMyTask()!=null){
 				throw new TaskInterruptionException();
 			}
 			return;
@@ -1696,6 +1696,8 @@ private void finishWork() throws WorldException{
 			workCube.deleteObject(log);
 			Boulder boulder = workCube.getABoulder();
 			workCube.deleteObject(boulder);
+			this.getWorld().removeBoulder(boulder);
+			this.getWorld().removeLog(log);
 			this.setWeight(this.getWeight()+1);
 			this.setToughness(this.getToughness()+1);
 	} else if (workCube.containsBoulder()){
@@ -2084,7 +2086,7 @@ private void executeDefaultBehaviour(double dt) throws WorldException{
 			if (myTask!=null){
 				myTask.finishTask();
 				}
-			this.setMyTask(this.getFaction().getNextTask());
+			this.setMyTask(this.getFaction().getNextTask(this));
 			if (myTask!=null){
 				myTask.setUnit(this);
 				myTask.setWorld(this.getWorld());
@@ -2300,10 +2302,10 @@ public boolean isCarryingBoulder(){
 @Raw
 private void setLoad(Load load){
 	if (load instanceof Log){
-		this.myWorld.getLogs().remove(load);
+		this.getWorld().removeLog((Log) load);
 	}
 	if (load instanceof Boulder){
-		this.myWorld.getBoulders().remove(load);
+		this.getWorld().removeBoulder((Boulder) load);
 	}
 	this.load = load;
 }
@@ -2454,6 +2456,7 @@ public void setTargetUnit(Unit targetUnit) {
 public void startFollowing(Unit target) throws UnitException, TaskInterruptionException{
 	if (target != null && !(this.getMyState()==CurrentState.DEFENDING || this.getMyState() == CurrentState.ATTACKING) && this.getHasRested()){
 		this.setGlobalTarget(null);
+		System.out.println("following target");
 		this.setMyState(CurrentState.FOLLOWING);
 		setTargetUnit(target);
 		if (!(targetUnit.getMyPosition().isValidPos() && targetUnit.getMyPosition().isPassablePos())|| myWorld ==null){
@@ -2461,7 +2464,8 @@ public void startFollowing(Unit target) throws UnitException, TaskInterruptionEx
 			}
 		this.setPathFinder(new PathFinding(this.getWorld(), this.getMyPosition(),this.getTargetUnit().getMyPosition(), true));
 		if (this.getPathFinder().getPath().isEmpty()){
-			return;
+			System.out.println("no path found");
+			throw new TaskInterruptionException();
 		}
 		calculateLocalTargetFollow();
 	}
@@ -2489,7 +2493,6 @@ private void calculateLocalTargetFollow() throws UnitException{
 	Position nextPos = this.getPathFinder().moveToNextPos();
 	stoppedFollowing =false;
 	if (nextPos == null){
-		//er is geen path gevonden
 		stoppedFollowing= true;
 	} else if (!nextPos.isValidPos()){
 		this.setPathFinder(new PathFinding(this.myWorld,this.getMyPosition(),this.getTargetUnit().getMyPosition(),true));
@@ -2520,6 +2523,8 @@ public Task getMyTask(){
 }
 
 private void setMyTask(Task myTask){
+	if (myTask!=null)
+		myTask.setAssignedUnit(this);
 	this.myTask = myTask;
 }
 

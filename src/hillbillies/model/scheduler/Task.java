@@ -24,6 +24,7 @@ public class Task implements Comparable<Task>,ITask{
 	private Set<Scheduler> schedulers = new HashSet<Scheduler>();
 	private final ContextWrapper contextWrapper = new ContextWrapper();
 	private final SubType tree;
+	private boolean executing = false;
 
 	public Set<Scheduler> getSchedulers() {
 		return schedulers;
@@ -47,13 +48,15 @@ public class Task implements Comparable<Task>,ITask{
 		this.assignedUnit = assignedUnit;
 	}
 
-
+	public void setExecuting(boolean b){
+		this.executing = b;
+	}
 
 	/**
 	 * @return the executing
 	 */
 	public boolean isExecuting() {
-		return this.getAssignedUnit() !=null;
+		return this.executing;
 	}
 	
 	public void setUnit(Unit executingUnit){
@@ -173,6 +176,8 @@ public class Task implements Comparable<Task>,ITask{
 	@Override
 	public void interrupt() {
 		this.statement.setExecuted(false);
+		this.setExecuting(false);
+		this.setAssignedUnit(null);
 		this.contextWrapper.clear();
 		this.assignUnit(null);
 		if (this.getPriority() >0){

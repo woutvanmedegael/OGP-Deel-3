@@ -46,7 +46,6 @@ public class NextToExpression<T extends PositionExpression> extends PositionExpr
 		Random rand = new Random();
 		if (positions.size()==0){
 			throw new TaskInterruptionException();
-
 		}
 		int index = rand.nextInt(positions.size());
 		return positions.get(index);

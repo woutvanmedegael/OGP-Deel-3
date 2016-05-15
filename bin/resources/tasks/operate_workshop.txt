@@ -1,5 +1,5 @@
 name: "operate workshop"
-priority : -2145283646
+priority : 5
 activities : w := workshop;
 	moveTo boulder ;
 	work here ;

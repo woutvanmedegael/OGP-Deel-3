@@ -13,8 +13,9 @@ public class FollowStatement<T extends IUnitExpression & IContainsSelected> exte
 	@Override
 	public Boolean executeNext(ContextWrapper c) throws  WorldException, WrongVariableException {
 		try{
-		c.getExecutingUnit().startFollowing(this.unitExpression.evaluateUnit(c));
-		this.setExecuted(true);
+			System.out.println("started following");
+			c.getExecutingUnit().startFollowing(this.unitExpression.evaluateUnit(c));
+			this.setExecuted(true);
 		} catch (TaskInterruptionException t){
 			c.getExecutingUnit().interrupt();
 		}

@@ -14,9 +14,9 @@ public class MoveStatement<T extends IPositionExpression & IContainsSelected> ex
 	@Override
 	public Boolean executeNext(ContextWrapper c) throws WorldException, WrongVariableException {
 		try{
-		Position target = positionExpression.evaluatePosition(c);
-		c.getExecutingUnit().moveTo(target.getCubexpos(), target.getCubeypos(), target.getCubezpos());
-		this.setExecuted(true);
+			Position target = positionExpression.evaluatePosition(c);
+			c.getExecutingUnit().moveTo(target.getCubexpos(), target.getCubeypos(), target.getCubezpos());
+			this.setExecuted(true);
 		} catch (TaskInterruptionException t){
 			c.getExecutingUnit().interrupt();
 		}

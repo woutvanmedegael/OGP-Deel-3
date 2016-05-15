@@ -33,7 +33,6 @@ public class LogExpression extends PositionExpression{
 		Dijkstra dijkstra = new Dijkstra(myPredicate, c.getExecutingUnit());
 		Position pos = dijkstra.findClosestPosition();
 		if (pos==null){
-			c.getExecutingUnit().interrupt();
 			throw new TaskInterruptionException();
 		}
 		return pos;

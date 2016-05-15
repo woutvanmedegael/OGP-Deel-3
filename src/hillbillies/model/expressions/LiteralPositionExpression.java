@@ -15,14 +15,12 @@ public class LiteralPositionExpression extends PositionExpression {
 	Position pos;
 	@Override
 	public Position evaluatePosition(ContextWrapper c) throws WorldException, WrongVariableException {
-		// TODO Auto-generated method stub
 		
 		return new Position(this.x, this.y, this.z, c.getThisWorld());
 	}
 
 	@Override
 	public Boolean containsSelected() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

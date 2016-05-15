@@ -9,6 +9,7 @@ import java.util.TreeSet;
 import java.util.function.Predicate;
 
 import hillbillies.model.IScheduler;
+import hillbillies.model.hillbilliesobject.unit.Unit;
 
 public class Scheduler implements IScheduler{
 
@@ -52,6 +53,9 @@ public class Scheduler implements IScheduler{
 	}
 	
 	public void replaceTask(Task prevtask, Task newtask){
+		if (prevtask.isExecuting()){
+			prevtask.getAssignedUnit().interrupt();
+		}
 		prevtask.removeScheduler(this);
 		if (tasks.remove(prevtask)){
 			tasks.add(newtask);
@@ -70,11 +74,13 @@ public class Scheduler implements IScheduler{
 	}
 
 	@Override
-	public Task getHighestPrioNonActiveTask() {
+	public Task getHighestPrioNonActiveTask(Unit u) {
 		Task highestPrio = null;
 		for (Task t: this.tasks){
 			if (!t.isExecuting() && (highestPrio==null || highestPrio.getPriority()<t.getPriority())){
-				highestPrio = t;
+				if (t.getAssignedUnit()==null || t.getAssignedUnit()==u){
+					highestPrio = t;
+				}
 			}
 		}
 		return highestPrio;

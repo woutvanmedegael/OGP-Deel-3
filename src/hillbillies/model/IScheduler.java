@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.TreeSet;
 import java.util.function.Predicate;
 
+import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.scheduler.Task;
 
 public interface IScheduler {
@@ -18,7 +19,7 @@ public interface IScheduler {
 	
 	public boolean checkTaskPartOfScheduler(Collection<Task> Task);
 	
-	public Task getHighestPrioNonActiveTask();
+	public Task getHighestPrioNonActiveTask(Unit u);
 	
 	public Collection<Task> allTasks();
 	

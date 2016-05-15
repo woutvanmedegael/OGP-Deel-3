@@ -158,6 +158,7 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	@Override
 	public Statement createFollow(Expression<?> unit, SourceLocation sourceLocation) {
 		try {
+			System.out.println("follow statement created");
 			return new FollowStatement<UnitExpression>((UnitExpression) unit);
 		} catch (WorldException e) {
 			e.printStackTrace();
