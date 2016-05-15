@@ -2456,7 +2456,6 @@ public void setTargetUnit(Unit targetUnit) {
 public void startFollowing(Unit target) throws UnitException, TaskInterruptionException{
 	if (target != null && !(this.getMyState()==CurrentState.DEFENDING || this.getMyState() == CurrentState.ATTACKING) && this.getHasRested()){
 		this.setGlobalTarget(null);
-		System.out.println("following target");
 		this.setMyState(CurrentState.FOLLOWING);
 		setTargetUnit(target);
 		if (!(targetUnit.getMyPosition().isValidPos() && targetUnit.getMyPosition().isPassablePos())|| myWorld ==null){
@@ -2464,7 +2463,6 @@ public void startFollowing(Unit target) throws UnitException, TaskInterruptionEx
 			}
 		this.setPathFinder(new PathFinding(this.getWorld(), this.getMyPosition(),this.getTargetUnit().getMyPosition(), true));
 		if (this.getPathFinder().getPath().isEmpty()){
-			System.out.println("no path found");
 			throw new TaskInterruptionException();
 		}
 		calculateLocalTargetFollow();
