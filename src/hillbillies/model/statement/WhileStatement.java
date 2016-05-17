@@ -1,14 +1,18 @@
 package hillbillies.model.statement;
 
+import java.util.ArrayList;
+
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
 import hillbillies.model.expressions.BooleanExpression;
 import hillbillies.model.expressions.Expression;
+import hillbillies.model.expressions.IBooleanExpression;
+import hillbillies.model.expressions.IExpression;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class WhileStatement<T extends BooleanExpression> extends Statement{
+public class WhileStatement<T extends IBooleanExpression> extends Statement{
 	//WOUT
 	
 	private final T condition;
@@ -49,25 +53,25 @@ public class WhileStatement<T extends BooleanExpression> extends Statement{
 		}
 		return true;
 	}
-
-
-	@Override
-	public Boolean containsSelected() {
-		return (condition.containsSelected() || body.containsSelected());
-	}
-	
-	public BooleanExpression getCondition(){
-		return this.condition;
-	}
-	
-	public Statement getBody(){
-		return this.body;
-	}
 	
 	@Override
 	public void setExecuted(Boolean b){
 		super.setExecuted(b);
 		this.body.setExecuted(b);
+	}
+	
+	@Override
+	public ArrayList<Statement> getStatements() {
+		ArrayList<Statement> statements = new ArrayList<Statement>();
+		statements.add(body);
+		return statements;
+	}
+
+	@Override
+	public ArrayList<IExpression> getExpressions() {
+		ArrayList<IExpression> expressions = new ArrayList<IExpression>();
+		expressions.add(condition);
+		return expressions;
 	}
 	
 	

@@ -1248,19 +1248,18 @@ public void moveTo(int cubeX, int cubeY, int cubeZ) throws UnitException, TaskIn
 			throw new UnitException();
 		}
 		if (this.getWorld() != null){
+			
 			this.setPathFinder(new PathFinding(this.getWorld(), this.getMyPosition(),this.getGlobalTarget(), false));
 		}
 		if (this.getPathFinder().getPath().isEmpty()){
 			this.setMyState(CurrentState.NEUTRAL);
 			this.setGlobalTarget(null);
-			if (this.getMyTask()!=null){
-				throw new TaskInterruptionException();
-			}
+			this.throwInterruptException();
 			return;
 		}
 		calculateLocalTarget();
 	} else {
-		throw new TaskInterruptionException();
+		this.throwInterruptException();
 	}
 }
 
@@ -1361,7 +1360,7 @@ private void calculateLocalTarget() throws UnitException{
  * @throws WorldException 
  */
 public void advanceTime(double dt) throws WorldException{
-	
+
 	while (this.getExperiencePoints()>=10){
 		this.setExperiencePoints(this.getExperiencePoints()-10);
 		improveProperty();
@@ -1587,13 +1586,14 @@ public void workAt(int x, int y, int z) throws UnitException, TaskInterruptionEx
 	if ((this.getMyState() == CurrentState.RESTING && this.getHasRested()) || this.getMyState() == CurrentState.NEUTRAL){
 		this.setWorkPosition(new Position(x,y,z,this.getWorld()));
 		if (!this.getWorkPosition().isAdjacent(this.getMyPosition())){
-			//throw new UnitException();
+			this.throwInterruptException();
+			throw new UnitException();
 		}
 		this.setMyState(CurrentState.WORKING);
 		this.getMyTimeState().setTrackTimeWork(0);
 		this.setOrientation((float) Math.atan2(y-this.getMyPosition().getypos()+0.5, x-this.getMyPosition().getxpos()+0.5));
 	} else {
-		throw new TaskInterruptionException();
+		this.throwInterruptException();
 	}
 }
 
@@ -1731,7 +1731,7 @@ public void startResting() throws TaskInterruptionException{
 		this.getMyTimeState().setTimeRested(0);
 		
 	} else {
-		throw new TaskInterruptionException();
+		this.throwInterruptException();
 	}
 }
 
@@ -1757,7 +1757,8 @@ public void startAttacking(Unit defender) throws UnitException, TaskInterruption
 		this.setOrientation((float) Math.atan2(this.getDefender().getypos()-this.getypos(), this.getDefender().getxpos()-this.getxpos()));
 		this.getMyTimeState().setAttackTime(0);
 	} else {
-		throw new TaskInterruptionException();
+		
+		this.throwInterruptException();
 	}
 }
 
@@ -1814,12 +1815,14 @@ private boolean targetWithinReach(Unit defender){
 private void defend(Unit attacker) throws WorldException{
 	this.setOrientation((float) Math.atan2(attacker.getypos()-this.getypos(),attacker.getxpos()-this.getxpos()));
 	if (dodge(attacker)){
+		System.out.println("xp added");
 		this.setExperiencePoints(this.getExperiencePoints()+20);
 		jumpAway();
 	} else if (!blocked(attacker)){
 		takeDamage(attacker);
 	}
 	else{
+		System.out.println("xp added");
 		this.setExperiencePoints(this.getExperiencePoints()+20);
 	}
 	this.setLocalTarget(this.getMyPosition());
@@ -2094,7 +2097,6 @@ private void executeDefaultBehaviour(double dt) throws WorldException{
 		
 		if (myTask!=null){
 			while (this.getMyTask()!=null && dt>0 && this.getMyState()==CurrentState.NEUTRAL && !this.getMyTask().hasFinished()){
-				
 				myTask.execute();
 				dt-=0.001;
 			}
@@ -2467,12 +2469,12 @@ public void startFollowing(Unit target) throws UnitException, TaskInterruptionEx
 		}
 		this.setPathFinder(new PathFinding(this.getWorld(), this.getMyPosition(),this.getTargetUnit().getMyPosition(), true));
 		if (this.getPathFinder().getPath().isEmpty()){
-			throw new TaskInterruptionException();
+			this.throwInterruptException();
 		}
 		calculateLocalTargetFollow();
 	}
 	else {
-		throw new TaskInterruptionException();
+		this.throwInterruptException();
 	}
 	}
 
@@ -2530,6 +2532,12 @@ public void interrupt(){
 		myTask.interrupt();
 	}
 	this.setMyTask(null);
+}
+
+private void throwInterruptException() throws TaskInterruptionException{
+	if (this.getMyTask()!=null){
+		throw new TaskInterruptionException();
+	}
 }
 
 

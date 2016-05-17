@@ -11,7 +11,7 @@ import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class NextToExpression<T extends PositionExpression> extends PositionExpression{
+public class NextToExpression<T extends IPositionExpression> extends PositionExpression{
 	//WOUT
 	
 	private T position;
@@ -52,14 +52,11 @@ public class NextToExpression<T extends PositionExpression> extends PositionExpr
 	}
 
 
-	@Override
-	public Boolean containsSelected() {
-		return position.containsSelected();
-	}
+	
 	
 	@Override
-	public ArrayList<Expression<?>> getExpressions() {
-		ArrayList<Expression<?>> expressions = new ArrayList<>();
+	public ArrayList<IExpression> getExpressions() {
+		ArrayList<IExpression> expressions = new ArrayList<>();
 		expressions.add(this.position);
 		return expressions;
 	}

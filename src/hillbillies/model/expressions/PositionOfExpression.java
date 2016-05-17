@@ -9,7 +9,7 @@ import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class PositionOfExpression<T extends UnitExpression> extends PositionExpression{
+public class PositionOfExpression<T extends IUnitExpression> extends PositionExpression{
 	private final T unit;
 	
 	public PositionOfExpression(T unit) throws WorldException{
@@ -24,14 +24,11 @@ public class PositionOfExpression<T extends UnitExpression> extends PositionExpr
 		Unit myUnit = this.unit.evaluateUnit(c);
 		return new Position(myUnit.getxpos(), myUnit.getypos(), myUnit.getzpos(), c.getThisWorld());
 	}
-	@Override
-	public Boolean containsSelected() {
-		return unit.containsSelected();
-	}
+	
 	
 	@Override
-	public ArrayList<Expression<?>> getExpressions() {
-		ArrayList<Expression<?>> expressions = new ArrayList<>();
+	public ArrayList<IExpression> getExpressions() {
+		ArrayList<IExpression> expressions = new ArrayList<>();
 		expressions.add(this.unit);
 		return expressions;
 	}

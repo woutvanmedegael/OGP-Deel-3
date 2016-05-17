@@ -1,16 +1,20 @@
 package hillbillies.model.statement;
 
+import java.util.ArrayList;
+
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
 import hillbillies.model.expressions.BooleanExpression;
 import hillbillies.model.expressions.Expression;
+import hillbillies.model.expressions.IBooleanExpression;
+import hillbillies.model.expressions.IExpression;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class IfThenElseStatement<T extends BooleanExpression> extends Statement {
+public class IfThenElseStatement<T extends IBooleanExpression> extends Statement {
 	
-	private final BooleanExpression condition;
+	private final T condition;
 	private final Statement thenStatement;
 	private final Statement elseStatement;
 	private boolean isEvaluated = false;
@@ -63,29 +67,27 @@ public class IfThenElseStatement<T extends BooleanExpression> extends Statement 
 			return executed;		}
 	}
 
-
-	@Override
-	public Boolean containsSelected() {
-		return (condition.containsSelected() || thenStatement.containsSelected() || elseStatement.containsSelected());
-	}
-	
-	public BooleanExpression getCondition(){
-		return this.condition;
-	}
-	
-	public Statement getThenStatement(){
-		return this.thenStatement;
-	}
-	
-	public Statement getElseStatement(){
-		return this.elseStatement;
-	}
 	
 	@Override
 	public void setExecuted(Boolean b){
 		super.setExecuted(b);
 		this.thenStatement.setExecuted(b);
 		this.elseStatement.setExecuted(b);
+	}
+	
+	@Override
+	public ArrayList<Statement> getStatements() {
+		ArrayList<Statement> statements = new ArrayList<Statement>();
+		statements.add(elseStatement);
+		statements.add(thenStatement);
+		return statements;
+	}
+
+	@Override
+	public ArrayList<IExpression> getExpressions() {
+		ArrayList<IExpression> expressions = new ArrayList<IExpression>();
+		expressions.add(condition);
+		return expressions;
 	}
 
 }

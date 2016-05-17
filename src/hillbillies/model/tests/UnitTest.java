@@ -3,6 +3,7 @@ package hillbillies.model.tests;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import javax.swing.event.TreeSelectionEvent;
@@ -15,10 +16,18 @@ import org.junit.Test;
 
 import hillbillies.model.NbCompare;
 import hillbillies.model.Position;
+import hillbillies.model.TaskFactory;
+import hillbillies.model.expressions.Expression;
+import hillbillies.model.expressions.SelectedExpression;
 import hillbillies.model.hillbilliesobject.CurrentState;
 import hillbillies.model.hillbilliesobject.unit.IllegalNameException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.hillbilliesobject.unit.UnitException;
+import hillbillies.model.scheduler.Scheduler;
+import hillbillies.model.scheduler.Task;
+import hillbillies.model.statement.MoveStatement;
+import hillbillies.model.statement.NullStatement;
+import hillbillies.model.statement.Statement;
 import hillbillies.model.world.Cube;
 import hillbillies.model.world.Faction;
 import hillbillies.model.world.World;
@@ -37,6 +46,7 @@ public class UnitTest {
 	Unit test;
 	static int[][][] smallWorld = new int[3][3][3];
 	static int[][][] bigWorld = new int[15][15][15];
+	TaskFactory taskFactory = new TaskFactory();
 	
 	/**
 	 * Object to compare floating-point numbers.
@@ -73,7 +83,8 @@ public class UnitTest {
 				 }
 			 }
 		 }
-		 test = new Unit(0,0,1,"Adri'aan en W\"out", 50, 50, 50, 50, false);
+		test = new Unit(0,0,1,"Adri'aan en W\"out", 50, 50, 50, 50, false);
+
 	}
 	
 	/**
@@ -115,7 +126,7 @@ public class UnitTest {
 	@Test
 	public void testValidCoordinates() throws WorldException{
 		World world = new World(smallWorld,changeListener);
-		test.setWorld(world);
+		world.addUnit(test);
 		PositionAsserts.assertDoublePositionEquals(0.5, 0.5, 1.5, new double[] 
 				{test.getxpos(),test.getypos(),test.getzpos()});
 		test.moveTo(2, 2, 1);
@@ -213,7 +224,7 @@ public class UnitTest {
 	@Test
 	public void testRestingIncreasesHP() throws WorldException{
 		World world = new World(smallWorld,changeListener);
-		test.setWorld(world);
+		world.addUnit(test);
 		test.startResting();
 		assert (test.getCurrentHP()==test.getMaxHP());
 		assert (test.getMyState()==CurrentState.RESTING);
@@ -244,7 +255,7 @@ public class UnitTest {
 	@Test
 	public void testRestingIncreasesSP() throws WorldException{
 		World world = new World(smallWorld,changeListener);
-		test.setWorld(world);
+		world.addUnit(test);
 		test.startResting();
 		assert (test.getCurrentSP()==test.getMaxSP());
 		assert (test.getMyState()==CurrentState.RESTING);
@@ -268,7 +279,7 @@ public class UnitTest {
 	@Test
 	public void testRestingIncreasesCorrectNumbers() throws WorldException{
 		World world = new World(smallWorld,changeListener);
-		test.setWorld(world);
+		world.addUnit(test);
 		decreaseHPAndSP(world);
 		assert (test.getCurrentHP()!=test.getMaxHP() && test.getCurrentSP()!=test.getMaxSP());
 		test.startResting();
@@ -291,7 +302,7 @@ public class UnitTest {
 	@Test
 	public void testRestingAfter3Minutes() throws WorldException{
 		World world = new World(smallWorld,changeListener);
-		test.setWorld(world);
+		world.addUnit(test);
 		decreaseHPAndSP(world);
 		assert (!test.isResting());
 		this.advanceSeconds(test, 180-12+0.1);
@@ -344,7 +355,7 @@ public class UnitTest {
 	@Test
 	public void testSprintingGoesFaster() throws WorldException{
 		World world = new World(smallWorld,changeListener);
-		test.setWorld(world);
+		world.addUnit(test);
 		double timeNotSprinting = 0;
 		double timeSprinting = 0;
 		test.moveTo(2, 2, 1);
@@ -370,7 +381,7 @@ public class UnitTest {
 	@Test
 	public void testSprintingDecreasesSP() throws WorldException{
 		World world = new World(bigWorld,changeListener);
-		test.setWorld(world);
+		world.addUnit(test);
 		test.moveTo(14, 14, 14);
 		test.setToggledSprint(true);
 		int prevSP = test.getCurrentSP();
@@ -389,7 +400,7 @@ public class UnitTest {
 	@Test
 	public void testSprintingStops0SP() throws WorldException{
 		World world = new World(bigWorld,changeListener);
-		test.setWorld(world);
+		world.addUnit(test);
 		test.moveTo(14, 14, 14);
 		test.setToggledSprint(true);
 		while (test.getCurrentSP()>1){
@@ -455,7 +466,7 @@ public class UnitTest {
 	@Test
 	public void testDefendingDecreasesHPOrGrantsXP() throws WorldException{
 		World world = new World(smallWorld,changeListener);
-		test.setWorld(world);
+		world.addUnit(test);
 		for (int i = 0;i<90;i++){
 			Unit attacker = world.spawnUnit(false);
 			attacker.moveTo(1, 1, 1);
@@ -469,6 +480,12 @@ public class UnitTest {
 			int newPropDef = test.getToughness()+test.getAgility()+test.getStrength();
 			int newPropAtt = attacker.getToughness()+attacker.getAgility()+attacker.getStrength();
 			Boolean HPdecreased = (test.getMaxHP()!=test.getCurrentHP());
+			System.out.println(HPdecreased);
+			System.out.println(newPropAtt);
+			System.out.println(newPropDef);
+			System.out.println(prevPropAtt);
+			System.out.println(prevPropDef);
+
 			if (HPdecreased){
 				assert (newPropAtt==prevPropAtt+2);
 				assert (newPropDef==prevPropDef);
@@ -516,7 +533,7 @@ public class UnitTest {
 	@Test
 	public void testMoveToAdjacentToValidPos() throws WorldException{
 		World world = new World(smallWorld,changeListener);
-		test.setWorld(world);
+		world.addUnit(test);
 		test.moveToAdjacent(0, 1, 0);
 		this.advanceSeconds(test, 4);
 		assert (comp.equals(test.getxpos(), 0.5));
@@ -536,7 +553,7 @@ public class UnitTest {
 	@Test
 	public void testMoveToAdjacentToInvalidPos() throws WorldException{
 		World world = new World(bigWorld,changeListener);
-		test.setWorld(world);
+		world.addUnit(test);
 		try{
 			test.moveToAdjacent(0, 1, -1);
 			fail("Not a valid move");
@@ -567,7 +584,7 @@ public class UnitTest {
 	@Test
 	public void testMoveToToInvalidPos() throws WorldException{
 		World world = new World(smallWorld,changeListener);
-		test.setWorld(world);
+		world.addUnit(test);
 		try{
 			test.moveTo(-1, 0, 0);
 			fail("Position out of map");
@@ -590,7 +607,7 @@ public class UnitTest {
 	@Test
 	public void testMoveToToValidPos() throws WorldException{
 		World world = new World(bigWorld,changeListener);
-		test.setWorld(world);
+		world.addUnit(test);
 		Position prevTarget = new Position(test.getxpos(),test.getypos(),test.getzpos(),world);
 		for (int i=0;i<100;i++){
 			Position target = generateWalkablePos(world);
@@ -612,7 +629,7 @@ public class UnitTest {
 	public void testMoveToToUnreachablePos() throws WorldException{
 		bigWorld[14][14][0] = 0;
 		World world = new World(bigWorld,changeListener);
-		test.setWorld(world);
+		world.addUnit(test);
 		test.moveTo(14, 14, 0);
 		assert !test.isMoving();
 	}
@@ -624,7 +641,7 @@ public class UnitTest {
 	@Test
 	public void testWorkAtInValidPos() throws WorldException{
 		World world  = new World(smallWorld,changeListener);
-		test.setWorld(world);
+		world.addUnit(test);
 		try{
 			test.workAt(2, 2, 2);
 			fail("Position out of reach");
@@ -646,7 +663,7 @@ public class UnitTest {
 	@Test
 	public void testWorkAtGrantsXP() throws WorldException{
 		World world  = new World(smallWorld,changeListener);
-		test.setWorld(world);
+		world.addUnit(test);
 		test.workAt(1, 1, 0);
 		int totProp = test.getToughness()+test.getAgility()+test.getStrength();
 		this.advanceSeconds(test, 20);
@@ -668,7 +685,7 @@ public class UnitTest {
 		smallWorld[1][1][1] = 3;
 		smallWorld[0][0][0] = 2;
 		World world = new World(smallWorld,changeListener);
-		test.setWorld(world);
+		world.addUnit(test);
 		//Collapsing tree
 		test.workAt(0, 0, 0);
 		this.advanceSeconds(test, 15);
@@ -718,7 +735,7 @@ public class UnitTest {
 		bigWorld[1][1][6] = 1;
 		bigWorld[1][2][6] = 1;
 		World world = new World(bigWorld,changeListener);
-		test.setWorld(world);
+		world.addUnit(test);
 		test.moveTo(1, 3, 6);
 		this.advanceSeconds(test, 30);
 		test.workAt(1, 2, 6);
@@ -742,7 +759,7 @@ public class UnitTest {
 		bigWorld[1][1][4] = 1;
 		bigWorld[1][2][4] = 1;
 		World world = new World(bigWorld,changeListener);
-		test.setWorld(world);
+		world.addUnit(test);
 		test.moveTo(1, 3, 4);
 		this.advanceSeconds(test, 30);
 		test.workAt(1, 2, 4);
@@ -778,7 +795,7 @@ public class UnitTest {
 		bigWorld[1][1][6] = 1;
 		bigWorld[1][2][6] = 1;
 		World world = new World(bigWorld,changeListener);
-		test.setWorld(world);
+		world.addUnit(test);
 		test.moveTo(1, 3, 6);
 		this.advanceSeconds(test, 30);
 		test.workAt(1, 2, 6);
@@ -848,7 +865,7 @@ public class UnitTest {
 	@Test
 	public void testDefaultBehaviourWithoutAttacking() throws WorldException{
 		World world = new World(bigWorld,changeListener);
-		test.setWorld(world);
+		world.addUnit(test);
 		test.setDefaultBehaviourEnabled(true);
 		test.moveTo(2,2,3);
 		test.setToggledSprint(true);
@@ -888,6 +905,37 @@ public class UnitTest {
 				assert (u.getMyState()!=CurrentState.NEUTRAL);
 			}
 		}
+	}
+	
+	/**
+	 * Tests whether units always pick the tasks with the highest priority.
+	 * @throws WorldException 
+	 */
+	@Test
+	public void testMaximumPriorityTaskPicked() throws WorldException{
+		World world = new World(bigWorld,changeListener);
+		Unit unit = world.spawnUnit(true);
+		Task task1 = new Task("abc",40,new NullStatement(), null);
+		Task task2 = new Task("abc",100,new NullStatement(), null);
+		Task task3 = new Task("abc",-5,new NullStatement(), null);
+		Task task4 = new Task("abc",5,new NullStatement(), null);
+		Scheduler scheduler = unit.getFaction().getScheduler();
+		scheduler.addTask(task1);
+		scheduler.addTask(task2);
+		scheduler.addTask(task3);
+		scheduler.addTask(task4);
+		
+		assert (unit.getMyTask()==null);
+		unit.advanceTime(0.01);
+		assert (unit.getMyTask()==task2);
+		unit.advanceTime(0.01);
+		assert (unit.getMyTask()==task1);
+		unit.advanceTime(0.01);
+		assert (unit.getMyTask()==task4);
+		unit.advanceTime(0.01);
+		assert (unit.getMyTask()==task3);
+		unit.advanceTime(0.01);
+		assert (unit.getMyTask()==null);
 	}
 	
 	/**
@@ -991,7 +1039,7 @@ public class UnitTest {
 	@Test
 	public void testOrientation() throws WorldException{
 		World world = new World(smallWorld,changeListener);
-		test.setWorld(world);
+		world.addUnit(test);
 		test.setDefaultBehaviourEnabled(true);
 		for (int i=0;i<1000;i++){
 			test.advanceTime(0.15);
@@ -1000,5 +1048,101 @@ public class UnitTest {
 		}
 		
 	}
+	
+	/**
+	 * Tests generally whether a unit fully executes tasks when executeDefaultBehaviour is enabled. 
+	 * @throws WorldException 
+	 */
+	@Test
+	public void testUnitExecutesTask() throws WorldException{
+		World world = new World(smallWorld,changeListener);
+		Unit enemy = world.spawnUnit(false);
+		world.addUnit(test);
+		test.setDefaultBehaviourEnabled(true);
+		enemy.moveTo(0, 0, 1);
+		this.advanceSeconds(enemy, 10);
+		Task task = null;
+		List<int[]> validMovePos = new ArrayList<>();
+		validMovePos.add(new int[]{2,2,1});
+		
+		// Some valid tasks first
+		// 1) MoveTask
+		task = taskFactory.createTasks("abc", 10, taskFactory.createMoveTo(taskFactory.createSelectedPosition(null), null), validMovePos).get(0);
+		test.getFaction().getScheduler().addTask(task);
+		
+		test.advanceTime(0.01);
+		test.setDefaultBehaviourEnabled(false);
+		
+		assert (test.isMoving());
+		this.advanceSeconds(test, 10);
+		assert (!test.isMoving());
+		// 2) AttackEnemyTask
+		Expression<?> enemyExpression = taskFactory.createEnemy(null);
+		Statement enemyStatement = taskFactory.createAssignment("enemy", enemyExpression, null);
+		Expression<?> readEnemy = taskFactory.createReadVariable("enemy", null);
+		Expression<?> enemyPos = taskFactory.createPositionOf(readEnemy, null);
+		Expression<?> nextToExpression = taskFactory.createNextToPosition(enemyPos, null);
+		Statement moveStatement = taskFactory.createMoveTo(nextToExpression, null);
+		Statement attackStatement = taskFactory.createAttack(readEnemy, null);
+		List<Statement> statements = new ArrayList<>();
+		statements.add(enemyStatement);
+		statements.add(moveStatement);
+		statements.add(attackStatement);
+		Statement multipleStatement = taskFactory.createSequence(statements, null);
+		task = taskFactory.createTasks("abc", 10, multipleStatement, null).get(0);
+		test.getFaction().getScheduler().addTask(task);
+		test.setDefaultBehaviourEnabled(true);
+		test.advanceTime(0.01);
+		assert (test.getMyTask()==task);
+		while (test.isMoving()){
+			test.advanceTime(0.01);
+		}
+		test.advanceTime(0.01);
+		assert (test.getMyState()==CurrentState.ATTACKING);
+		test.setDefaultBehaviourEnabled(false);
+		this.advanceSeconds(test, 10);
+		assert (test.getMyState()!=CurrentState.ATTACKING);
+		//TODO MEER VOORBEELDEN
+	}
+	
+	@Test
+	public void testUnitInterruptsImpossibleTask() throws WorldException{
+		World world = new World(smallWorld,changeListener);
+		world.addUnit(test);
+		test.setDefaultBehaviourEnabled(true);
+		Expression<?> workPos = taskFactory.createLiteralPosition(2, 2, 0, null);
+		Expression<?> movePos = taskFactory.createLiteralPosition(2, 2, 1, null);
+		Statement workStatement = taskFactory.createWork(workPos, null);
+		Statement moveStatement = taskFactory.createMoveTo(movePos, null);
+		Task workTask = new Task("abc",10,workStatement, null);
+		Task moveTask = new Task("abc",6,moveStatement,null);
+		test.getFaction().getScheduler().addTask(workTask);
+		test.getFaction().getScheduler().addTask(moveTask);
+		assert (test.getMyState()==CurrentState.NEUTRAL);
+		assert (!world.getCube(2, 2, 0).isPassable());
+		assert (test.getMyTask()==null);
+		assert (workTask.getPriority()==10);
+		assert (moveTask.getPriority()==6);
+		test.advanceTime(0.01);
+		assert (test.getMyTask()==null);
+		assert (workTask.getPriority()==5);
+		assert (moveTask.getPriority()==6);
+		test.advanceTime(0.01);
+		assert (test.getMyTask()==moveTask);
+		while (test.isMoving()){
+			test.advanceTime(0.01);
+		}
+		test.advanceTime(0.01);
+		test.setDefaultBehaviourEnabled(true);
+		while (test.getMyState()==CurrentState.WORKING){
+			test.advanceTime(0.01);
+		}
+		assert (test.getMyState()==CurrentState.NEUTRAL);
+		assert (comp.equals(test.getxpos(), 2.5));
+		assert (comp.equals(test.getypos(), 2.5));
+		assert (comp.equals(test.getzpos(), 1.5));
+		assert (world.getCube(2, 2, 0).isPassable());
+		
+		}
 
 }

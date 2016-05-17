@@ -19,10 +19,7 @@ public class ReadVariableExpression extends Expression<Object> implements IBoole
 		this.variable = variableName;
 	}
 	
-	@Override
-	public Boolean containsSelected() {
-		return false;
-	}
+	
 
 	@Override
 	public Unit evaluateUnit(ContextWrapper c) throws WorldException, WrongVariableException {
@@ -49,9 +46,8 @@ public class ReadVariableExpression extends Expression<Object> implements IBoole
 	}
 
 	@Override
-	public ArrayList<Expression<?>> getExpressions() {
-		ArrayList<Expression<?>> list = new ArrayList<Expression<?>>();
-		return list;
+	public ArrayList<IExpression> getExpressions() {
+		return new ArrayList<IExpression>();
 	}
 	
 	public String getVariableName(){

@@ -9,7 +9,7 @@ import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class OrExpression<L extends BooleanExpression, R extends BooleanExpression> extends BooleanExpression{
+public class OrExpression<L extends IBooleanExpression, R extends IBooleanExpression> extends BooleanExpression{
 	//WOUT
 	
 	private final R right;
@@ -30,14 +30,11 @@ public class OrExpression<L extends BooleanExpression, R extends BooleanExpressi
 	}
 
 
-	@Override
-	public Boolean containsSelected() {
-		return (right.containsSelected() || left.containsSelected());
-	}
+	
 	
 	@Override
-	public ArrayList<Expression<?>> getExpressions() {
-		ArrayList<Expression<?>> expressions = new ArrayList<>();
+	public ArrayList<IExpression> getExpressions() {
+		ArrayList<IExpression> expressions = new ArrayList<>();
 		expressions.add(this.right);
 		expressions.add(this.left);
 		return expressions;

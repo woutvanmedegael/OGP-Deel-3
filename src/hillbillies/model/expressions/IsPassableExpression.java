@@ -9,11 +9,10 @@ import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class IsPassableExpression<T extends PositionExpression> extends BooleanExpression{
+public class IsPassableExpression<T extends IPositionExpression> extends BooleanExpression{
 	//ADRIAAN
 	@Override
 	public Boolean evaluateBoolean(ContextWrapper c) throws WorldException, WrongVariableException {
-		// TODO Auto-generated method stub
 		Position pos = positionExpression.evaluatePosition(c);
 		return pos.isPassablePos();
 		
@@ -30,15 +29,11 @@ public class IsPassableExpression<T extends PositionExpression> extends BooleanE
 	}
 	
 
-	@Override
-	public Boolean containsSelected() {
-		// TODO Auto-generated method stub
-		return positionExpression.containsSelected();
-	}
+	
 	
 	@Override
-	public ArrayList<Expression<?>> getExpressions() {
-		ArrayList<Expression<?>> expressions = new ArrayList<>();
+	public ArrayList<IExpression> getExpressions() {
+		ArrayList<IExpression> expressions = new ArrayList<>();
 		expressions.add(this.positionExpression);
 		return expressions;
 	}

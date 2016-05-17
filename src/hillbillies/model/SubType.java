@@ -2,6 +2,7 @@ package hillbillies.model;
 import java.util.ArrayList;
 
 import hillbillies.model.expressions.Expression;
+import hillbillies.model.expressions.IExpression;
 import hillbillies.model.expressions.ReadVariableExpression;
 import hillbillies.model.expressions.SelectedExpression;
 import hillbillies.model.statement.ActionStatement;
@@ -36,9 +37,14 @@ public class SubType {
 	}
 	
 	public SubType(Statement stat){
+		for (IExpression e: stat.getExpressions()){
+			this.addExpressionSubType(new SubType(e));
+		}
+		for (Statement s: stat.getStatements()){
+			this.addStatementSubType(new SubType(s));
+		}
 		if (stat instanceof ActionStatement){
 			this.type = 1;
-			this.addExpressionSubType(new SubType(((ActionStatement) stat).getExpression()));
 		}
 		else if (stat instanceof AssignStatement){
 			this.type = 2;
@@ -49,9 +55,6 @@ public class SubType {
 		}
 		else if (stat instanceof IfThenElseStatement){
 			this.type = 4;
-			this.statementTree.addSubType(new SubType(((IfThenElseStatement<?>) stat).getThenStatement()));
-			this.statementTree.addSubType(new SubType(((IfThenElseStatement<?>) stat).getElseStatement()));
-			this.expressionTree.addSubType(new SubType(((IfThenElseStatement<?>) stat).getCondition()));
 		}
 		else if (stat instanceof MultipleStatement){
 			this.type = 5;
@@ -62,16 +65,13 @@ public class SubType {
 			}
 		else if(stat instanceof WhileStatement){
 			this.type = 6;
-			this.statementTree.addSubType(new SubType(((WhileStatement) stat).getBody()));
-			this.expressionTree.addSubType(new SubType(((WhileStatement) stat).getCondition()));
 		}
 		else if (stat instanceof PrintStatement){
 			this.type = 10;
-			this.expressionTree.addSubType(new SubType(((PrintStatement)stat).getExpression()));
 		}
 	}
 	
-	public SubType(Expression<?> expr){
+	public SubType(IExpression expr){
 		if (expr instanceof ReadVariableExpression){
 			this.type = 7;
 			this.variableName = ((ReadVariableExpression) expr).getVariableName();
@@ -81,7 +81,7 @@ public class SubType {
 		}
 		else {
 			this.type = 9;
-			for (Expression<?> e: expr.getExpressions()){
+			for (IExpression e: expr.getExpressions()){
 				this.expressionTree.addSubType(new SubType(e));
 			}
 		}

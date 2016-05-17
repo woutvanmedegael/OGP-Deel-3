@@ -19,15 +19,12 @@ public class LiteralPositionExpression extends PositionExpression {
 		return new Position(this.x, this.y, this.z, c.getThisWorld());
 	}
 
-	@Override
-	public Boolean containsSelected() {
-		return false;
-	}
+	
 
 	@Override
-	public ArrayList<Expression<?>> getExpressions() {
+	public ArrayList<IExpression> getExpressions() {
 		// TODO Auto-generated method stub
-		return new ArrayList<Expression<?>>();
+		return new ArrayList<IExpression>();
 	}
 	
 	public LiteralPositionExpression(int x, int y, int z){

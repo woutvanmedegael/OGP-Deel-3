@@ -6,7 +6,7 @@ import hillbillies.model.ContextWrapper;
 import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.WorldException;
 
-public class IsEnemyExpression<T extends UnitExpression> extends BooleanExpression{
+public class IsEnemyExpression<T extends IUnitExpression> extends BooleanExpression{
 	//WOUT
 	
 	private T enemy;
@@ -24,14 +24,11 @@ public class IsEnemyExpression<T extends UnitExpression> extends BooleanExpressi
 		return (enemy.evaluateUnit(c).getFaction()!=c.getExecutingUnit().getFaction());
 	}
 
-	@Override
-	public Boolean containsSelected() {
-		return enemy.containsSelected();
-	}
+	
 	
 	@Override
-	public ArrayList<Expression<?>> getExpressions() {
-		ArrayList<Expression<?>> expressions = new ArrayList<>();
+	public ArrayList<IExpression> getExpressions() {
+		ArrayList<IExpression> expressions = new ArrayList<>();
 		expressions.add(this.enemy);
 		return expressions;
 	}

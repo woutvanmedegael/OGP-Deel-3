@@ -9,7 +9,7 @@ import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class IsSolidExpression<T extends PositionExpression> extends BooleanExpression {
+public class IsSolidExpression<T extends IPositionExpression> extends BooleanExpression {
 	//ADRIAAN
 	@Override
 	public Boolean evaluateBoolean(ContextWrapper c) throws WorldException, WrongVariableException {
@@ -27,15 +27,11 @@ private final T positionExpression;
 		
 	}
 
-	@Override
-	public Boolean containsSelected() {
-		// TODO Auto-generated method stub
-		return positionExpression.containsSelected();
-	}
+	
 	
 	@Override
-	public ArrayList<Expression<?>> getExpressions() {
-		ArrayList<Expression<?>> expressions = new ArrayList<>();
+	public ArrayList<IExpression> getExpressions() {
+		ArrayList<IExpression> expressions = new ArrayList<>();
 		expressions.add(this.positionExpression);
 		return expressions;
 	}

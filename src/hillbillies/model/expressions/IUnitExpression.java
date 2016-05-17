@@ -7,6 +7,6 @@ import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.WorldException;
 
-public interface IUnitExpression {
+public interface IUnitExpression extends IExpression{
 	public Unit evaluateUnit(ContextWrapper c) throws WorldException, WrongVariableException;
 }

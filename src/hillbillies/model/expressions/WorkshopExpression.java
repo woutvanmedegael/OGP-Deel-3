@@ -25,14 +25,11 @@ public class WorkshopExpression extends PositionExpression{
 		return pos;
 	}
 
-	@Override
-	public Boolean containsSelected() {
-		return false;
-	}
+	
 	
 	@Override
-	public ArrayList<Expression<?>> getExpressions() {
-		return new ArrayList<Expression<?>>();
+	public ArrayList<IExpression> getExpressions() {
+		return new ArrayList<IExpression>();
 	}
 
 	

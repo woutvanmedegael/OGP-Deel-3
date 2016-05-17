@@ -10,7 +10,7 @@ import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class CarriesItemExpression<T extends UnitExpression> extends BooleanExpression{
+public class CarriesItemExpression<T extends IUnitExpression> extends BooleanExpression{
 	
 	
 	
@@ -33,14 +33,11 @@ public class CarriesItemExpression<T extends UnitExpression> extends BooleanExpr
 		return unit;
 	}
 
-	@Override
-	public Boolean containsSelected() {
-		return unit.containsSelected();
-	}
+	
 	
 	@Override
-	public ArrayList<Expression<?>> getExpressions() {
-		ArrayList<Expression<?>> expressions = new ArrayList<>();
+	public ArrayList<IExpression> getExpressions() {
+		ArrayList<IExpression> expressions = new ArrayList<>();
 		expressions.add(this.unit);
 		return expressions;
 	}

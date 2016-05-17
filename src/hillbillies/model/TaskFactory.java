@@ -54,12 +54,13 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	public List<Task> createTasks(String name, int priority, Statement activity, List<int[]> selectedCubes) {
 		List<Task> tasks = new ArrayList<>();
 		try{
-			if (selectedCubes.size()==0){
+			if (selectedCubes==null || selectedCubes.size()==0){
 				tasks.add(new Task(name, priority, activity, null));
-			}
-			for (int[] i: selectedCubes){
-				Position pos = new Position(i[0], i[1], i[2], null);
-				tasks.add(new Task(name, priority, activity, pos));
+			} else {
+				for (int[] i: selectedCubes){
+					Position pos = new Position(i[0], i[1], i[2], null);
+					tasks.add(new Task(name, priority, activity, pos));
+				}
 			}
 		} catch (Exception e){
 		}
@@ -79,6 +80,9 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	@Override
 	public Statement createWhile(Expression<?> condition, Statement body, SourceLocation sourceLocation) {
 		try {
+			if (condition instanceof ReadVariableExpression){
+				return new WhileStatement<ReadVariableExpression>((ReadVariableExpression)condition, body);
+			}
 			return new WhileStatement<BooleanExpression>((BooleanExpression) condition, body);
 		} catch (WorldException e) {
 			e.printStackTrace();
@@ -90,6 +94,9 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	public Statement createIf(Expression<?> condition, Statement ifBody, Statement elseBody,
 			SourceLocation sourceLocation) {
 		try {
+			if (condition instanceof ReadVariableExpression){
+				return new IfThenElseStatement<ReadVariableExpression>((ReadVariableExpression)condition,ifBody,elseBody);
+			}
 			return new IfThenElseStatement<BooleanExpression>((BooleanExpression)condition,ifBody,elseBody);
 		} catch (WorldException e) {
 			e.printStackTrace();
@@ -105,6 +112,8 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	@Override
 	public Statement createPrint(Expression<?> value, SourceLocation sourceLocation) {
 		try{
+		if (value instanceof ReadVariableExpression)
+			return new PrintStatement<ReadVariableExpression>((ReadVariableExpression)value);
 		if (value instanceof BooleanExpression)
 			return new PrintStatement<BooleanExpression>((BooleanExpression) value);
 		if (value instanceof PositionExpression)
@@ -124,7 +133,6 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 		try {
 			return new MultipleStatement(statements);
 		} catch (WorldException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -147,6 +155,9 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	@Override
 	public Statement createWork(Expression<?> position, SourceLocation sourceLocation) {
 		try {
+			if (position instanceof ReadVariableExpression){
+				return new WorkStatement<ReadVariableExpression>((ReadVariableExpression) position);
+			}
 			return new WorkStatement<PositionExpression>((PositionExpression) position);
 		} catch (WorldException e) {
 			e.printStackTrace();
@@ -157,7 +168,9 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	@Override
 	public Statement createFollow(Expression<?> unit, SourceLocation sourceLocation) {
 		try {
-			System.out.println("follow statement created");
+			if (unit instanceof ReadVariableExpression){
+				return new FollowStatement<ReadVariableExpression>((ReadVariableExpression) unit);
+			}
 			return new FollowStatement<UnitExpression>((UnitExpression) unit);
 		} catch (WorldException e) {
 			e.printStackTrace();
@@ -168,9 +181,11 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	@Override
 	public Statement createAttack(Expression<?> unit, SourceLocation sourceLocation) {
 		try {
+			if (unit instanceof ReadVariableExpression){
+				return new AttackStatement<ReadVariableExpression>((ReadVariableExpression) unit);
+			}
 			return new AttackStatement<UnitExpression>((UnitExpression) unit);
 		} catch (WorldException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -189,9 +204,11 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	@Override
 	public Expression<?> createIsSolid(Expression<?> position, SourceLocation sourceLocation) {
 		try {
+			if (position instanceof ReadVariableExpression){
+				return new IsSolidExpression<ReadVariableExpression>((ReadVariableExpression) position);
+			}
 			return new IsSolidExpression<PositionExpression>((PositionExpression) position);
 		} catch (WorldException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -200,9 +217,11 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	@Override
 	public Expression<?> createIsPassable(Expression<?> position, SourceLocation sourceLocation) {
 		try {
+			if (position instanceof ReadVariableExpression){
+				return new IsPassableExpression<ReadVariableExpression>((ReadVariableExpression) position);
+			}
 			return new IsPassableExpression<PositionExpression>((PositionExpression)position);
 		} catch (WorldException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -211,9 +230,11 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	@Override
 	public Expression<?> createIsFriend(Expression<?> unit, SourceLocation sourceLocation) {
 		try {
+			if (unit instanceof ReadVariableExpression){
+				return new IsFriendExpression<ReadVariableExpression>((ReadVariableExpression) unit);
+			}
 			return new IsFriendExpression<UnitExpression>((UnitExpression) unit);
 		} catch (WorldException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -222,9 +243,11 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	@Override
 	public Expression<?> createIsEnemy(Expression<?> unit, SourceLocation sourceLocation) {
 		try {
+			if (unit instanceof ReadVariableExpression){
+				return new IsEnemyExpression<ReadVariableExpression>((ReadVariableExpression) unit);
+			}
 			return new IsEnemyExpression<UnitExpression>((UnitExpression) unit);
 		} catch (WorldException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -233,9 +256,11 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	@Override
 	public Expression<?> createIsAlive(Expression<?> unit, SourceLocation sourceLocation) {
 		try {
+			if (unit instanceof ReadVariableExpression){
+				return new IsAliveExpression<ReadVariableExpression>((ReadVariableExpression) unit);
+			}
 			return new IsAliveExpression<UnitExpression>((UnitExpression) unit);
 		} catch (WorldException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -244,9 +269,11 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	@Override
 	public Expression<?> createCarriesItem(Expression<?> unit, SourceLocation sourceLocation) {
 		try {
+			if (unit instanceof ReadVariableExpression){
+				return new CarriesItemExpression<ReadVariableExpression>((ReadVariableExpression) unit);
+			}
 			return new CarriesItemExpression<UnitExpression>((UnitExpression) unit);
 		} catch (WorldException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -255,9 +282,11 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	@Override
 	public Expression<?> createNot(Expression<?> expression, SourceLocation sourceLocation) {
 		try {
+			if (expression instanceof ReadVariableExpression){
+				return new NotExpression<ReadVariableExpression>((ReadVariableExpression) expression);
+			}
 			return new NotExpression<BooleanExpression>((BooleanExpression)expression);
 		} catch (WorldException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -266,6 +295,15 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	@Override
 	public Expression<?> createAnd(Expression<?> left, Expression<?> right, SourceLocation sourceLocation) {
 		try {
+			if (left instanceof ReadVariableExpression){
+				if (right instanceof ReadVariableExpression){
+					return new AndExpression<ReadVariableExpression, ReadVariableExpression>((ReadVariableExpression) left, (ReadVariableExpression) right);
+				}
+				return new AndExpression<ReadVariableExpression, BooleanExpression>((ReadVariableExpression) left, (BooleanExpression) right);
+			}
+			if (right instanceof ReadVariableExpression){
+				return new AndExpression<BooleanExpression, ReadVariableExpression>((BooleanExpression) left, (ReadVariableExpression) right);
+			}
 			return new AndExpression<BooleanExpression,BooleanExpression>((BooleanExpression)left,(BooleanExpression)right);
 		} catch (WorldException e) {
 			e.printStackTrace();
@@ -276,6 +314,15 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	@Override
 	public Expression<?> createOr(Expression<?> left, Expression<?> right, SourceLocation sourceLocation) {
 		try {
+			if (left instanceof ReadVariableExpression){
+				if (right instanceof ReadVariableExpression){
+					return new OrExpression<ReadVariableExpression, ReadVariableExpression>((ReadVariableExpression) left, (ReadVariableExpression) right);
+				}
+				return new OrExpression<ReadVariableExpression, BooleanExpression>((ReadVariableExpression) left, (BooleanExpression) right);
+			}
+			if (right instanceof ReadVariableExpression){
+				return new OrExpression<BooleanExpression, ReadVariableExpression>((BooleanExpression) left, (ReadVariableExpression) right);
+			}
 			return new OrExpression<BooleanExpression,BooleanExpression>((BooleanExpression)left,(BooleanExpression)right);
 		} catch (WorldException e) {
 			e.printStackTrace();
@@ -311,9 +358,11 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	@Override
 	public Expression<?> createNextToPosition(Expression<?> position, SourceLocation sourceLocation) {
 		try {
+			if (position instanceof ReadVariableExpression){
+				return new NextToExpression<ReadVariableExpression>((ReadVariableExpression) position);
+			}
 			return new NextToExpression<PositionExpression>((PositionExpression)position);
 		} catch (WorldException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		return null;
@@ -363,9 +412,11 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 	@Override
 	public Expression<?> createPositionOf(Expression<?> unit, SourceLocation sourceLocation) {
 		try {
+			if (unit instanceof ReadVariableExpression){
+				return new PositionOfExpression<ReadVariableExpression>((ReadVariableExpression) unit);
+			}
 			return new PositionOfExpression<UnitExpression>((UnitExpression)unit);
 		} catch (WorldException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

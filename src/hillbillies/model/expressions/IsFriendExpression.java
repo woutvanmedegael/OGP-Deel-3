@@ -9,7 +9,7 @@ import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class IsFriendExpression<T extends UnitExpression> extends BooleanExpression{
+public class IsFriendExpression<T extends IUnitExpression> extends BooleanExpression{
 	//WOUT
 	
 		private T friend;
@@ -27,14 +27,10 @@ public class IsFriendExpression<T extends UnitExpression> extends BooleanExpress
 			return (friend.evaluateUnit(c).getFaction()==c.getExecutingUnit().getFaction());
 		}
 
-		@Override
-		public Boolean containsSelected() {
-			return friend.containsSelected();
-		}
 		
 		@Override
-		public ArrayList<Expression<?>> getExpressions() {
-			ArrayList<Expression<?>> expressions = new ArrayList<>();
+		public ArrayList<IExpression> getExpressions() {
+			ArrayList<IExpression> expressions = new ArrayList<>();
 			expressions.add(this.friend);
 			return expressions;
 		}

@@ -3,11 +3,13 @@
  */
 package hillbillies.model.statement;
 
+import java.util.ArrayList;
+
 import hillbillies.model.ContextWrapper;
-import hillbillies.model.IContainsSelected;
+import hillbillies.model.expressions.IExpression;
 import hillbillies.model.world.WorldException;
 
-public abstract class Statement implements IContainsSelected{
+public abstract class Statement{
 	
 	private Boolean executed = false;
 	
@@ -20,5 +22,8 @@ public abstract class Statement implements IContainsSelected{
 	public void setExecuted(Boolean b){
 		this.executed = b;
 	}
+	
+	public abstract ArrayList<Statement> getStatements();
+	public abstract ArrayList<IExpression> getExpressions();
 	
 }

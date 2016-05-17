@@ -13,15 +13,11 @@ public class TrueExpression extends BooleanExpression {
 		return true;
 	}
 
-	@Override
-	public Boolean containsSelected() {
-		return false;
-	}
+	
 
 	@Override
-	public ArrayList<Expression<?>> getExpressions() {
-		ArrayList<Expression<?>> list = new ArrayList<>();
-		return list;
+	public ArrayList<IExpression> getExpressions() {
+		return new ArrayList<IExpression>();
 	}
 
 }

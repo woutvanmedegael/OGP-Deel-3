@@ -15,14 +15,11 @@ public class HereExpression extends PositionExpression{
 		return new Position(c.getExecutingUnit().getxpos(),c.getExecutingUnit().getypos(),c.getExecutingUnit().getzpos(),c.getThisWorld());
 	}
 
-	@Override
-	public Boolean containsSelected() {
-		return false;
-	}
+	
 	
 	@Override
-	public ArrayList<Expression<?>> getExpressions() {
-		return new ArrayList<Expression<?>>();
+	public ArrayList<IExpression> getExpressions() {
+		return new ArrayList<IExpression>();
 	}
 
 	

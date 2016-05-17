@@ -9,7 +9,7 @@ import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class NotExpression<T extends BooleanExpression> extends BooleanExpression{
+public class NotExpression<T extends IBooleanExpression> extends BooleanExpression{
 	//ADRIAAN
 	@Override
 	public Boolean evaluateBoolean(ContextWrapper c) throws WorldException, WrongVariableException {
@@ -25,15 +25,11 @@ public class NotExpression<T extends BooleanExpression> extends BooleanExpressio
 		this.notExpression = notExpr;
 		
 	}
-	@Override
-	public Boolean containsSelected() {
-		// TODO Auto-generated method stub
-		return notExpression.containsSelected();
-	}
+	
 	
 	@Override
-	public ArrayList<Expression<?>> getExpressions() {
-		ArrayList<Expression<?>> expressions = new ArrayList<>();
+	public ArrayList<IExpression> getExpressions() {
+		ArrayList<IExpression> expressions = new ArrayList<>();
 		expressions.add(this.notExpression);
 		return expressions;
 	}

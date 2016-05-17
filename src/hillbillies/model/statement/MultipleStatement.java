@@ -1,9 +1,11 @@
 package hillbillies.model.statement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
+import hillbillies.model.expressions.IExpression;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
@@ -31,18 +33,18 @@ public class MultipleStatement extends Statement{
 		return true;
 	}
 
-	@Override
-	public Boolean containsSelected() {
-		for (Statement s: this.statements){
-			if (s.containsSelected()){
-				return true;
-			}
-		}
-		return false;
-	}
 	
-	public List<Statement> getStatements(){
-		return this.statements;
+	
+	@Override
+	public ArrayList<Statement> getStatements() {
+		ArrayList<Statement> statementlist = new ArrayList<Statement>();
+		statementlist.addAll(statements);
+		return statementlist;
+	}
+
+	@Override
+	public ArrayList<IExpression> getExpressions() {
+		return new ArrayList<IExpression>();
 	}
 	
 	@Override

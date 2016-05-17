@@ -1,7 +1,10 @@
 package hillbillies.model.statement;
 
+import java.util.ArrayList;
+
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
+import hillbillies.model.expressions.IExpression;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
@@ -15,9 +18,16 @@ public class BreakStatement extends Statement{
 	}
 
 	@Override
-	public Boolean containsSelected() {
-		return false;
+	public ArrayList<Statement> getStatements() {
+		return new ArrayList<Statement>();
 	}
+
+	@Override
+	public ArrayList<IExpression> getExpressions() {
+		return new ArrayList<IExpression>();
+	}
+
+	
 
 	
 }

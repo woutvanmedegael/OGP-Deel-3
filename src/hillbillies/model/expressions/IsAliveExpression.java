@@ -9,7 +9,7 @@ import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class IsAliveExpression<T extends UnitExpression> extends BooleanExpression {
+public class IsAliveExpression<T extends IUnitExpression> extends BooleanExpression {
 	//ADRIAAN
 	
 	private final T unitExpression;
@@ -26,15 +26,11 @@ public class IsAliveExpression<T extends UnitExpression> extends BooleanExpressi
 		this.unitExpression = unit;
 	}
 
-	@Override
-	public Boolean containsSelected() {
-		// TODO Auto-generated method stub
-		return unitExpression.containsSelected();
-	}
+	
 	
 	@Override
-	public ArrayList<Expression<?>> getExpressions() {
-		ArrayList<Expression<?>> expressions = new ArrayList<>();
+	public ArrayList<IExpression> getExpressions() {
+		ArrayList<IExpression> expressions = new ArrayList<>();
 		expressions.add(this.unitExpression);
 		return expressions;
 	}

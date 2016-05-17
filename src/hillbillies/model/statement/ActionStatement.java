@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import hillbillies.model.expressions.Expression;
 
 public abstract class ActionStatement extends Statement {
-
-	public abstract Expression<?> getExpression();
 	
+	@Override
+	public ArrayList<Statement> getStatements(){
+		return new ArrayList<Statement>();
+	}
 }

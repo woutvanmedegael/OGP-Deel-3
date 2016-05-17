@@ -3,14 +3,13 @@ package hillbillies.model.expressions;
 import java.util.ArrayList;
 
 import hillbillies.model.ContextWrapper;
-import hillbillies.model.IContainsSelected;
 import hillbillies.model.Position;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
-public class AndExpression<L extends IBooleanExpression & IContainsSelected, R extends IBooleanExpression & IContainsSelected> extends BooleanExpression{
+public class AndExpression<L extends IBooleanExpression, R extends IBooleanExpression> extends BooleanExpression{
 	
 	private final R right;
 	private final L left;
@@ -35,17 +34,12 @@ public class AndExpression<L extends IBooleanExpression & IContainsSelected, R e
 	public R getRight() {
 		return right;
 	}
-
+	
 	@Override
-	public Boolean containsSelected() {
-		return (right.containsSelected() || left.containsSelected());
-	}
-
-	@Override
-	public ArrayList<Expression<?>> getExpressions() {
-		ArrayList<Expression<?>> expressions = new ArrayList<>();
-		expressions.add((Expression<?>) left);
-		expressions.add((Expression<?>) right);
+	public ArrayList<IExpression> getExpressions() {
+		ArrayList<IExpression> expressions = new ArrayList<>();
+		expressions.add(left);
+		expressions.add(right);
 		return expressions;
 	}
 

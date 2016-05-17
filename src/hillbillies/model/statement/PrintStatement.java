@@ -1,10 +1,13 @@
 package hillbillies.model.statement;
 
+import java.util.ArrayList;
+
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
 import hillbillies.model.expressions.BooleanExpression;
 import hillbillies.model.expressions.Expression;
 import hillbillies.model.expressions.IBooleanExpression;
+import hillbillies.model.expressions.IExpression;
 import hillbillies.model.expressions.IPositionExpression;
 import hillbillies.model.expressions.IUnitExpression;
 import hillbillies.model.hillbilliesobject.unit.Unit;
@@ -37,11 +40,7 @@ public class PrintStatement<T extends Expression<?>> extends Statement{
 		return true;
 	}
 
-	@Override
-	public Boolean containsSelected() {
-		// TODO Auto-generated method stub
-		return stuffToPrint.containsSelected();
-	}
+	
 	private final T stuffToPrint;
 	public PrintStatement(T value) throws WorldException{
 		if (value==null){
@@ -50,9 +49,20 @@ public class PrintStatement<T extends Expression<?>> extends Statement{
 		this.stuffToPrint = value;
 	}
 	
-	public Expression<?> getExpression(){
-		return this.stuffToPrint;
+	
+	@Override
+	public ArrayList<Statement> getStatements() {
+		return new ArrayList<Statement>();
 	}
+
+	@Override
+	public ArrayList<IExpression> getExpressions() {
+		ArrayList<IExpression> expressions = new ArrayList<IExpression>();
+		expressions.add(stuffToPrint);
+		return expressions;
+	}
+	
+	
 
 
 }

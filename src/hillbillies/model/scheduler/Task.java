@@ -102,7 +102,7 @@ public class Task implements Comparable<Task>{
 	}
 	
 	public Boolean containsSelectedKeyword(){
-		return statement.containsSelected();
+		return tree.containsSelected();
 	}
 
 

@@ -1,15 +1,15 @@
 package hillbillies.model.statement;
 
+import java.util.ArrayList;
+
 import hillbillies.model.ContextWrapper;
-import hillbillies.model.IContainsSelected;
 import hillbillies.model.Position;
 import hillbillies.model.TaskInterruptionException;
-import hillbillies.model.expressions.Expression;
+import hillbillies.model.expressions.IExpression;
 import hillbillies.model.expressions.IPositionExpression;
-import hillbillies.model.expressions.PositionExpression;
 import hillbillies.model.world.WorldException;
 
-public class MoveStatement<T extends IPositionExpression & IContainsSelected> extends ActionStatement {
+public class MoveStatement<T extends IPositionExpression> extends ActionStatement {
 	//ADRIAAN
 	@Override
 	public Boolean executeNext(ContextWrapper c) throws WorldException, WrongVariableException {
@@ -31,14 +31,14 @@ public class MoveStatement<T extends IPositionExpression & IContainsSelected> ex
 		positionExpression = position;
 	}
 
-	@Override
-	public Boolean containsSelected() {
-		return positionExpression.containsSelected();
-	}
+
+
 
 	@Override
-	public Expression<?> getExpression() {
-		return (Expression<?>)this.positionExpression;
+	public ArrayList<IExpression> getExpressions() {
+		ArrayList<IExpression> expressions = new ArrayList<IExpression>();
+		expressions.add(positionExpression);
+		return expressions;
 	}
 	
 
