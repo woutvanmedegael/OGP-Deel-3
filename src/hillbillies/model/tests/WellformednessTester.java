@@ -51,6 +51,7 @@ public class WellformednessTester {
 		
 		
 	}
+	
 	//@Test
 	public void testBreakWellPlaced(){
 		Facade facade = new Facade();

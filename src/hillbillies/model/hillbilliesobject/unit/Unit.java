@@ -1364,7 +1364,6 @@ private void calculateLocalTarget() throws UnitException{
  * @throws WorldException 
  */
 public void advanceTime(double dt) throws WorldException{
-
 	while (this.getExperiencePoints()>=10){
 		this.setExperiencePoints(this.getExperiencePoints()-10);
 		improveProperty();
@@ -1393,6 +1392,7 @@ public void advanceTime(double dt) throws WorldException{
 	
 		case NEUTRAL:
 			if ((getGlobalTarget() != null && !getGlobalTarget().Equals(this.getMyPosition()))){
+				
 				this.setMyState(CurrentState.MOVING);
 			} else {
 				this.executeDefaultBehaviour(dt);

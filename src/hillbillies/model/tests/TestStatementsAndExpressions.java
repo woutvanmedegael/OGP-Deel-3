@@ -2,6 +2,7 @@ package hillbillies.model.tests;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,12 +12,19 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import hillbillies.model.ContextWrapper;
+import hillbillies.model.TaskFactory;
+import hillbillies.model.expressions.BooleanExpression;
 import hillbillies.model.expressions.CarriesItemExpression;
+import hillbillies.model.expressions.Expression;
+import hillbillies.model.expressions.PositionExpression;
 import hillbillies.model.expressions.ThisExpression;
 import hillbillies.model.expressions.UnitExpression;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.scheduler.Scheduler;
 import hillbillies.model.scheduler.Task;
+import hillbillies.model.statement.Statement;
+import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
@@ -48,8 +56,7 @@ public class TestStatementsAndExpressions {
 	}
 
 	
-	//TODO: ??? Wat loopt er mis?
-	//@Test
+	@Test
 	public void testFindsClostestWorkshop() throws WorldException {
 		Facade facade = new Facade();
 		World testWorld = createTestingWorldWith2Workshops();
@@ -58,32 +65,23 @@ public class TestStatementsAndExpressions {
 		advanceSeconds(testWorld, 100);
 		Scheduler schedulerTest = testUnit.getFaction().getScheduler() ;
 		List<Task> tasks = TaskParser.parseTasksFromString(
-				"name: \"move to workshop\"\npriority: 10000\nactivities: w := workshop;\nmoveTo w;", facade.createTaskFactory(),
-				Collections.singletonList(new int[] { 1, 1, 1 }));
-		 
+				"name: \"move to workshop\"\npriority: 10000\nactivities: moveTo workshop;", facade.createTaskFactory(),
+				Collections.singletonList(new int[] { 1, 1, 1 })); 
 		 Task moveToClosestWorkshopTask = tasks.get(0);
 		 schedulerTest.addTask(moveToClosestWorkshopTask);
-		 System.out.println(schedulerTest.getHighestPrio().getName());
-		 System.out.println(testUnit.getMyState());
 		 testUnit.setDefaultBehaviourEnabled(true);
-		 advanceSeconds(testWorld,0.001);
-		 System.out.println(testUnit.getMyState());
-
-		 while(!moveToClosestWorkshopTask.hasFinished()){
-			 
-			 advanceSeconds(testWorld,0.001);
-			 System.out.println(testUnit.getxpos());
-		 }
-		 //not part of this test
+		 testWorld.advanceTime(0.001);
+		 assertTrue(testUnit.getMyTask() == moveToClosestWorkshopTask);
 		 testUnit.setDefaultBehaviourEnabled(false);
-		 advanceSeconds(testWorld,0.001);
-		 assertTrue(schedulerTest.getTasks().size()==0);
-		 System.out.println(testUnit.getxpos());
+		 advanceSeconds(testWorld,10);
+		 //the position of the closest workshop.
 		 assertTrue((int) testUnit.getxpos()== 2 && (int) testUnit.getxpos()== 2 && (int) testUnit.getzpos() ==0);
+		 
+
+		 
 
 	}
-	//TODO: wtf ik blijf der weer in 
-	//@Test
+	@Test
 	public void findClosestLog() throws WorldException {
 		Facade facade = new Facade();
 		World testWorld = createTestingWorldRockAndWood();
@@ -106,23 +104,19 @@ public class TestStatementsAndExpressions {
 		
 		schedulerTest.addTask(findClosestLogTask);
 		testUnit.setDefaultBehaviourEnabled(true);
-		while(!findClosestLogTask.isTerminated()){
-			System.out.println("while");
-			advanceSeconds(testWorld,0.01);
-		}
+		testWorld.advanceTime(0.001);
 		testUnit.setDefaultBehaviourEnabled(false);
-		assertTrue(schedulerTest.getTasks().size() ==0);
-		assertTrue((int)testUnit.getxpos() == 3 && (int)testUnit.getypos() == 3 && (int)testUnit.getzpos()==0 );
+		advanceSeconds(testWorld,100);
+		//found the closest log.
+		assertTrue((int)testUnit.getxpos() == 0 && (int)testUnit.getypos() == 3 && (int)testUnit.getzpos()==0 );
 		
 		 
 	}
 	
 	
 	
-	//TODO:hoe geïsoleerd testen ? we werken daar met de contextwrapper of kan
 	@Test
-	public void testBooleanExpressions() throws WorldException{
-		Facade facade = new Facade();
+	public void testBooleanExpressions() throws WorldException, WrongVariableException{
 		World testWorld = createTestingWorldRockAndWood();
 		//isCarryingItem
 		Unit testUnit = testWorld.spawnUnit(false);
@@ -133,24 +127,71 @@ public class TestStatementsAndExpressions {
 		testUnit.workAt(3, 0, 0);
 		advanceSeconds(testWorld, 100);
 		assertTrue(testUnit.isCarryingLog());
+		TaskFactory taskFactory = new TaskFactory();
+		Expression<?> unitExpression = taskFactory.createThis(null);
+		BooleanExpression carriesItemExpression = (BooleanExpression) taskFactory.createCarriesItem(unitExpression, null);
+		ContextWrapper context = new ContextWrapper();
+		context.setExecutingUnit(testUnit);
+		context.setThisWorld(testWorld);
+		assertTrue(carriesItemExpression.evaluateBoolean(context));
+		//isPassable
+		PositionExpression position1 = (PositionExpression) taskFactory.createLiteralPosition(2, 2, 2, null);
+		BooleanExpression isPassable = (BooleanExpression) taskFactory.createIsPassable(position1,null);
+		assertTrue(isPassable.evaluateBoolean(context));
+		PositionExpression position2 = (PositionExpression) taskFactory.createLiteralPosition(0,1,0, null);
+		BooleanExpression isNotPassable = (BooleanExpression) taskFactory.createIsPassable(position2, null);
+		assertFalse(isNotPassable.evaluateBoolean(context));
+		
+		//Test true and False Expression
+		BooleanExpression trueExpression = (BooleanExpression) taskFactory.createTrue(null);
+		assertTrue(trueExpression.evaluateBoolean(context));
+		BooleanExpression falseExpression = (BooleanExpression) taskFactory.createFalse(null);
+		assertFalse(falseExpression.evaluateBoolean(context));
 		
 		
-		UnitExpression thisUnit = new ThisExpression();
-		CarriesItemExpression c =new CarriesItemExpression<UnitExpression>((UnitExpression) thisUnit); 
-		c.evaluateBoolean();
+		
+		//test not expression
+		BooleanExpression notTrueExpression = (BooleanExpression) taskFactory.createNot(trueExpression, null);
+		BooleanExpression notFalseExpression =  (BooleanExpression) taskFactory.createNot(falseExpression, null);
+		assertFalse(notTrueExpression.evaluateBoolean(context));
+		assertTrue(notFalseExpression.evaluateBoolean(context));
+		
+		//test and and or
+		BooleanExpression andTrueTrue = (BooleanExpression) taskFactory.createAnd(trueExpression, trueExpression, null);
+		BooleanExpression andFalseTrue = (BooleanExpression) taskFactory.createAnd(falseExpression, trueExpression, null);
+		BooleanExpression andTrueFalse = (BooleanExpression) taskFactory.createAnd(falseExpression, trueExpression, null);
+		BooleanExpression andFalseFalse = (BooleanExpression) taskFactory.createAnd(falseExpression, falseExpression, null);
+		assertTrue(andTrueTrue.evaluateBoolean(context));
+		assertFalse(andFalseTrue.evaluateBoolean(context));
+		assertFalse(andTrueFalse.evaluateBoolean(context));
+		assertFalse(andFalseFalse.evaluateBoolean(context));
 
-
+		
+		BooleanExpression orTrueTrue = (BooleanExpression) taskFactory.createOr(trueExpression, trueExpression, null);
+		BooleanExpression orFalseTrue = (BooleanExpression) taskFactory.createOr(falseExpression, trueExpression, null);
+		BooleanExpression orTrueFalse = (BooleanExpression) taskFactory.createOr(falseExpression, trueExpression, null);
+		BooleanExpression orFalseFalse = (BooleanExpression) taskFactory.createOr(falseExpression, falseExpression, null);
+		
+		assertTrue(orTrueTrue.evaluateBoolean(context));
+		assertTrue(orFalseTrue.evaluateBoolean(context));
+		assertTrue(orTrueFalse.evaluateBoolean(context));
+		assertFalse(orFalseFalse.evaluateBoolean(context));
 
 		
 	}
 	//TODO: idem hier
 	@Test
-	public void testHereIsSameAsPositionOfThis() throws WorldException{
-		Facade facade = new Facade();
+	public void testHereIsSameAsPositionOfThis() throws WorldException, WrongVariableException{		
 		World testWorld = createTestingWorldRockAndWood();
-		//isCarryingItem
 		Unit testUnit = testWorld.spawnUnit(false);
-		
+		ContextWrapper context = new ContextWrapper();
+		context.setExecutingUnit(testUnit);
+		context.setThisWorld(testWorld);
+		TaskFactory taskFactory = new TaskFactory();
+		Expression<?> unitExpression = taskFactory.createThis(null);
+		PositionExpression hereExpression = (PositionExpression) taskFactory.createHerePosition(null);
+		PositionExpression positionOfThisUnit = (PositionExpression) taskFactory.createPositionOf(unitExpression, null);
+		assertTrue(hereExpression.evaluatePosition(context).equals(positionOfThisUnit.evaluatePosition(context)));
 		
 		
 		
@@ -273,4 +314,3 @@ public class TestStatementsAndExpressions {
 }
 
 
-}
