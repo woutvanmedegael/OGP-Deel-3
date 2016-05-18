@@ -25,7 +25,7 @@ public class AnyExpression extends UnitExpression{
 			@Override
 			public boolean test(Cube t) {
 				for (HillbilliesObject h : t.getObjectsOnThisCube()){
-					if (h instanceof Unit){
+					if (h instanceof Unit && h!=c.getExecutingUnit()){
 						return true;
 					}
 				}

@@ -1243,6 +1243,10 @@ public void moveTo(int cubeX, int cubeY, int cubeZ) throws UnitException, TaskIn
 		if (!Position.isValidPos(cubeX, cubeY, cubeZ, this.getWorld())){
 			throw new UnitException();
 		}
+		if (this.getCubeXpos()==cubeX && this.getCubeYpos()==cubeY && this.getCubeZpos()==cubeZ){
+			this.setMyState(CurrentState.NEUTRAL);
+			return;
+		}
 		this.setGlobalTarget(new Position(cubeX+0.5, cubeY+0.5, cubeZ+0.5, this.getWorld()));
 		if (!this.getGlobalTarget().getCube().isWalkable()){
 			throw new UnitException();
@@ -1757,7 +1761,6 @@ public void startAttacking(Unit defender) throws UnitException, TaskInterruption
 		this.setOrientation((float) Math.atan2(this.getDefender().getypos()-this.getypos(), this.getDefender().getxpos()-this.getxpos()));
 		this.getMyTimeState().setAttackTime(0);
 	} else {
-		
 		this.throwInterruptException();
 	}
 }
@@ -1815,14 +1818,12 @@ private boolean targetWithinReach(Unit defender){
 private void defend(Unit attacker) throws WorldException{
 	this.setOrientation((float) Math.atan2(attacker.getypos()-this.getypos(),attacker.getxpos()-this.getxpos()));
 	if (dodge(attacker)){
-		System.out.println("xp added");
 		this.setExperiencePoints(this.getExperiencePoints()+20);
 		jumpAway();
 	} else if (!blocked(attacker)){
 		takeDamage(attacker);
 	}
 	else{
-		System.out.println("xp added");
 		this.setExperiencePoints(this.getExperiencePoints()+20);
 	}
 	this.setLocalTarget(this.getMyPosition());
@@ -2092,6 +2093,7 @@ private void executeDefaultBehaviour(double dt) throws WorldException{
 			if (myTask!=null){
 				myTask.setUnit(this);
 				myTask.setWorld(this.getWorld());
+				myTask.setExecuting(true);
 			}
 		}
 		

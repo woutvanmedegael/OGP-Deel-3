@@ -24,13 +24,17 @@ public class MultipleStatement extends Statement{
 	
 	@Override
 	public Boolean executeNext(ContextWrapper c) throws WorldException, WrongVariableException {
+		boolean b = true;
 		for (Statement s: this.statements){
 			if (!s.hasBeenExecuted()){
-				return (s.executeNext(c));
+				b = (s.executeNext(c));
+				break;
 			}
 		}
-		this.setExecuted(true);
-		return true;
+		if (statements.get(statements.size()-1).hasBeenExecuted()){
+			this.setExecuted(true);
+		}
+		return b;
 	}
 
 	

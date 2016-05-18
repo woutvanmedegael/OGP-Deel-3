@@ -3,6 +3,7 @@ package hillbillies.model.tests;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -42,7 +43,11 @@ import hillbillies.tests.util.PositionAsserts;
 public class UnitTest {
 	
 	
-	ChangeListener changeListener = new ChangeListener();
+	TerrainChangeListener changeListener = new TerrainChangeListener(){
+		@Override
+		public void notifyTerrainChanged(int x, int y, int z) {
+		}
+	};
 	Unit test;
 	static int[][][] smallWorld = new int[3][3][3];
 	static int[][][] bigWorld = new int[15][15][15];
@@ -52,15 +57,6 @@ public class UnitTest {
 	 * Object to compare floating-point numbers.
 	 */
 	NbCompare comp = new NbCompare();
-	
-	private class ChangeListener implements TerrainChangeListener{
-
-		@Override
-		public void notifyTerrainChanged(int x, int y, int z) {
-			
-		}
-		
-	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -464,11 +460,11 @@ public class UnitTest {
 	 * @throws WorldException
 	 */
 	@Test
-	public void testDefendingDecreasesHPOrGrantsXP() throws WorldException{
+	public void testFightingGrantsExperience() throws WorldException{
 		World world = new World(smallWorld,changeListener);
 		world.addUnit(test);
+		Unit attacker = world.spawnUnit(false);
 		for (int i = 0;i<90;i++){
-			Unit attacker = world.spawnUnit(false);
 			attacker.moveTo(1, 1, 1);
 			this.advanceSeconds(attacker, 5);
 			assert (test.getCurrentHP()==test.getMaxHP());
@@ -480,12 +476,6 @@ public class UnitTest {
 			int newPropDef = test.getToughness()+test.getAgility()+test.getStrength();
 			int newPropAtt = attacker.getToughness()+attacker.getAgility()+attacker.getStrength();
 			Boolean HPdecreased = (test.getMaxHP()!=test.getCurrentHP());
-			System.out.println(HPdecreased);
-			System.out.println(newPropAtt);
-			System.out.println(newPropDef);
-			System.out.println(prevPropAtt);
-			System.out.println(prevPropDef);
-
 			if (HPdecreased){
 				assert (newPropAtt==prevPropAtt+2);
 				assert (newPropDef==prevPropDef);
@@ -493,6 +483,7 @@ public class UnitTest {
 				assert (newPropAtt==prevPropAtt);
 				assert (newPropDef==prevPropDef+2);
 			}
+			test.startResting();
 			while (test.getCurrentHP()!=test.getMaxHP()){
 				test.advanceTime(0.15);
 			}
@@ -936,6 +927,7 @@ public class UnitTest {
 		assert (unit.getMyTask()==task3);
 		unit.advanceTime(0.01);
 		assert (unit.getMyTask()==null);
+		assert (unit.getMyState()!=CurrentState.NEUTRAL);
 	}
 	
 	/**
@@ -1048,65 +1040,12 @@ public class UnitTest {
 		}
 		
 	}
-	
 	/**
-	 * Tests generally whether a unit fully executes tasks when executeDefaultBehaviour is enabled. 
-	 * @throws WorldException 
+	 * Whenever an actionStatement can't be executed by the unit, the unit will interrupt the task.
+	 * @throws WorldException
 	 */
 	@Test
-	public void testUnitExecutesTask() throws WorldException{
-		World world = new World(smallWorld,changeListener);
-		Unit enemy = world.spawnUnit(false);
-		world.addUnit(test);
-		test.setDefaultBehaviourEnabled(true);
-		enemy.moveTo(0, 0, 1);
-		this.advanceSeconds(enemy, 10);
-		Task task = null;
-		List<int[]> validMovePos = new ArrayList<>();
-		validMovePos.add(new int[]{2,2,1});
-		
-		// Some valid tasks first
-		// 1) MoveTask
-		task = taskFactory.createTasks("abc", 10, taskFactory.createMoveTo(taskFactory.createSelectedPosition(null), null), validMovePos).get(0);
-		test.getFaction().getScheduler().addTask(task);
-		
-		test.advanceTime(0.01);
-		test.setDefaultBehaviourEnabled(false);
-		
-		assert (test.isMoving());
-		this.advanceSeconds(test, 10);
-		assert (!test.isMoving());
-		// 2) AttackEnemyTask
-		Expression<?> enemyExpression = taskFactory.createEnemy(null);
-		Statement enemyStatement = taskFactory.createAssignment("enemy", enemyExpression, null);
-		Expression<?> readEnemy = taskFactory.createReadVariable("enemy", null);
-		Expression<?> enemyPos = taskFactory.createPositionOf(readEnemy, null);
-		Expression<?> nextToExpression = taskFactory.createNextToPosition(enemyPos, null);
-		Statement moveStatement = taskFactory.createMoveTo(nextToExpression, null);
-		Statement attackStatement = taskFactory.createAttack(readEnemy, null);
-		List<Statement> statements = new ArrayList<>();
-		statements.add(enemyStatement);
-		statements.add(moveStatement);
-		statements.add(attackStatement);
-		Statement multipleStatement = taskFactory.createSequence(statements, null);
-		task = taskFactory.createTasks("abc", 10, multipleStatement, null).get(0);
-		test.getFaction().getScheduler().addTask(task);
-		test.setDefaultBehaviourEnabled(true);
-		test.advanceTime(0.01);
-		assert (test.getMyTask()==task);
-		while (test.isMoving()){
-			test.advanceTime(0.01);
-		}
-		test.advanceTime(0.01);
-		assert (test.getMyState()==CurrentState.ATTACKING);
-		test.setDefaultBehaviourEnabled(false);
-		this.advanceSeconds(test, 10);
-		assert (test.getMyState()!=CurrentState.ATTACKING);
-		//TODO MEER VOORBEELDEN
-	}
-	
-	@Test
-	public void testUnitInterruptsImpossibleTask() throws WorldException{
+	public void testUnitImpossibleActionTaskInterruption() throws WorldException{
 		World world = new World(smallWorld,changeListener);
 		world.addUnit(test);
 		test.setDefaultBehaviourEnabled(true);
@@ -1125,6 +1064,10 @@ public class UnitTest {
 		assert (moveTask.getPriority()==6);
 		test.advanceTime(0.01);
 		assert (test.getMyTask()==null);
+		ArrayList<Task> tasks = new ArrayList<Task>();
+		tasks.add(workTask);
+		tasks.add(moveTask);
+		assert (test.getFaction().getScheduler().checkTaskPartOfScheduler(tasks));
 		assert (workTask.getPriority()==5);
 		assert (moveTask.getPriority()==6);
 		test.advanceTime(0.01);
@@ -1134,6 +1077,9 @@ public class UnitTest {
 		}
 		test.advanceTime(0.01);
 		test.setDefaultBehaviourEnabled(true);
+		assert (!test.getFaction().getScheduler().checkTaskPartOfScheduler(tasks));
+		tasks.remove(moveTask);
+		assert (test.getFaction().getScheduler().checkTaskPartOfScheduler(tasks));
 		while (test.getMyState()==CurrentState.WORKING){
 			test.advanceTime(0.01);
 		}
@@ -1144,5 +1090,7 @@ public class UnitTest {
 		assert (world.getCube(2, 2, 0).isPassable());
 		
 		}
+	
+	
 
 }
