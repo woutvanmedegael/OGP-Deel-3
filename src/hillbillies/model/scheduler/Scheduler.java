@@ -95,17 +95,20 @@ public class Scheduler implements IScheduler{
 	@Override
 	public Task getHighestPrioNonActiveTask(Unit u) {
 		Task highestPrio = null;
+		System.out.println(this.tasks);
 		for (Task t: this.tasks){
 			
 			
 			if (!t.isExecuting() && !t.isTerminated()){
+				System.out.println("got here?");
+				// Only for test suites.
 				if (u==null){
 					if (highestPrio == null || highestPrio.getPriority()<t.getPriority() && t.getAssignedUnit() ==null){
 						highestPrio = t;
 					}
 				}
 				else {
-					if (t.getAssignedUnit() == u){
+					if (t.getAssignedUnit() == u || t.getAssignedUnit()==null){
 						if(highestPrio == null || highestPrio.getPriority()<t.getPriority()){
 							highestPrio = t;
 						}

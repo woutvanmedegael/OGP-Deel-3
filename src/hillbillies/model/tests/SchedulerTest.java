@@ -39,6 +39,8 @@ public class SchedulerTest {
 	private static final int TYPE_WORKSHOP = 3;
 	
 	private Scheduler schedulerTest;
+	World world;
+	Facade facade;
 	
 	
 	@BeforeClass
@@ -52,14 +54,14 @@ public class SchedulerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		Facade facade = new Facade();
+		facade = new Facade();
 		int[][][] types = new int[3][3][3];
 		types[1][1][0] = TYPE_ROCK;
 		types[1][1][1] = TYPE_ROCK;
 		types[1][1][2] = TYPE_TREE;
 		types[2][2][2] = TYPE_WORKSHOP;
-
-		World world = facade.createWorld(types, new DefaultTerrainChangeListener());
+		
+		world = facade.createWorld(types, new DefaultTerrainChangeListener());
 		unit = facade.createUnit("Test", new int[] { 0, 0, 0 }, 50, 50, 50, 50, true);
 		facade.addUnit(unit, world);
 		Faction faction = facade.getFaction(unit);
@@ -229,9 +231,8 @@ public class SchedulerTest {
 	
 	
 	@Test
-	public void testMarkTaskAsScheduled() throws WorldException {
+	public void testMarkTaskAsScheduled() throws WorldException, ModelException {
 		Task task1 = new Task("name1", 9,new PrintStatement<TrueExpression>(new TrueExpression()),null);
-		task1.setAssignedUnit(this.unit);
 		schedulerTest.addTask(task1);
 		Task task2 = new Task("name2", 12,new PrintStatement<TrueExpression>(new TrueExpression()), null);
 		schedulerTest.addTask(task2);
@@ -239,17 +240,26 @@ public class SchedulerTest {
 		schedulerTest.addTask(task3);
 		Task task4 = new Task("name4", 10,new PrintStatement<TrueExpression>(new TrueExpression()), null);
 		schedulerTest.addTask(task4);
-		Task task5 = new Task("name5", 2,new PrintStatement<TrueExpression>(new TrueExpression()), null);
-		schedulerTest.addTask(task5);
 		//assign unit and make sure that the highest priority task is the task that gets executed
-		assertTrue(task1.getAssignedUnit() == unit);
-		assertTrue(unit.getFaction().getNextTask(unit) == task1);
+		assertTrue(unit.getFaction().getNextTask(unit) == task3);
 		task2.setAssignedUnit(this.unit);
+		unit.advanceTime(0.001);
 		assertTrue(unit.getFaction().getNextTask(unit) == task2);
-		task2.setPriority(10000);
-		//make sure that a random unit from a faction doesn't get that tasks.
-		assertFalse(unit.getFaction().getNextTask(null)== task2);
-		assertTrue(unit.getFaction().getNextTask(null) == task3);
+		Unit enemy = facade.spawnUnit(world, true);
+		Unit dummy1 = facade.spawnUnit(world, true);
+		Unit dummy2 = facade.spawnUnit(world, true);
+		Unit dummy3 = facade.spawnUnit(world, true);
+		Unit friend = facade.spawnUnit(world, true);
+		assert (friend.getFaction()==unit.getFaction());
+		Scheduler scheduler2 = enemy.getFaction().getScheduler();
+		scheduler2.addTask(task2);
+		scheduler2.addTask(task4);
+		scheduler2.addTask(task1);
+		assertFalse(friend.getFaction().getNextTask(friend)== task2);
+		assertTrue(friend.getFaction().getNextTask(friend) == task4);
+		assertTrue(enemy.getFaction().getNextTask(enemy)==task4);
+		friend.advanceTime(0.001);
+		assertTrue(enemy.getFaction().getNextTask(enemy)==task1);
 		
 		
 		

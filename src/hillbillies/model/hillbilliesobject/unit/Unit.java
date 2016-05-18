@@ -2085,12 +2085,15 @@ private static final List<CurrentState> DEFAULTSTATES = Arrays.asList(CurrentSta
  */
 private void executeDefaultBehaviour(double dt) throws WorldException{
 	if (this.getDefaultBehaviourEnabled()){
+		System.out.println("executing default behaviour");
 		if (myTask == null || myTask.hasFinished()){
+			System.out.println("picking task");
 			if (myTask!=null){
 				myTask.terminate();
 				}
 			this.setMyTask(this.getFaction().getNextTask(this));
 			if (myTask!=null){
+				System.out.println("picked task");
 				myTask.setUnit(this);
 				myTask.setWorld(this.getWorld());
 				myTask.setExecuting(true);

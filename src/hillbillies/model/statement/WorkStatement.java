@@ -40,6 +40,11 @@ public class WorkStatement<T extends IPositionExpression> extends ActionStatemen
 		expressions.add(positionExpression);
 		return expressions;
 	}
+
+	@Override
+	public Statement copy() throws WorldException {
+		return new WorkStatement(this.positionExpression);
+	}
 	
 	
 }

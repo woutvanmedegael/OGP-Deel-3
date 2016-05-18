@@ -59,6 +59,15 @@ public class MultipleStatement extends Statement{
 		}
 	}
 
+	@Override
+	public Statement copy() throws WorldException {
+		ArrayList<Statement> stats = new ArrayList<>();
+		for (Statement s: this.statements){
+			stats.add(s.copy());
+		}
+		return new MultipleStatement(stats);
+	}
+
 	
 
 }

@@ -73,6 +73,12 @@ public class WhileStatement<T extends IBooleanExpression> extends Statement{
 		expressions.add(condition);
 		return expressions;
 	}
+
+
+	@Override
+	public Statement copy() throws WorldException {
+		return new WhileStatement(this.condition, this.body.copy());
+		}
 	
 	
 

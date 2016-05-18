@@ -61,6 +61,12 @@ public class PrintStatement<T extends Expression<?>> extends Statement{
 		expressions.add(stuffToPrint);
 		return expressions;
 	}
+
+
+	@Override
+	public Statement copy() throws WorldException {
+		return new PrintStatement(this.stuffToPrint);
+	}
 	
 	
 

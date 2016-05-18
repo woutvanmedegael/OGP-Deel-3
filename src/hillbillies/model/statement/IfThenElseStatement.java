@@ -93,7 +93,7 @@ public class IfThenElseStatement<T extends IBooleanExpression> extends Statement
 
 	@Override
 	public Statement copy() throws WorldException {
-		return new IfThenElseStatement<T>(this.condition,this.thenStatement,this.elseStatement);
+		return new IfThenElseStatement<T>(this.condition,this.thenStatement.copy(),this.elseStatement.copy());
 	}
 
 }

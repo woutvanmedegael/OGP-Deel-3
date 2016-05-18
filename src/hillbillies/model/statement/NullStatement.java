@@ -26,4 +26,9 @@ public class NullStatement extends Statement{
 		return new ArrayList<IExpression>();
 	}
 
+	@Override
+	public Statement copy() throws WorldException {
+		return new NullStatement();
+	}
+
 }
