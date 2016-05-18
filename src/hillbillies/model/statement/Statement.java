@@ -25,5 +25,6 @@ public abstract class Statement{
 	
 	public abstract ArrayList<Statement> getStatements();
 	public abstract ArrayList<IExpression> getExpressions();
+	public abstract Statement copy() throws WorldException;
 	
 }

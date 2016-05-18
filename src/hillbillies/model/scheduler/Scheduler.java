@@ -2,11 +2,14 @@ package hillbillies.model.scheduler;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import hillbillies.model.IScheduler;
 import hillbillies.model.hillbilliesobject.unit.Unit;
@@ -14,7 +17,8 @@ import hillbillies.model.hillbilliesobject.unit.Unit;
 public class Scheduler implements IScheduler{
 
 	private ArrayList<Task> tasks = new ArrayList<>();
-	
+    final Comparator<Task> comp = (t1, t2) -> Integer.compare( t1.getPriority(), t2.getPriority());
+
 	@Override
 	public void addTask(Task task){
 		if (task!=null){
@@ -53,12 +57,13 @@ public class Scheduler implements IScheduler{
 	
 	public Task getHighestPrio(){
 		Task highestPrio = null;
-		this.tasks.stream().filter(t->!t.isExecuting()).reduce(null,(t,u)->));
-		for (Task t: this.tasks){
-			if (highestPrio==null || highestPrio.getPriority()<t.getPriority()){
-				highestPrio = t;
-			}
-		}
+		highestPrio = tasks.stream().filter(t->!t.isExecuting()).max(comp).get();
+//		this.tasks.stream().filter(t->!t.isExecuting()).reduce(null,(t,u)->));
+//		for (Task t: this.tasks){
+//			if (highestPrio==null || highestPrio.getPriority()<t.getPriority()){
+//				highestPrio = t;
+//			}
+//		}
 		return highestPrio;
 	}
 	
@@ -91,11 +96,27 @@ public class Scheduler implements IScheduler{
 	public Task getHighestPrioNonActiveTask(Unit u) {
 		Task highestPrio = null;
 		for (Task t: this.tasks){
-			if (!t.isExecuting() && (highestPrio==null || highestPrio.getPriority()<t.getPriority()) && !t.isTerminated()){
-				if (t.getAssignedUnit()==null || t.getAssignedUnit()==u){
-					highestPrio = t;
+			
+			
+			if (!t.isExecuting() && !t.isTerminated()){
+				if (u==null){
+					if (highestPrio == null || highestPrio.getPriority()<t.getPriority() && t.getAssignedUnit() ==null){
+						highestPrio = t;
+					}
+				}
+				else {
+					if (t.getAssignedUnit() == u){
+						if(highestPrio == null || highestPrio.getPriority()<t.getPriority()){
+							highestPrio = t;
+						}
+					}
 				}
 			}
+//			if (!t.isExecuting() && ((highestPrio==null || highestPrio.getPriority()<t.getPriority())) && !t.isTerminated()){
+//				if (t.getAssignedUnit()==null || t.getAssignedUnit()==u){
+//					highestPrio = t;
+//				}
+//			}
 		}
 		return highestPrio;
 	}
@@ -110,9 +131,8 @@ public class Scheduler implements IScheduler{
 	@Override
 	public Collection<Task> getTasksSatisfying(Predicate<Task> pred) {
 		Set<Task> myTasks = (Set<Task>)this.allTasks();
-		myTasks.stream().
-			filter(pred);
-		return myTasks;
+		final Set<Task> filteredMyTasks =  myTasks.stream().filter(pred).collect(Collectors.toSet());
+		return filteredMyTasks;
 	}
 	
 	public Iterator<Task> getIterator(){
@@ -155,3 +175,4 @@ public class Scheduler implements IScheduler{
 	
 	
 }
+

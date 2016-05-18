@@ -27,6 +27,11 @@ public class BreakStatement extends Statement{
 		return new ArrayList<IExpression>();
 	}
 
+	@Override
+	public Statement copy() throws WorldException {
+		return new BreakStatement();
+	}
+
 	
 
 	

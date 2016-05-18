@@ -90,4 +90,10 @@ public class IfThenElseStatement<T extends IBooleanExpression> extends Statement
 		return expressions;
 	}
 
+
+	@Override
+	public Statement copy() throws WorldException {
+		return new IfThenElseStatement<T>(this.condition,this.thenStatement,this.elseStatement);
+	}
+
 }

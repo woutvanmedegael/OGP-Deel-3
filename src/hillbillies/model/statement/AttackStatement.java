@@ -41,4 +41,11 @@ public class AttackStatement<T extends IUnitExpression> extends ActionStatement{
 		expressions.add(unitExpression);
 		return expressions;
 	}
+
+
+
+	@Override
+	public Statement copy() throws WorldException {
+		return new AttackStatement<T>(this.unitExpression);
+	}
 }

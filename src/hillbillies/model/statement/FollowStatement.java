@@ -42,4 +42,9 @@ public class FollowStatement<T extends IUnitExpression> extends ActionStatement{
 		return expressions;
 	}
 
+	@Override
+	public Statement copy() throws WorldException {
+		return new FollowStatement<T>(this.unitExpression);
+	}
+
 }

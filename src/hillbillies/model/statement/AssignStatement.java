@@ -63,4 +63,9 @@ public class AssignStatement extends Statement{
 		return expressions; 
 	}
 
+	@Override
+	public Statement copy() throws WorldException {
+		return new AssignStatement(this.variableName,this.expr);
+	}
+
 }
