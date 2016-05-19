@@ -1233,12 +1233,19 @@ private boolean isValidMove(int[] move) throws UnitException{
  *		  | new.getGlobalTarget().getzpos() == cubeZ+0.5
  * @effect The next localTarget is calculated.
  * 		  | calculateLocalTarget()
+ * @effect If the previous state wasn't neutral, and this unit has a task, that task will be interrupted.
+ * 		  | if (this.getMyState()!=CurrentState.NEUTRAL && this.getMyTask!=null)
+ * 		  | this.interrupt()
  * @throws UnitException
  * 		  An exception is thrown if any of the coordinates is an invalid position for the cube
  * @throws TaskInterruptionException 
+ * 			If one of the starting conditions isn't fulfilled, a TaskInterruptionException is thrown if this unit has a task.
  */
 public void moveTo(int cubeX, int cubeY, int cubeZ) throws UnitException, TaskInterruptionException{
-	if (!(this.getMyState()==CurrentState.DEFENDING || this.getMyState() == CurrentState.ATTACKING) && this.getHasRested()){
+	if (!(this.getMyState()==CurrentState.DEFENDING || this.getMyState() == CurrentState.ATTACKING || this.getMyState()==CurrentState.FALLING) && this.getHasRested()){
+		if (this.getMyState()!=CurrentState.NEUTRAL && this.getMyTask()!=null){
+			this.interrupt();
+		}
 		this.setMyState(CurrentState.MOVING);
 		if (!Position.isValidPos(cubeX, cubeY, cubeZ, this.getWorld())){
 			throw new UnitException();
@@ -1584,6 +1591,7 @@ private void determineLocalTarget() throws UnitException{
  * @throws UnitException
  * 		Throws a unit exception if the workposition isn't adjacent.
  * @throws TaskInterruptionException 
+ * 			If one of the starting conditions isn't fulfilled, a TaskInterruptionException is thrown if this unit has a task.
  * 
  */
 public void workAt(int x, int y, int z) throws UnitException, TaskInterruptionException{
@@ -1722,6 +1730,7 @@ private void finishWork() throws WorldException{
 /**
  * Initiates resting for this unit.
  * @throws TaskInterruptionException 
+ * 			If one of the starting conditions isn't fulfilled, a TaskInterruptionException is thrown if this unit has a task.
  * @post If the unit wasn't fighting or already resting, the unit has started resting.
  * 		| if (this.getMyState()==CurrentState.MOVING || this.getMyState()==CurrentState.NEUTRAL || this.getMyState()==CurrentState.WORKING)
  * 		| then new.getMyState()==CurrentState.RESTING and new.getMyTimeState().getTrackTimeRest()==0 
@@ -1729,6 +1738,9 @@ private void finishWork() throws WorldException{
  */
 public void startResting() throws TaskInterruptionException{
 	if (this.getMyState()==CurrentState.MOVING || this.getMyState() == CurrentState.NEUTRAL || this.getMyState() == CurrentState.WORKING){
+		if (this.getMyState()!=CurrentState.NEUTRAL && this.getMyTask()!=null){
+			this.interrupt();
+		}
 		this.setMyState(CurrentState.RESTING);
 		this.getMyTimeState().setTrackTimeRest(0);
 		this.setHasRested(false);
@@ -1743,19 +1755,26 @@ public void startResting() throws TaskInterruptionException{
  * Initiates this units attack of the defender.		
  * @throws UnitException 
  * @throws TaskInterruptionException 
- * @post If the unit wasn't already defending or attacking and defender is within reach,
+ * 			Whenever one of the starting conditions isn't fulfilled, a TaskInterruptionException is thrown if this unit has a task.
+ * @post If the unit wasn't already defending, attacking or falling, the defender is within reach and from another faction,
  * 		 the unit starts attacking defender and turns to him.
- * 		| if (!(this.getMyState()==CurrentState.DEFENDING || this.getMyState()==CurrentState.ATTACKING) && targetWithinReach(defender))
+ * 		| if (!(this.getMyState()==CurrentState.DEFENDING || this.getMyState()==CurrentState.ATTACKING || this.getMyState()==CurrentState.FALLING || this.getFaction()==defender.getFaction()) && targetWithinReach(defender))
  * 		| then new.getMyState()==CurrentState.ATTACKING and new.getOrientation()==Math.atan2(this.getDefender().getypos()-this.getypos(),this.getDefender().getxpos()-this.getxpos())
  * 		| 	and new.getMyTimeState().getAttackTime()==0
- * @effect If this unit wasn't already defending or attacking and defender is within reach,
+ * @effect If this unit wasn't already defending, attacking or falling, the defender is within reach and from another faction,
  * 		   defender starts defending against this unit.
- * 		| if (!(this.getMyState()==CurrentState.DEFENDING || this.getMyState()==CurrentState.ATTACKING) && targetWithinReach(this.getDefender()))
+ * 		| if (!(this.getMyState()==CurrentState.DEFENDING || this.getMyState()==CurrentState.ATTACKING || this.getMyState()==CurrentState.FALLING) && targetWithinReach(this.getDefender() && this.getFaction()!=defender.getFaction()))
  * 		| then this.getDefender().startDefending(this)
+ * @effect If the previous state wasn't neutral, and this unit has a task, that task will be interrupted.
+ * 		| if (this.getMyState()!=CurrentState.NEUTRAL && this.getMyTask!=null)
+ * 		| this.interrupt()
  */
 public void startAttacking(Unit defender) throws UnitException, TaskInterruptionException{
 	if (targetWithinReach(defender) && !(this.getMyState() == CurrentState.DEFENDING || this.getMyState() == CurrentState.ATTACKING ||
-			this.getFaction()==defender.getFaction() || this.getMyState() == CurrentState.FALLING) && !defender.isFalling()){
+			 this.getMyState() == CurrentState.FALLING) && !defender.isFalling() && this.getFaction()!=defender.getFaction()){
+		if (this.getMyState()!=CurrentState.NEUTRAL && this.getMyTask()!=null){
+			this.interrupt();
+		}
 		this.setDefender(defender);
 		this.setMyState(CurrentState.ATTACKING);
 		this.setOrientation((float) Math.atan2(this.getDefender().getypos()-this.getypos(), this.getDefender().getxpos()-this.getxpos()));
@@ -1813,9 +1832,15 @@ private boolean targetWithinReach(Unit defender){
  * 		| then jumpAway()
  * 		| otherwise if (!blocked(attacker))
  * 		| takeDamage(attacker)
+ * @effect If the previous state wasn't neutral, and this unit has a task, that task will be interrupted.
+ * 		| if (this.getMyState()!=CurrentState.NEUTRAL && this.getMyTask!=null)
+ * 		| this.interrupt()
  * @note	UnitException can't be thrown. jumpAway() will never throw an exception.
  */
 private void defend(Unit attacker) throws WorldException{
+	if (this.getMyState()!=CurrentState.NEUTRAL && this.getMyTask()!=null){
+		this.interrupt();
+	}
 	this.setOrientation((float) Math.atan2(attacker.getypos()-this.getypos(),attacker.getxpos()-this.getxpos()));
 	if (dodge(attacker)){
 		this.setExperiencePoints(this.getExperiencePoints()+20);
@@ -1926,7 +1951,7 @@ private void takeDamage(Unit attacker) throws UnitException{
 	int damage = (int) attacker.getStrength()/10;
 	if (damage>this.getCurrentHP()){
 		this.setCurrentHP(0);
-		this.die();
+		this.terminate();
 	} else {
 		this.setCurrentHP(this.getCurrentHP()-damage);
 	}
@@ -2066,42 +2091,55 @@ private void hasRestedMinimumTime(double dt) {
 private static final List<CurrentState> DEFAULTSTATES = Arrays.asList(CurrentState.WORKING, CurrentState.MOVING, CurrentState.RESTING);
 
 /**
- * Determines what default behaviour the unit executes.
- * @throws WorldException 
- * @post If default is enabled this function randomly puts the unit in a default state.
+ * Tries to pick and execute a task. If this isn't possible, it determines what default behaviour the unit executes.
+ * @post If default is enabled and this units task is null or has been finished, a new task is picked.
+ * 		| if (this.isDefaultBehaviourEnabled() && (this.getMyTask() == null || this.getMyTask().hasFinished()))
+ * 		| then new.getMyTask()==this.getFaction().getNextTask(this)
+ * @post If default is enabled and this units task isn't null, its unit is set to this unit, its world to this units world and its set to executing.
+ * 		| if (this.isDefaultBehaviourEnabled() && this.getMyTask()!=null)
+ * 		| then new.getMyTask().getUnit()==this && new.getMyTask().getWorld()==this.getWorld() && new.getMyTask().isExecuting()
+ * @effect If default is enabled and this units task has been finished, it is terminated.
+ * 		| if (this.isDefaultBehaviourEnabled() && this.getMyTask().hasFinished())
+ * 		| then this.getMyTask().terminate()
+ * @effect If default is enabled and this units task isn't null, it gets executed (and dt is decreased).
+ * 		| if (this.isDefaultBehaviourEnabled() && this.getMyTask()!=null)
+ * 		| then while (this.getMyTask()!=null && dt>0 && this.getMyState()==CurrentState.NEUTRAL && !this.getMyTask().hasFinished())
+ * 		| 	this.getMyTask().execute()
+ * 		|	dt-=0.001
+ * @post If default is enabled and this units doesn't have a task, this function randomly puts the unit in a default state.
  * 		 | if (this.isDefaultBehaviourEnabled())
  * 		 | then new.getMyState() in DEFAULTSTATES
  * @post If the random-generated state is 'moving', a random valid position in the map has been selected. 
  * 		 | if (this.isDefaultBehaviourEnabled() && randomDefaultState == CurrentState.MOVING)
  * 		 | then new.globalTarget valid in world
- * @post If a unit of another faction is within reach, there is a chance of attacking it of 0.25
+ * @post If a unit of another faction is within reach and this unit doesn't have a task, there is a chance of attacking it of 0.25
  * 		 | if (potential target is within reach)
  * 		 | then P(new.getMyState()==CurrentState.ATTACKING) == 0.25
  * 		 | else P(new.getMyState()==CurrentState.ATTACKING) == 0
  * @effect If a unit starts working, a random adjacent position within the world is picked to work on.
  * 		 | Pos = random valid adjacent position
  * 		 | this.workAt(Pos.getCubeXpos(),Pos.getCubeYPos(),Pos.getCubeZPos())
+ * @throws WorldException 
+
  * @note UnitException won't be thrown.
  */
 private void executeDefaultBehaviour(double dt) throws WorldException{
 	if (this.getDefaultBehaviourEnabled()){
-		if (myTask == null || myTask.hasFinished()){
-			System.out.println("picking task");
-			if (myTask!=null){
-				myTask.terminate();
+		if (this.getMyTask() == null || this.getMyTask().hasFinished()){
+			if (this.getMyTask()!=null){
+				this.getMyTask().terminate();
 				}
 			this.setMyTask(this.getFaction().getNextTask(this));
-			if (myTask!=null){
-				System.out.println("picked task");
-				myTask.setUnit(this);
-				myTask.setWorld(this.getWorld());
-				myTask.setExecuting(true);
+			if (this.getMyTask()!=null){
+				this.getMyTask().setUnit(this);
+				this.getMyTask().setWorld(this.getWorld());
+				this.getMyTask().setExecuting(true);
 			}
 		}
 		
-		if (myTask!=null){
+		if (this.getMyTask()!=null){
 			while (this.getMyTask()!=null && dt>0 && this.getMyState()==CurrentState.NEUTRAL && !this.getMyTask().hasFinished()){
-				myTask.execute();
+				this.getMyTask().execute();
 				dt-=0.001;
 			}
 		} else {
@@ -2344,11 +2382,34 @@ public Faction getFaction(){
 }
 
 /**
- * Removes this unit from its faction.
+ * Terminate this Unit.
+ *
+ * @post   This Unit  is terminated.
+ *       | new.isTerminated()
+ * @effect The unit is removed from its faction and its tasks are interrupted.
+ *       | this.interrupt()
+ *       | this.getFaction().removeUnit(this)
  */
-private void die(){
-	this.getFaction().removeUnit(this);
-}
+ public void terminate() {
+	 this.interrupt();
+	 this.getFaction().removeUnit(this);
+	 this.isTerminated = true;
+ }
+ 
+ /**
+  * Return a boolean indicating whether or not this Unit
+  * is terminated.
+  */
+ @Basic @Raw
+ public boolean isTerminated() {
+	 return this.isTerminated;
+ }
+ 
+ /**
+  * Variable registering whether this person is terminated.
+  */
+ private boolean isTerminated = false;
+ 
 
 /**
  * Makes this unit fall for dt seconds.
@@ -2384,7 +2445,7 @@ private void fall(double dt) throws WorldException{
 		}
 		if (this.getCurrentHP()<=10){
 			this.setCurrentHP(0);
-			this.die();
+			this.terminate();
 		} else {
 			this.setCurrentHP(this.getCurrentHP()-10);
 		}
@@ -2406,9 +2467,15 @@ private void fall(double dt) throws WorldException{
  * 		| new.getLocalTarget().getCubeZPos()==this.getMyPosition().getCubeZPos()-1
  * 		| new.getGlobalTarget()==null
  * 		| new.getSpeed()==3
+ * @effect If the previous state wasn't neutral, and this unit has a task, that task will be interrupted.
+ * 		| if (this.getMyState()!=CurrentState.NEUTRAL && this.getMyTask!=null)
+ * 		| this.interrupt()
  * @throws UnitException
  */
 public void startFalling() throws UnitException{
+	if (this.getMyState()!=CurrentState.NEUTRAL && this.getMyTask()!=null){
+		this.interrupt();
+	}
 	this.setMyState(CurrentState.FALLING);
 	this.getLocalTarget().setPositionAt(this.getMyPosition());
 	this.getLocalTarget().incrPosition(0, 0, -1);
@@ -2429,41 +2496,67 @@ public boolean isMoving(){
 }
 
 
-public double distanceTo(Load l) throws UnitException{
-	if (l==null){
-		return 0;
-	}
-	return this.getMyPosition().calculateDistance(new Position(l.getDoublePosition()[0],l.getDoublePosition()[1],l.getDoublePosition()[2], this.getWorld()));
-}
 
-public double distanceTo(Unit u) throws UnitException{
-	if (u==null){
-		return Double.MAX_VALUE;
-	}
-	return this.getMyPosition().calculateDistance(new Position(u.getxpos(),u.getypos(),u.getzpos(), this.getWorld()));
-}
-
-
-
-
-
-//NEW FOLLOW
+/**
+ * Variable registering the current target unit.
+ */
 private Unit targetUnit;
 
+/**
+ * Getter for the targetUnit
+ * @return
+ * 		this.targetUnit
+ */
 public Unit getTargetUnit() {
 	return targetUnit;
 }
 
-public void setTargetUnit(Unit targetUnit) {
-	this.targetUnit = targetUnit;
+/**
+ * Setter for the target unit.
+ * @post The targetUnit is set.
+ * 		| new.targetUnit = target
+ * @param targetUnit
+ */
+public void setTargetUnit(Unit target) {
+	this.targetUnit = target;
 }
 
+/**
+ * This units starts following the given target unit.
+ * 		| boolean condition = (target != null && !(this.getMyState()==CurrentState.DEFENDING || this.getMyState() == CurrentState.ATTACKING || this.getMyState()==CurrentState.FALLING) && this.getHasRested())
+ * @post If the given target isn't null, the currentstate isn't defending, attacking or falling, this unit has rested and the unit isn't next to the given target, 
+ * 			the global target is set to null, the state is set to following, the target unit to the given target and a path is calculated.
+ * 		| if (condition && !this.getMyPosition().isAdjacent(target.getMyPosition()))
+ * 		| then new.getGlobalTarget()==null && new.getMyState()==CurrentState.FOLLOWING && new.getMyTarget()==target &&
+ * 		| new.getPathFinder()==new PathFinding(this.getWorld(),this.getMyPosition(),new.getTargetUnit().getMyPosition(), true)
+ * @post If the unit however is next to the given target, and the other above conditions are fulfilled,
+ * 			the global target is set to null, the state to neutral and the target unit to null.
+ * 		| if (condition && this.getMyPosition().isAdjacent(target.getMyPosition()))
+ * 		| then new.getGlobalTarget()==null && new.getMyState()==CurrentState.NEUTRAL && new.getTargetUnit()==null
+ * @effect If the given target isn't null, the currentstate isn't defending, attacking or falling, this unit has rested and the pathfinders path is empty,
+ * 			a taskInterruptionException might be thrown.
+ * 		| if (condition && new.getPathFinder().getPath().isEmpty())
+ * 		| then throwInterruptException()
+ * @effect If the above condition is fulfilled, but the pathfinders path isn't empty,
+ * 			the new local target is calculated.
+ * 		| if (condition && !new.getPathFinder().getPath().isEmpty())
+ * 		| then calculateLocalTargetFollow()
+ * @effect If one of the main conditions isn't fulfilled, a taskInterruptionException might be thrown.
+ * 		| if (!condition)
+ * 		| then throwInterruptException()
+ * @param target
+ * 		The unit to follow.
+ * @throws UnitException
+ * 		Is thrown if either pathfinding or calculateLocalTargetFollow throws one, or if the targetUnit isn't at a valid and passable position.
+ * @throws TaskInterruptionException
+ * 		Is thrown if throwInterruptException() is called and the current task is not null.
+ */
 public void startFollowing(Unit target) throws UnitException, TaskInterruptionException{
-	if (target != null && !(this.getMyState()==CurrentState.DEFENDING || this.getMyState() == CurrentState.ATTACKING) && this.getHasRested()){
+	if (target != null && !(this.getMyState()==CurrentState.DEFENDING || this.getMyState() == CurrentState.ATTACKING || this.getMyState()==CurrentState.FALLING) && this.getHasRested()){
 		this.setGlobalTarget(null);
 		this.setMyState(CurrentState.FOLLOWING);
 		setTargetUnit(target);
-		if (!(targetUnit.getMyPosition().isValidPos() && targetUnit.getMyPosition().isPassablePos())|| myWorld ==null){
+		if (!(this.getTargetUnit().getMyPosition().isValidPos() && this.getTargetUnit().getMyPosition().isPassablePos())){
 			throw new UnitException();
 			}
 		if (this.getMyPosition().isAdjacent(target.getMyPosition())){
@@ -2482,25 +2575,78 @@ public void startFollowing(Unit target) throws UnitException, TaskInterruptionEx
 	}
 	}
 
+/**
+ * Executes the follow action.
+ * @post The follow time is increased.
+ * 		| new.getMyTimeState().getTrackTimeFollow()==this.getMyTimeState().getTrackTimeFollow()+dt
+ * @effect The local target is calculated.
+ * 		| determineLocalTargetFollow()
+ * @effect The location and orientation are updated.
+ * 		| updateLocationAndOrientation(dt)
+ * @param dt
+ * 		| The gametime to follow the target.
+ * @throws WorldException
+ * 		Throws a WorldException whenever determineLocalTargetFollow or updateLocationAndOrientation throws one.
+ */
 private void follow(double dt) throws WorldException{
 	
 	
-	myTimeState.setTrackTimeFollow(myTimeState.getTrackTimeFollow()+dt);
+	this.getMyTimeState().setTrackTimeFollow(this.getMyTimeState().getTrackTimeFollow()+dt);
 
 	determineLocalTargetFollow();
 	updateLocationAndOrientation(dt);
 
 		
 }
+
+/**
+ * Calculates the next local target for a follow action.
+ * @post If the next position isn't valid, a new path is calculated.
+ * 		| if (!this.getPathFinder().moveToNextPos().isValidPos())
+ * 		| then new.getPathFinder()==new PathFinding(this.getWorld(),this.getMyPosition(),this.getTargetUnit().getMyPosition(),true)
+ * @effect If the next position is valid, the local target is set to this position.
+ * 		| Position nextPos = this.getPathFinder().moveToNextPos()
+ * 		| if (nextPos.isValidPos())
+ * 		| then setLocalTargetAndSpeed(nextPos)
+ * @effect If the next position isn't valid, a new local target is calculated from the new pathfinder.
+ * 		| if (!this.getPathFinder().moveToNextPos().isValidPos())
+ * 		| then calculateLocalTargetFollow()
+ * 
+ * @throws UnitException
+ */
 private void calculateLocalTargetFollow() throws UnitException{
 	Position nextPos = this.getPathFinder().moveToNextPos();
 	if (!nextPos.isValidPos()){
-		this.setPathFinder(new PathFinding(this.myWorld,this.getMyPosition(),this.getTargetUnit().getMyPosition(),true));
+		this.setPathFinder(new PathFinding(this.getWorld(),this.getMyPosition(),this.getTargetUnit().getMyPosition(),true));
 		calculateLocalTargetFollow();
 	} else {
 		setLocalTargetAndSpeed(nextPos);
 	}
 }
+
+/**
+ * Determines the local target in a follow action.
+ * @post If the unit has arrived at its local target, its experience points are increased by 1.
+ * 		| if (this.getMyPosition().Equals(this.getLocalTarget()))
+ * 		| then new.getExperiencePoints()==this.getExperiencePoints()+1
+ * @post If the unit additionally has arrived at its global target, its speed is set to 0.
+ * 		| if (this.getMyPosition().Equals(this.getLocalTarget()) && this.getPathFinder().hasArrived())
+ * 		| then new.getSpeed()==0.
+ * @post If the unit has arrived at its local target, but not is global target yet, and the follow time is bigger than 3, 
+ * 			the follow time is set to 0.
+ * 		| if (this.getMyPosition().Equals(this.getLocalTarget()) && !this.getPathFinder().hasArrived() && this.getMyTimeState().getTrackTimeFollow() >=3)
+ * 		| new.getMyTimeState().getTrackTimeFollow()==0
+ * @effect If the unit has arrived at its local target and at its global target or its follow time is bigger than 3, it starts following its target unit again.
+ * 		| if (this.getMyPosition().Equals(this.getLocalTarget()) && (this.getPathFinder().hasArrived() || this.getMyTimeState().getTrackTimeFollow() >=3))
+ * 		| then this.startFollowing(this.getTargetUnit())
+ * @effect If the unit has arrived at its local target, but not its global target, a new local target is calculated.
+ * 		| if (this.getMyPosition().Equals(this.getLocalTarget()) && !this.getPathFinder().hasArrived())
+ * 		| then calculateLocalTargetFollow()
+ * @throws UnitException
+ * 		Throws a UnitException whenever startFollowing or calculateLocalTargetFollow throws one.
+ * @throws TaskInterruptionException
+ * 		Throws a TaskInterruptionException whenever startFollowing throws one.
+ */
 private void determineLocalTargetFollow() throws UnitException, TaskInterruptionException{
 	if (this.getMyPosition().Equals(this.getLocalTarget())){
 		this.setExperiencePoints(this.getExperiencePoints()+1);
@@ -2509,9 +2655,9 @@ private void determineLocalTargetFollow() throws UnitException, TaskInterruption
 			startFollowing(this.getTargetUnit());
 		}
 		else {
-			if (myTimeState.getTrackTimeFollow() >=3){
+			if (this.getMyTimeState().getTrackTimeFollow() >=3){
 				startFollowing(this.getTargetUnit());
-				myTimeState.setTrackTimeFollow(0);
+				this.getMyTimeState().setTrackTimeFollow(0);
 				return;
 			}
 			calculateLocalTargetFollow();
@@ -2519,25 +2665,57 @@ private void determineLocalTargetFollow() throws UnitException, TaskInterruption
 	}
 }
 
+/**
+ * Variable registering the current task of this unit.
+ */
 private Task myTask = null;
 
+/**
+ * Getter for myTask.
+ * @return
+ * 		this.myTask
+ */
 public Task getMyTask(){
 	return this.myTask;
 }
 
-private void setMyTask(Task myTask){
-	if (myTask!=null)
-		myTask.setAssignedUnit(this);
-	this.myTask = myTask;
+/**
+ * A task for this unit is set.
+ * @param task  
+ * 			The task to set myTask to.
+ * @post The task of this unit is set to the given task.
+ * 		| new.myTask==task
+ * @post If the given task isn't null, this unit is set as assigned unit of the given task.
+ * 		| if (task!=null)
+ * 		| then task.getAssignedUnit()==this
+ * 
+ */
+private void setMyTask(Task task){
+	this.myTask = task;
+	if (task!=null)
+		task.setAssignedUnit(this);
 }
 
+/**
+ * Interrupts a current task.
+ * @post  This unit doesn't have a task.
+ * 		| new.getMyTask()==null
+ * @effect If this unit had a task, it is interrupted.
+ * 		| if (this.getMyTask()!=null)
+ * 		| then this.getMyTask().interrupt()
+ */
 public void interrupt(){
-	if (myTask!=null){
-		myTask.interrupt();
+	if (this.getMyTask()!=null){
+		this.getMyTask().interrupt();
 	}
 	this.setMyTask(null);
 }
 
+/**
+ * Throws a TaskInterruptionException whenever this unit has a task.
+ * @throws TaskInterruptionException
+ * 			| if (this.getMyTask()!=null
+ */
 private void throwInterruptException() throws TaskInterruptionException{
 	if (this.getMyTask()!=null){
 		throw new TaskInterruptionException();
