@@ -36,11 +36,8 @@ public class AndExpression<L extends IBooleanExpression, R extends IBooleanExpre
 	}
 	
 	@Override
-	public ArrayList<IExpression> getExpressions() {
-		ArrayList<IExpression> expressions = new ArrayList<>();
-		expressions.add(left);
-		expressions.add(right);
-		return expressions;
+	public IBooleanExpression[] getExpressions() {
+		return new IBooleanExpression[]{right,left};
 	}
 
 }

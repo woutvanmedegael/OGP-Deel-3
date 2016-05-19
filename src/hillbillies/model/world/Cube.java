@@ -7,6 +7,7 @@ import java.util.Map;
 import hillbillies.model.hillbilliesobject.Boulder;
 import hillbillies.model.hillbilliesobject.HillbilliesObject;
 import hillbillies.model.hillbilliesobject.Log;
+import hillbillies.model.hillbilliesobject.unit.UnitException;
 
 /**
  * @value
@@ -118,9 +119,9 @@ private TerrainType terrainType;
  * Adds the given object on this cube.
  * @throws WorldException 
  */
-public void addObject(HillbilliesObject obj) throws WorldException{
+public void addObject(HillbilliesObject obj) throws UnitException{
 	if (obj == null){
-		throw new WorldException();
+		throw new UnitException();
 	}
 	this.objectsOnThisCube.add(obj);
 }

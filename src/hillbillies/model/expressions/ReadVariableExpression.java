@@ -46,8 +46,8 @@ public class ReadVariableExpression extends Expression<Object> implements IBoole
 	}
 
 	@Override
-	public ArrayList<IExpression> getExpressions() {
-		return new ArrayList<IExpression>();
+	public IExpression[] getExpressions() {
+		return new IExpression[]{};
 	}
 	
 	public String getVariableName(){

@@ -35,10 +35,9 @@ public class WorkStatement<T extends IPositionExpression> extends ActionStatemen
 
 
 	@Override
-	public ArrayList<IExpression> getExpressions() {
-		ArrayList<IExpression> expressions = new ArrayList<IExpression>();
-		expressions.add(positionExpression);
-		return expressions;
+	public IPositionExpression[] getExpressions() {
+		return new IPositionExpression[]{positionExpression};
+
 	}
 
 	@Override

@@ -27,10 +27,8 @@ public class PositionOfExpression<T extends IUnitExpression> extends PositionExp
 	
 	
 	@Override
-	public ArrayList<IExpression> getExpressions() {
-		ArrayList<IExpression> expressions = new ArrayList<>();
-		expressions.add(this.unit);
-		return expressions;
+	public IUnitExpression[] getExpressions() {
+		return new IUnitExpression[]{unit};
 	}
 
 

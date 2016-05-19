@@ -23,8 +23,8 @@ public abstract class Statement{
 		this.executed = b;
 	}
 	
-	public abstract ArrayList<Statement> getStatements();
-	public abstract ArrayList<IExpression> getExpressions();
+	public abstract Statement[] getStatements();
+	public abstract IExpression[] getExpressions();
 	public abstract Statement copy() throws WorldException;
 	
 }

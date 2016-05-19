@@ -17,13 +17,13 @@ public class NullStatement extends Statement{
 	}
 	
 	@Override
-	public ArrayList<Statement> getStatements() {
-		return new ArrayList<Statement>();
+	public Statement[] getStatements() {
+		return new Statement[]{};
 	}
 
 	@Override
-	public ArrayList<IExpression> getExpressions() {
-		return new ArrayList<IExpression>();
+	public IExpression[] getExpressions() {
+		return new IExpression[]{};
 	}
 
 	@Override

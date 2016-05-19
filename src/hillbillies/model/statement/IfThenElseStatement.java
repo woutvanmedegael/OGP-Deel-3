@@ -76,18 +76,16 @@ public class IfThenElseStatement<T extends IBooleanExpression> extends Statement
 	}
 	
 	@Override
-	public ArrayList<Statement> getStatements() {
-		ArrayList<Statement> statements = new ArrayList<Statement>();
-		statements.add(elseStatement);
-		statements.add(thenStatement);
+	public Statement[] getStatements() {
+		Statement[] statements = new Statement[2];
+		statements[0] = thenStatement;
+		statements[1] = elseStatement;
 		return statements;
 	}
 
 	@Override
-	public ArrayList<IExpression> getExpressions() {
-		ArrayList<IExpression> expressions = new ArrayList<IExpression>();
-		expressions.add(condition);
-		return expressions;
+	public IBooleanExpression[] getExpressions() {
+		return new IBooleanExpression[]{condition};
 	}
 
 

@@ -14,7 +14,7 @@ public abstract class HillbilliesObject {
 	/**
 	 * Abstract method advance time that is implemented in each hillbilliesobject.
 	 */
-	public abstract void advanceTime(double dt) throws UnitException, WorldException;
+	public abstract void advanceTime(double dt) throws WorldException;
 	
 	/**
 	 * The parent cube of this object.
@@ -24,7 +24,7 @@ public abstract class HillbilliesObject {
 	 * Notify's the cube that a hillbilliesobject is currently occupying it. Removes the old parent cube.
 	 * @throws WorldException 
 	 */
-	public void setParentCube(Position position,World world) throws WorldException{
+	public void setParentCube(Position position,World world) throws UnitException{
 		removeObjectFromOldParent();
 		this.parentCube = position.getCube();
 		this.parentCube.addObject(this);

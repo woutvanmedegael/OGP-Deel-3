@@ -27,10 +27,8 @@ public class IsEnemyExpression<T extends IUnitExpression> extends BooleanExpress
 	
 	
 	@Override
-	public ArrayList<IExpression> getExpressions() {
-		ArrayList<IExpression> expressions = new ArrayList<>();
-		expressions.add(this.enemy);
-		return expressions;
+	public IUnitExpression[] getExpressions() {
+		return new IUnitExpression[]{enemy};
 	}
 
 	

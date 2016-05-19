@@ -56,10 +56,19 @@ public class TaskFactory implements ITaskFactory<Expression<?>, Statement, Task>
 		try{
 			if (selectedCubes==null || selectedCubes.size()==0){
 				tasks.add(new Task(name, priority, activity, null));
+				if (tasks.get(0).containsSelectedKeyword()){
+					return null;
+				}
 			} else {
 				for (int[] i: selectedCubes){
-					Position pos = new Position(i[0], i[1], i[2], null);
-					tasks.add(new Task(name, priority, activity, pos));
+					if (selectedCubes.indexOf(i)!=0){
+						Position pos = new Position(i[0], i[1], i[2], null);
+						tasks.add(new Task(name, priority, activity.copy(), pos));
+					} else {
+						Position pos = new Position(i[0], i[1], i[2], null);
+						tasks.add(new Task(name, priority, activity, pos));
+					}
+					
 				}
 			}
 		} catch (Exception e){

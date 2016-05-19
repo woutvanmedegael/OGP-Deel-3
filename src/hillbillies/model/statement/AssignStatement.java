@@ -52,15 +52,13 @@ public class AssignStatement extends Statement{
 	}
 
 	@Override
-	public ArrayList<Statement> getStatements() {
-		return new ArrayList<Statement>();
+	public Statement[] getStatements() {
+		return new Statement[]{};
 	}
 
 	@Override
-	public ArrayList<IExpression> getExpressions() {
-		ArrayList<IExpression> expressions = new ArrayList<IExpression>();
-		expressions.add(expr);
-		return expressions; 
+	public IExpression[] getExpressions() {
+		return new IExpression[]{expr};
 	}
 
 	@Override

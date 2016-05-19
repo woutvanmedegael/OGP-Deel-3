@@ -5,6 +5,7 @@ import java.util.List;
 
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
+import hillbillies.model.expressions.IBooleanExpression;
 import hillbillies.model.expressions.IExpression;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.world.World;
@@ -40,15 +41,14 @@ public class MultipleStatement extends Statement{
 	
 	
 	@Override
-	public ArrayList<Statement> getStatements() {
-		ArrayList<Statement> statementlist = new ArrayList<Statement>();
-		statementlist.addAll(statements);
+	public Statement[] getStatements() {
+		Statement[] statementlist = statements.toArray(new Statement[statements.size()]);
 		return statementlist;
 	}
 
 	@Override
-	public ArrayList<IExpression> getExpressions() {
-		return new ArrayList<IExpression>();
+	public IExpression[] getExpressions() {
+		return new IExpression[]{};
 	}
 	
 	@Override

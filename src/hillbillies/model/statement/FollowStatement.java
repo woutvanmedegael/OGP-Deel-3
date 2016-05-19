@@ -36,10 +36,8 @@ public class FollowStatement<T extends IUnitExpression> extends ActionStatement{
 	}
 
 	@Override
-	public ArrayList<IExpression> getExpressions() {
-		ArrayList<IExpression> expressions = new ArrayList<IExpression>();
-		expressions.add(unitExpression);
-		return expressions;
+	public IExpression[] getExpressions() {
+		return new IExpression[]{unitExpression};
 	}
 
 	@Override

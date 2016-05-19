@@ -28,10 +28,8 @@ public class NotExpression<T extends IBooleanExpression> extends BooleanExpressi
 	
 	
 	@Override
-	public ArrayList<IExpression> getExpressions() {
-		ArrayList<IExpression> expressions = new ArrayList<>();
-		expressions.add(this.notExpression);
-		return expressions;
+	public IBooleanExpression[] getExpressions() {
+		return new IBooleanExpression[]{notExpression};
 	}
 
 	

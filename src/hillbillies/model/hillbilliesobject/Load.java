@@ -83,7 +83,7 @@ private LoadState myState = LoadState.NEUTRAL;
  * Advances the time for this object. If the state is neutral nothing happens, if the states is falling the falls.
  */
 @Override
-public void advanceTime(double dt) throws WorldException {
+public void advanceTime(double dt) throws UnitException {
 	if (dt<=0 || dt>0.2){
 		
 		throw new UnitException();
@@ -110,7 +110,7 @@ public void setPosition(Position position) throws WorldException{
 /**
  * Makes the load fall. The state is set to falling, the local target is set at the underlying cube. 
  */
-public void startFalling() throws WorldException{
+public void startFalling() throws UnitException{
 	if (this.getMyState()!=LoadState.FALLING){
 		startFalling = new Position(0,0,0,this.world);
 		startFalling.setPositionAt(getPosition());
@@ -149,9 +149,9 @@ private LoadState getMyState(){
 /**
  * Makes the load fall and stop when needed.
  */
-private void fall(double dt) throws WorldException{
+private void fall(double dt) throws UnitException{
 	if (this.getLocalTarget().getxpos()!=this.getPosition().getxpos()){
-		throw new WorldException();
+		throw new UnitException();
 	}
 	double distance = this.getPosition().calculateDistance(this.getLocalTarget());
 	boolean hasArrivedAtLocalTarget = this.speed*dt>distance;

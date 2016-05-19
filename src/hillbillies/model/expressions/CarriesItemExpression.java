@@ -36,10 +36,8 @@ public class CarriesItemExpression<T extends IUnitExpression> extends BooleanExp
 	
 	
 	@Override
-	public ArrayList<IExpression> getExpressions() {
-		ArrayList<IExpression> expressions = new ArrayList<>();
-		expressions.add(this.unit);
-		return expressions;
+	public IUnitExpression[] getExpressions() {
+		return new IUnitExpression[]{unit};
 	}
 
 }

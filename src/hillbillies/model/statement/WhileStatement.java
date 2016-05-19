@@ -61,17 +61,16 @@ public class WhileStatement<T extends IBooleanExpression> extends Statement{
 	}
 	
 	@Override
-	public ArrayList<Statement> getStatements() {
-		ArrayList<Statement> statements = new ArrayList<Statement>();
-		statements.add(body);
+	public Statement[] getStatements() {
+		Statement[] statements = new Statement[1];
+		statements[0] = this.body;
 		return statements;
 	}
 
 	@Override
-	public ArrayList<IExpression> getExpressions() {
-		ArrayList<IExpression> expressions = new ArrayList<IExpression>();
-		expressions.add(condition);
-		return expressions;
+	public IBooleanExpression[] getExpressions() {
+		return new IBooleanExpression[]{condition};
+
 	}
 
 

@@ -16,8 +16,8 @@ public class TrueExpression extends BooleanExpression {
 	
 
 	@Override
-	public ArrayList<IExpression> getExpressions() {
-		return new ArrayList<IExpression>();
+	public IExpression[] getExpressions() {
+		return new IExpression[]{};
 	}
 
 }

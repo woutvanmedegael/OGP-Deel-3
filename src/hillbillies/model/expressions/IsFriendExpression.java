@@ -29,10 +29,8 @@ public class IsFriendExpression<T extends IUnitExpression> extends BooleanExpres
 
 		
 		@Override
-		public ArrayList<IExpression> getExpressions() {
-			ArrayList<IExpression> expressions = new ArrayList<>();
-			expressions.add(this.friend);
-			return expressions;
+		public IUnitExpression[] getExpressions() {
+			return new IUnitExpression[]{friend};
 		}
 
 	

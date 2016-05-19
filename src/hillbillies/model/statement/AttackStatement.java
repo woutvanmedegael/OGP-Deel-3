@@ -36,10 +36,8 @@ public class AttackStatement<T extends IUnitExpression> extends ActionStatement{
 
 
 	@Override
-	public ArrayList<IExpression> getExpressions() {
-		ArrayList<IExpression> expressions = new ArrayList<IExpression>();
-		expressions.add(unitExpression);
-		return expressions;
+	public IUnitExpression[] getExpressions() {
+		return new IUnitExpression[]{unitExpression};
 	}
 
 

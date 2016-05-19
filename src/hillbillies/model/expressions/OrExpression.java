@@ -33,11 +33,8 @@ public class OrExpression<L extends IBooleanExpression, R extends IBooleanExpres
 	
 	
 	@Override
-	public ArrayList<IExpression> getExpressions() {
-		ArrayList<IExpression> expressions = new ArrayList<>();
-		expressions.add(this.right);
-		expressions.add(this.left);
-		return expressions;
+	public IBooleanExpression[] getExpressions() {
+		return new IBooleanExpression[]{right,left};
 	}
 }
 

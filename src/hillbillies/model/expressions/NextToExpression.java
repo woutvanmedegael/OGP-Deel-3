@@ -55,10 +55,8 @@ public class NextToExpression<T extends IPositionExpression> extends PositionExp
 	
 	
 	@Override
-	public ArrayList<IExpression> getExpressions() {
-		ArrayList<IExpression> expressions = new ArrayList<>();
-		expressions.add(this.position);
-		return expressions;
+	public IPositionExpression[] getExpressions() {
+		return new IPositionExpression[]{position};
 	}
 
 	

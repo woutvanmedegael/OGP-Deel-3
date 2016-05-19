@@ -18,8 +18,8 @@ public class ThisExpression extends UnitExpression{
 	
 	
 	@Override
-	public ArrayList<IExpression> getExpressions() {
-		return new ArrayList<IExpression>();
+	public IExpression[] getExpressions() {
+		return new IExpression[]{};
 	}
 
 	

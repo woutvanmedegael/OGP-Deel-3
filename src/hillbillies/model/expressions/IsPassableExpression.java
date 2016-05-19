@@ -32,10 +32,8 @@ public class IsPassableExpression<T extends IPositionExpression> extends Boolean
 	
 	
 	@Override
-	public ArrayList<IExpression> getExpressions() {
-		ArrayList<IExpression> expressions = new ArrayList<>();
-		expressions.add(this.positionExpression);
-		return expressions;
+	public IPositionExpression[] getExpressions() {
+		return new IPositionExpression[]{positionExpression};
 	}
 	
 	

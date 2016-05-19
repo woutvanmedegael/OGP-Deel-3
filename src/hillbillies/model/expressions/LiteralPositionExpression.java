@@ -22,9 +22,8 @@ public class LiteralPositionExpression extends PositionExpression {
 	
 
 	@Override
-	public ArrayList<IExpression> getExpressions() {
-		// TODO Auto-generated method stub
-		return new ArrayList<IExpression>();
+	public IExpression[] getExpressions() {
+		return new IExpression[]{};
 	}
 	
 	public LiteralPositionExpression(int x, int y, int z){

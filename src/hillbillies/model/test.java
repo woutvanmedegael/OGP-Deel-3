@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import hillbillies.model.expressions.Expression;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.scheduler.Scheduler;
 import hillbillies.model.scheduler.Task;
@@ -29,21 +30,10 @@ public class test {
 	private static final int TYPE_WORKSHOP = 3;
 
 	public static void main(String[] args) throws WorldException, ModelException {
-		Task task1 = new Task("ablk", 10, null, null);
-		Task task2 = new Task(null, 20, null, null);
-		Task task3 = new Task(null, -5, null, null);
-		Scheduler scheduler = new Scheduler();
-		scheduler.addTask(task1);
-		scheduler.addTask(task2);
-		scheduler.addTask(task3);
-		Iterator<Task> it = scheduler.getIterator();
-		System.out.println(it.hasNext());
-		System.out.println(it.next().getPriority());
-		System.out.println(it.hasNext());
-		System.out.println(it.next().getPriority());
-		System.out.println(it.hasNext());
-		System.out.println(it.next().getPriority());
-		System.out.println(it.hasNext());
+		Expression[] expressions = new Expression[5];
+		for (Expression e: expressions){
+			
+		}
 
 
 	}
