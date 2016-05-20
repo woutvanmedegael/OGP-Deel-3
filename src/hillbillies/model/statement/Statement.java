@@ -3,8 +3,6 @@
  */
 package hillbillies.model.statement;
 
-import java.util.ArrayList;
-
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.expressions.IExpression;
 import hillbillies.model.world.WorldException;
@@ -23,8 +21,12 @@ public abstract class Statement{
 		this.executed = b;
 	}
 	
-	public abstract Statement[] getStatements();
-	public abstract IExpression[] getExpressions();
+	public Statement[] getStatements() {
+		return new Statement[]{};
+	}
+	public IExpression[] getExpressions() {
+		return new IExpression[]{};
+	}
 	public abstract Statement copy() throws WorldException;
 	
 }

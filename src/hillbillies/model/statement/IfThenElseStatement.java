@@ -1,15 +1,7 @@
 package hillbillies.model.statement;
 
-import java.util.ArrayList;
-
 import hillbillies.model.ContextWrapper;
-import hillbillies.model.Position;
-import hillbillies.model.expressions.BooleanExpression;
-import hillbillies.model.expressions.Expression;
 import hillbillies.model.expressions.IBooleanExpression;
-import hillbillies.model.expressions.IExpression;
-import hillbillies.model.hillbilliesobject.unit.Unit;
-import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
 public class IfThenElseStatement<T extends IBooleanExpression> extends Statement {

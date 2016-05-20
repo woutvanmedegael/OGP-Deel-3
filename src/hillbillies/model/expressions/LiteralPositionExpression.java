@@ -1,7 +1,5 @@
 package hillbillies.model.expressions;
 
-import java.util.ArrayList;
-
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
 import hillbillies.model.statement.WrongVariableException;
@@ -13,17 +11,11 @@ public class LiteralPositionExpression extends PositionExpression {
 	private int y;
 	private int z;
 	Position pos;
+	
 	@Override
 	public Position evaluatePosition(ContextWrapper c) throws WorldException, WrongVariableException {
 		
 		return new Position(this.x, this.y, this.z, c.getThisWorld());
-	}
-
-	
-
-	@Override
-	public IExpression[] getExpressions() {
-		return new IExpression[]{};
 	}
 	
 	public LiteralPositionExpression(int x, int y, int z){

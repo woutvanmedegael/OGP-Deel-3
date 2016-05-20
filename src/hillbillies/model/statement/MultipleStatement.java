@@ -12,7 +12,7 @@ import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
 public class MultipleStatement extends Statement{
-	//WOUT
+
 	
 	private final List<Statement> statements;
 	
@@ -46,10 +46,6 @@ public class MultipleStatement extends Statement{
 		return statementlist;
 	}
 
-	@Override
-	public IExpression[] getExpressions() {
-		return new IExpression[]{};
-	}
 	
 	@Override
 	public void setExecuted(Boolean b){

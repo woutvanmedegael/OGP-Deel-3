@@ -1,15 +1,11 @@
 package hillbillies.model.expressions;
 
-import java.util.ArrayList;
-
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
-import hillbillies.model.hillbilliesobject.unit.Unit;
-import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
 public class SelectedExpression extends PositionExpression{
-	//WOUT
+
 	@Override
 	public Position evaluatePosition(ContextWrapper c) throws WorldException {
 		if (c.getSelectedPos()==null){
@@ -19,14 +15,4 @@ public class SelectedExpression extends PositionExpression{
 		pos.setWorld(c.getThisWorld());
 		return pos;
 	}
-
-	
-	
-	@Override
-	public IExpression[] getExpressions() {
-		return new IExpression[]{};
-	}
-
-	
-
 }

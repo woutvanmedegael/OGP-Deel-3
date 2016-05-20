@@ -1,19 +1,10 @@
 package hillbillies.model.statement;
 
-import java.util.ArrayList;
-
 import hillbillies.model.ContextWrapper;
-import hillbillies.model.Position;
-import hillbillies.model.expressions.BooleanExpression;
-import hillbillies.model.expressions.Expression;
 import hillbillies.model.expressions.IBooleanExpression;
 import hillbillies.model.expressions.IExpression;
 import hillbillies.model.expressions.IPositionExpression;
 import hillbillies.model.expressions.IUnitExpression;
-import hillbillies.model.expressions.PositionExpression;
-import hillbillies.model.expressions.UnitExpression;
-import hillbillies.model.hillbilliesobject.unit.Unit;
-import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
 public class AssignStatement extends Statement{
@@ -51,10 +42,7 @@ public class AssignStatement extends Statement{
 		this.expr = expr;
 	}
 
-	@Override
-	public Statement[] getStatements() {
-		return new Statement[]{};
-	}
+
 
 	@Override
 	public IExpression[] getExpressions() {

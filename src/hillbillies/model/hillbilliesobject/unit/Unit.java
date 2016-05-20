@@ -1198,20 +1198,7 @@ private boolean isValidMove(int[] move) throws UnitException{
 			return false;
 		}
 	}
-//	if (!(this.getWorld().isWalkable(this.getCubeXpos()+move[0], this.getCubeYpos()+move[1], getCubeZpos()+move[2]))){
-//		return false;
-//	}
-	
-//	if (!Position.isValidPos(this.getxpos()+move[0],this.getypos()+move[1],this.getzpos()+move[2],this.myWorld)){
-//		return false;
-//	}
-	//this.getLocalTarget().incrPosition(move[0], move[1], move[2]);
-	//this.getLocalTarget().setToMiddleOfCube();
-	//if (this.getLocalTarget().getCube().isWalkable()){
-		//this.setLocalTarget(this.getMyPosition());
-		//return false;
-	//	}
-	
+
 	return true;
 	
 }

@@ -1,16 +1,13 @@
 package hillbillies.model.statement;
 
-import java.util.ArrayList;
-
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
 import hillbillies.model.TaskInterruptionException;
-import hillbillies.model.expressions.IExpression;
 import hillbillies.model.expressions.IPositionExpression;
 import hillbillies.model.world.WorldException;
 
 public class MoveStatement<T extends IPositionExpression> extends ActionStatement {
-	//ADRIAAN
+	
 	@Override
 	public Boolean executeNext(ContextWrapper c) throws WorldException, WrongVariableException {
 		try{

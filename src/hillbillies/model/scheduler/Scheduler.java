@@ -73,28 +73,7 @@ public class Scheduler{
 		return tasks.contains(task);
 	}
 	
-	/**
-	 * Returns the task with the highestPriority of the given tasks
-	 * @param t
-	 * 		  One task to compare.
-	 * @param u
-	 * 		  The other task to compara.
-	 * @return 
-	 * 		| if ( 
-	 * 	//TODO: mag deze methode niet gewoon weg ?	
-	 */
-	private Task getHighestPriorityOf(Task t, Task u){
-		if (t==null){
-			return u;
-		}
-		if (u==null){
-			return t;
-		}
-		if (t.getPriority()>=u.getPriority()){
-			return t;
-		}
-		return u;
-	}
+
 	/**
 	 * Returns the task in tasks with the highest priority.
 	 * @return result = tasks.stream().filter(t->!t.isExecuting()).max(comp).get();
@@ -155,7 +134,8 @@ public class Scheduler{
 	/**
 	 * Returns the task  with the highest priority in the tasks of this scheduler that is not assigned to another unit.
 	 * @param u
-	 * @return
+	 * @return 
+	 *TODO:
 	 */
 	
 	public Task getHighestPrioNonActiveTask(Unit u) {
@@ -205,7 +185,7 @@ public class Scheduler{
 	}
 	/**
 	 * Returns an iterator returning all the tasks in descending order of priority in this scheduler.
-	 * @return @effect new Iterator<Task>f
+	 * @return new Iterator<Task>f
 	 */
 	public Iterator<Task> getIterator(){
 		return new Iterator<Task>(){

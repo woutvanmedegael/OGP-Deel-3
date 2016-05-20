@@ -42,7 +42,6 @@ public abstract class HillbilliesObject {
 		if (parentCube != null){
 		this.parentCube.deleteObject(this);}
 	}
-	//TODO: officieel via terminated enzo ?
 	
 	
 }

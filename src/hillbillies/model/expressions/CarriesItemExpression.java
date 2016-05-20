@@ -1,19 +1,12 @@
 package hillbillies.model.expressions;
 
-import java.util.ArrayList;
-
 import hillbillies.model.ContextWrapper;
-import hillbillies.model.Position;
-import hillbillies.model.TaskInterruptionException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.statement.WrongVariableException;
-import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
 public class CarriesItemExpression<T extends IUnitExpression> extends BooleanExpression{
-	
-	
-	
+
 	private final T unit;
 
 	public CarriesItemExpression(T unit) throws WorldException{

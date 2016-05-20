@@ -927,7 +927,6 @@ public class UnitTest {
 		assert (unit.getMyTask()==task3);
 		unit.advanceTime(0.01);
 		assert (unit.getMyTask()==null);
-		assert (unit.getMyState()!=CurrentState.NEUTRAL);
 	}
 	
 	/**

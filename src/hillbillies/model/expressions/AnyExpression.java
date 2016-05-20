@@ -1,7 +1,5 @@
 package hillbillies.model.expressions;
 
-import java.util.ArrayList;
-import java.util.Set;
 import java.util.function.Predicate;
 
 import hillbillies.model.ContextWrapper;
@@ -10,14 +8,11 @@ import hillbillies.model.Position;
 import hillbillies.model.TaskInterruptionException;
 import hillbillies.model.hillbilliesobject.HillbilliesObject;
 import hillbillies.model.hillbilliesobject.unit.Unit;
-import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.model.world.Cube;
-import hillbillies.model.world.Faction;
-import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
 public class AnyExpression extends UnitExpression{
-	//ADRIAAN
+
 	@Override
 	public Unit evaluateUnit(ContextWrapper c) throws WorldException, TaskInterruptionException{
 		Predicate<Cube> myPredicate = new Predicate<Cube>(){
@@ -46,12 +41,7 @@ public class AnyExpression extends UnitExpression{
 		throw new TaskInterruptionException();		
 	}
 
-	
 
-	@Override
-	public IExpression[] getExpressions() {
-		return new IExpression[]{};
-	}
 		
 
 	}

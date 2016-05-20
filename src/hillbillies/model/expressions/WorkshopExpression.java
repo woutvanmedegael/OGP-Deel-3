@@ -1,15 +1,9 @@
 package hillbillies.model.expressions;
 
-import java.util.ArrayList;
-import java.util.function.Predicate;
-
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Dijkstra;
 import hillbillies.model.Position;
 import hillbillies.model.TaskInterruptionException;
-import hillbillies.model.hillbilliesobject.unit.Unit;
-import hillbillies.model.world.Cube;
-import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
 public class WorkshopExpression extends PositionExpression{
@@ -24,14 +18,5 @@ public class WorkshopExpression extends PositionExpression{
 		}
 		return pos;
 	}
-
-	
-	
-	@Override
-	public IExpression[] getExpressions() {
-		return new IExpression[]{};
-	}
-
-	
 
 }

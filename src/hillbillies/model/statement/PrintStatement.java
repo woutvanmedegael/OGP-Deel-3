@@ -1,21 +1,15 @@
 package hillbillies.model.statement;
 
-import java.util.ArrayList;
-
 import hillbillies.model.ContextWrapper;
-import hillbillies.model.Position;
-import hillbillies.model.expressions.BooleanExpression;
 import hillbillies.model.expressions.Expression;
 import hillbillies.model.expressions.IBooleanExpression;
 import hillbillies.model.expressions.IExpression;
 import hillbillies.model.expressions.IPositionExpression;
 import hillbillies.model.expressions.IUnitExpression;
-import hillbillies.model.hillbilliesobject.unit.Unit;
-import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
 public class PrintStatement<T extends Expression<?>> extends Statement{
-	//ADRIAAN
+
 	@Override
 	public Boolean executeNext(ContextWrapper c) throws WorldException {
 		if (stuffToPrint instanceof IBooleanExpression){
@@ -48,12 +42,6 @@ public class PrintStatement<T extends Expression<?>> extends Statement{
 		}
 		this.stuffToPrint = value;
 	}
-	
-	
-	@Override
-	public Statement[] getStatements() {
-		return new Statement[]{};
-	}
 
 	@Override
 	public IExpression[] getExpressions() {
@@ -63,7 +51,7 @@ public class PrintStatement<T extends Expression<?>> extends Statement{
 
 	@Override
 	public Statement copy() throws WorldException {
-		return new PrintStatement(this.stuffToPrint);
+		return new PrintStatement<T>(this.stuffToPrint);
 	}
 	
 	

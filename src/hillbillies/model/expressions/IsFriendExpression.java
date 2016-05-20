@@ -1,16 +1,10 @@
 package hillbillies.model.expressions;
 
-import java.util.ArrayList;
-
 import hillbillies.model.ContextWrapper;
-import hillbillies.model.Position;
-import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.statement.WrongVariableException;
-import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
 public class IsFriendExpression<T extends IUnitExpression> extends BooleanExpression{
-	//WOUT
 	
 		private T friend;
 		

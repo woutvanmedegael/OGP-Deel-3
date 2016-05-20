@@ -1,7 +1,5 @@
 package hillbillies.model.expressions;
 
-import java.util.ArrayList;
-
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
 import hillbillies.model.hillbilliesobject.unit.Unit;
@@ -45,11 +43,6 @@ public class ReadVariableExpression extends Expression<Object> implements IBoole
 		throw new WrongVariableException();
 	}
 
-	@Override
-	public IExpression[] getExpressions() {
-		return new IExpression[]{};
-	}
-	
 	public String getVariableName(){
 		return this.variable;
 	}

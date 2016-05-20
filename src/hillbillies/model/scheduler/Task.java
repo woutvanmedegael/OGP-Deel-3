@@ -19,7 +19,7 @@ import hillbillies.model.world.WorldException;
  * @author Wout Van Medegael & Adriaan Van Gerven
  *
  */
-public class Task implements Comparable<Task>{
+public class Task {
 	
 	/**
 	 * The statement of this task.
@@ -124,7 +124,7 @@ public class Task implements Comparable<Task>{
 	}
 	/**
 	 * Returns true if the task has finished and thus the statement has been executed.
-	 * @return @effect this.statement.HasBeenExecuted()
+	 * @return this.statement.HasBeenExecuted()
 	 */
 	public Boolean hasFinished(){
 		return this.statement.hasBeenExecuted();
@@ -179,10 +179,7 @@ public class Task implements Comparable<Task>{
 	 * @effect The selectedPos is set in the contexWrapper
 	 * 			| this.contextWrapper.setSelectedPos(selectedPos)
 	 * @post   This.tree is set to a new SubTyp(stat)
-	 * 		 	new.tree = //TODO
-	 * @post ...
-	 * 		  
-	 * 
+	 * 		 	new.tree == new SubType(stat)
 	 */
 	public Task(String name, int prio, Statement stat, Position selectedPos){
 		if (name==null || stat==null){
@@ -240,25 +237,7 @@ public class Task implements Comparable<Task>{
 	public String getName() {
 		return name;
 	}
-	/**
-	 * Compares this task to a given task based on priority
-	 * @return Returns 0 if this task is equal to the other task if the priority of the given task is bigger than the priority of this 
-	 * 			task 1 is returned else -1
-	 * 			| if (this.equals(task)) then result ==0
-	 * 			| else if (task.getPriority()>this.getPriority()) then result == 1 else result == 0   
-	 */
-	//TODO: override is erbij gezet, ook de equal zou eigenlijk op priority moetn zijn 
-	@Override
-	public int compareTo(Task task){
-		if (this.equals(task)){
-			return 0;
-		}
-		if (task.getPriority()>this.getPriority()){	
-			return 1;
-		}
-		return -1;
-	} 
-
+	
 
 	/**
 	 * Sets the priority of this task to the given priority.

@@ -12,7 +12,6 @@ import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
 public class NextToExpression<T extends IPositionExpression> extends PositionExpression{
-	//WOUT
 	
 	private T position;
 	

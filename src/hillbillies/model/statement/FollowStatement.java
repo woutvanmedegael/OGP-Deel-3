@@ -1,10 +1,7 @@
 package hillbillies.model.statement;
 
-import java.util.ArrayList;
-
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.TaskInterruptionException;
-import hillbillies.model.expressions.Expression;
 import hillbillies.model.expressions.IExpression;
 import hillbillies.model.expressions.IUnitExpression;
 import hillbillies.model.world.WorldException;

@@ -7,5 +7,6 @@ import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.WorldException;
 
 public interface IPositionExpression extends IExpression {
+	
 	public Position evaluatePosition(ContextWrapper c) throws WorldException, WrongVariableException;
 }

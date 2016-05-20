@@ -1,17 +1,11 @@
 package hillbillies.model.expressions;
 
-import java.util.ArrayList;
-
 import hillbillies.model.ContextWrapper;
-import hillbillies.model.Position;
-import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.statement.WrongVariableException;
-import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
 public class OrExpression<L extends IBooleanExpression, R extends IBooleanExpression> extends BooleanExpression{
-	//WOUT
-	
+		
 	private final R right;
 	private final L left;
 	

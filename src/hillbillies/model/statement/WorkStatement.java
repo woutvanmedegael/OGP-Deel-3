@@ -1,12 +1,8 @@
 package hillbillies.model.statement;
 
-import java.util.ArrayList;
-
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.Position;
 import hillbillies.model.TaskInterruptionException;
-import hillbillies.model.expressions.Expression;
-import hillbillies.model.expressions.IExpression;
 import hillbillies.model.expressions.IPositionExpression;
 import hillbillies.model.world.WorldException;
 
@@ -42,7 +38,7 @@ public class WorkStatement<T extends IPositionExpression> extends ActionStatemen
 
 	@Override
 	public Statement copy() throws WorldException {
-		return new WorkStatement(this.positionExpression);
+		return new WorkStatement<T>(this.positionExpression);
 	}
 	
 	

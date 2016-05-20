@@ -1,13 +1,10 @@
 package hillbillies.model.expressions;
 
-import java.util.ArrayList;
-
 import hillbillies.model.ContextWrapper;
 import hillbillies.model.statement.WrongVariableException;
 import hillbillies.model.world.WorldException;
 
 public class IsEnemyExpression<T extends IUnitExpression> extends BooleanExpression{
-	//WOUT
 	
 	private T enemy;
 	

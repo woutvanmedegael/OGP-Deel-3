@@ -1,19 +1,10 @@
 package hillbillies.model.statement;
 
-import java.util.ArrayList;
-
 import hillbillies.model.ContextWrapper;
-import hillbillies.model.Position;
-import hillbillies.model.expressions.BooleanExpression;
-import hillbillies.model.expressions.Expression;
 import hillbillies.model.expressions.IBooleanExpression;
-import hillbillies.model.expressions.IExpression;
-import hillbillies.model.hillbilliesobject.unit.Unit;
-import hillbillies.model.world.World;
 import hillbillies.model.world.WorldException;
 
 public class WhileStatement<T extends IBooleanExpression> extends Statement{
-	//WOUT
 	
 	private final T condition;
 	private final Statement body;
@@ -76,7 +67,7 @@ public class WhileStatement<T extends IBooleanExpression> extends Statement{
 
 	@Override
 	public Statement copy() throws WorldException {
-		return new WhileStatement(this.condition, this.body.copy());
+		return new WhileStatement<T>(this.condition, this.body.copy());
 		}
 	
 	
