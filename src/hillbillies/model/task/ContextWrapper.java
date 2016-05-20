@@ -35,8 +35,8 @@ public class ContextWrapper {
 	public void setThisWorld(World thisWorld) {
 		this.thisWorld = thisWorld;
 	}
-	public void addNewVariable(String key,Object expr){
-		assignMapper.put(key, expr);
+	public void addNewVariable(String key,Object obj){
+		assignMapper.put(key, obj);
 	}
 	
 	public Object returnVariable(String key){
