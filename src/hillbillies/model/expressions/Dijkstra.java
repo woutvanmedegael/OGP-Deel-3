@@ -17,7 +17,6 @@ public class Dijkstra {
 	
 	private final Predicate<Cube> condition;
 	private final Position startPos = new Position(0, 0, 0, null);
-	private final World world;
 	private TreeSet<Position> openset = new TreeSet<Position>(new Comparator<Position>(){
 
 		@Override
@@ -46,7 +45,7 @@ public class Dijkstra {
 		if (!startPos.getCube().isPassable()){
 			throw new IllegalArgumentException();
 		}
-		this.world = startPos.getWorld();
+		startPos.getWorld();
 	}
 	
 	public Position findClosestPosition() throws UnitException{
