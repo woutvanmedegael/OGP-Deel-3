@@ -1,10 +1,11 @@
 package hillbillies.model.statement;
 
-import hillbillies.model.ContextWrapper;
-import hillbillies.model.TaskInterruptionException;
+import hillbillies.model.exceptions.TaskInterruptionException;
+import hillbillies.model.exceptions.WorldException;
+import hillbillies.model.exceptions.WrongVariableException;
 import hillbillies.model.expressions.IExpression;
 import hillbillies.model.expressions.IUnitExpression;
-import hillbillies.model.world.WorldException;
+import hillbillies.model.task.ContextWrapper;
 
 public class FollowStatement<T extends IUnitExpression> extends ActionStatement{
 	
@@ -21,15 +22,12 @@ public class FollowStatement<T extends IUnitExpression> extends ActionStatement{
 
 	
 	private final T unitExpression;
+	
 	public FollowStatement(T unit) throws WorldException {
 		if (unit==null){
 			throw new WorldException();
 		}
 		this.unitExpression = unit;
-		
-		
-		
-		
 	}
 
 	@Override

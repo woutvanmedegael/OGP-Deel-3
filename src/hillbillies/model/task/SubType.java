@@ -1,4 +1,4 @@
-package hillbillies.model;
+package hillbillies.model.task;
 import java.util.ArrayList;
 
 import hillbillies.model.expressions.Expression;
@@ -87,15 +87,15 @@ public class SubType {
 		}
 	}
 	
-	public int getType(){
+	private int getType(){
 		return this.type;
 	}
 	
-	public void addStatementSubType(SubType sub){
+	private void addStatementSubType(SubType sub){
 		this.statementTree.addSubType(sub);
 	}
 	
-	public void addExpressionSubType(SubType sub){
+	private void addExpressionSubType(SubType sub){
 		this.expressionTree.addSubType(sub);
 	}
 	

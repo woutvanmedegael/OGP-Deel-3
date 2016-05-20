@@ -19,14 +19,14 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import hillbillies.model.exceptions.WorldException;
 import hillbillies.model.expressions.TrueExpression;
 import hillbillies.model.hillbilliesobject.unit.Unit;
-import hillbillies.model.scheduler.Scheduler;
-import hillbillies.model.scheduler.Task;
 import hillbillies.model.statement.PrintStatement;
+import hillbillies.model.task.Task;
 import hillbillies.model.world.Faction;
+import hillbillies.model.world.Scheduler;
 import hillbillies.model.world.World;
-import hillbillies.model.world.WorldException;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 import hillbillies.part3.facade.Facade;
 import hillbillies.part3.programs.TaskParser;

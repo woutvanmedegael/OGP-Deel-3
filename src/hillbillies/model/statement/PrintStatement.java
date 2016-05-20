@@ -1,12 +1,13 @@
 package hillbillies.model.statement;
 
-import hillbillies.model.ContextWrapper;
+import hillbillies.model.exceptions.WorldException;
+import hillbillies.model.exceptions.WrongVariableException;
 import hillbillies.model.expressions.Expression;
 import hillbillies.model.expressions.IBooleanExpression;
 import hillbillies.model.expressions.IExpression;
 import hillbillies.model.expressions.IPositionExpression;
 import hillbillies.model.expressions.IUnitExpression;
-import hillbillies.model.world.WorldException;
+import hillbillies.model.task.ContextWrapper;
 
 public class PrintStatement<T extends Expression<?>> extends Statement{
 
@@ -36,6 +37,7 @@ public class PrintStatement<T extends Expression<?>> extends Statement{
 
 	
 	private final T stuffToPrint;
+	
 	public PrintStatement(T value) throws WorldException{
 		if (value==null){
 			throw new WorldException();

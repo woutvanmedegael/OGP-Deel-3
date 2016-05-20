@@ -2,13 +2,14 @@ package hillbillies.model.world;
 import java.util.Random;
 import java.util.Set;
 
-import hillbillies.model.Position;
+import hillbillies.model.exceptions.UnitException;
+import hillbillies.model.exceptions.WorldException;
 import hillbillies.model.hillbilliesobject.Boulder;
 import hillbillies.model.hillbilliesobject.HillbilliesObject;
 import hillbillies.model.hillbilliesobject.Load;
 import hillbillies.model.hillbilliesobject.Log;
 import hillbillies.model.hillbilliesobject.unit.Unit;
-import hillbillies.model.hillbilliesobject.unit.UnitException;
+import hillbillies.model.util.Position;
 import hillbillies.part2.listener.TerrainChangeListener;
 import hillbillies.util.ConnectedToBorder;
 

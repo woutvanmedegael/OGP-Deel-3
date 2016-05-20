@@ -1,10 +1,10 @@
 package hillbillies.model.hillbilliesobject;
 
-import hillbillies.model.Position;
-import hillbillies.model.hillbilliesobject.unit.UnitException;
+import hillbillies.model.exceptions.UnitException;
+import hillbillies.model.exceptions.WorldException;
+import hillbillies.model.util.Position;
 import hillbillies.model.world.Cube;
 import hillbillies.model.world.World;
-import hillbillies.model.world.WorldException;
 
 /**
  * @value
@@ -38,7 +38,7 @@ public abstract class HillbilliesObject {
 	/**
 	 * Removes the object from the old parent cube.
 	 */
-	public void removeObjectFromOldParent(){
+	private void removeObjectFromOldParent(){
 		if (parentCube != null){
 		this.parentCube.deleteObject(this);}
 	}

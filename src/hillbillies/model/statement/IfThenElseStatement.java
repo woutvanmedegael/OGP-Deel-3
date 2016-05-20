@@ -1,8 +1,9 @@
 package hillbillies.model.statement;
 
-import hillbillies.model.ContextWrapper;
+import hillbillies.model.exceptions.WorldException;
+import hillbillies.model.exceptions.WrongVariableException;
 import hillbillies.model.expressions.IBooleanExpression;
-import hillbillies.model.world.WorldException;
+import hillbillies.model.task.ContextWrapper;
 
 public class IfThenElseStatement<T extends IBooleanExpression> extends Statement {
 	
@@ -21,7 +22,7 @@ public class IfThenElseStatement<T extends IBooleanExpression> extends Statement
 		if (elseStat==null){
 			this.elseStatement = new NullStatement();
 		} else {
-		this.elseStatement = elseStat;
+			this.elseStatement = elseStat;
 		}
 	}
 
@@ -63,6 +64,7 @@ public class IfThenElseStatement<T extends IBooleanExpression> extends Statement
 	@Override
 	public void setExecuted(Boolean b){
 		super.setExecuted(b);
+		this.isEvaluated = false;
 		this.thenStatement.setExecuted(b);
 		this.elseStatement.setExecuted(b);
 	}

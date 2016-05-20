@@ -1,10 +1,11 @@
 package hillbillies.model.statement;
 
-import hillbillies.model.ContextWrapper;
-import hillbillies.model.Position;
-import hillbillies.model.TaskInterruptionException;
+import hillbillies.model.exceptions.TaskInterruptionException;
+import hillbillies.model.exceptions.WorldException;
+import hillbillies.model.exceptions.WrongVariableException;
 import hillbillies.model.expressions.IPositionExpression;
-import hillbillies.model.world.WorldException;
+import hillbillies.model.task.ContextWrapper;
+import hillbillies.model.util.Position;
 
 public class WorkStatement<T extends IPositionExpression> extends ActionStatement{
 	

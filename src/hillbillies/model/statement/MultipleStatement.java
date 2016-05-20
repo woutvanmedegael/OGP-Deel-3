@@ -3,13 +3,14 @@ package hillbillies.model.statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import hillbillies.model.ContextWrapper;
-import hillbillies.model.Position;
+import hillbillies.model.exceptions.WorldException;
+import hillbillies.model.exceptions.WrongVariableException;
 import hillbillies.model.expressions.IBooleanExpression;
 import hillbillies.model.expressions.IExpression;
 import hillbillies.model.hillbilliesobject.unit.Unit;
+import hillbillies.model.task.ContextWrapper;
+import hillbillies.model.util.Position;
 import hillbillies.model.world.World;
-import hillbillies.model.world.WorldException;
 
 public class MultipleStatement extends Statement{
 

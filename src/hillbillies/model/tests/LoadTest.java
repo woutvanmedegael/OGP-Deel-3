@@ -8,12 +8,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import hillbillies.model.NbCompare;
-import hillbillies.model.Position;
+import hillbillies.model.exceptions.UnitException;
+import hillbillies.model.exceptions.WorldException;
 import hillbillies.model.hillbilliesobject.Load;
-import hillbillies.model.hillbilliesobject.unit.UnitException;
+import hillbillies.model.util.NbCompare;
+import hillbillies.model.util.Position;
 import hillbillies.model.world.World;
-import hillbillies.model.world.WorldException;
 import hillbillies.tests.util.PositionAsserts;
 /**
  * Different tests on load.

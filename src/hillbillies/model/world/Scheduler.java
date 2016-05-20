@@ -1,4 +1,4 @@
-package hillbillies.model.scheduler;
+package hillbillies.model.world;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,7 +11,9 @@ import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import hillbillies.model.exceptions.WorldException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
+import hillbillies.model.task.Task;
 /**
  *  A class Scheduler used to manage the different tasks.
  *  @author Wout Van Medegael & Adriaan Van Gerven
@@ -140,7 +142,6 @@ public class Scheduler{
 	
 	public Task getHighestPrioNonActiveTask(Unit u) {
 		Task highestPrio = null;
-		System.out.println(this.tasks);
 		for (Task t: this.tasks){
 			
 			
@@ -236,6 +237,42 @@ public class Scheduler{
 			}
 			
 		};
+	}
+	
+	/**
+	 * Assigns a task to a unit.
+	 * @post If the given task is part of this scheduler, its assigned unit is the given unit.
+	 * 		| if (this.isPartOfScheduler(task))
+	 * 		| then task.getAssignedUnit()==unit
+	 * @param task
+	 * 		The task to set the marking on
+	 * @param unit
+	 * 		The unit the tasks has to be set to.
+	 * @throws WorldException
+	 * 		Whenever the given task isn't part of this scheduler.
+	 */
+	public void setTaskAssigned(Task task, Unit unit) throws WorldException{
+		if (!this.isPartOfScheduler(task)){
+			throw new WorldException();
+		}
+		task.setAssignedUnit(unit);
+	}
+	
+	/**
+	 * Resets the marking of a task.
+	 * @post If the given task is part of this scheduler, its marking is reset.
+	 * 		| if (this.isPartOfScheduler(task))
+	 * 		| then task.getAssignedUnit()==null
+	 * @param task
+	 * 		The task to reset the marking of.
+	 * @throws WorldException
+	 * 		Whenever the given task isn't part of this scheduler.
+	 */
+	public void resetTaskMarking(Task task) throws WorldException{
+		if (!this.isPartOfScheduler(task)){
+			throw new WorldException();
+		}
+		task.setAssignedUnit(null);
 	}
 	
 	

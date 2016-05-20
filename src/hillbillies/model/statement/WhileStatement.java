@@ -1,8 +1,9 @@
 package hillbillies.model.statement;
 
-import hillbillies.model.ContextWrapper;
+import hillbillies.model.exceptions.WorldException;
+import hillbillies.model.exceptions.WrongVariableException;
 import hillbillies.model.expressions.IBooleanExpression;
-import hillbillies.model.world.WorldException;
+import hillbillies.model.task.ContextWrapper;
 
 public class WhileStatement<T extends IBooleanExpression> extends Statement{
 	
@@ -24,9 +25,9 @@ public class WhileStatement<T extends IBooleanExpression> extends Statement{
 	@Override
 	public Boolean executeNext(ContextWrapper c) throws WorldException, WrongVariableException {
 		if (isEvaluated){
-			Boolean noBreakCalled = body.executeNext(c);
-			if (!noBreakCalled){
+			if (!body.executeNext(c)){
 				this.setExecuted(true);
+				return true;
 			}
 			if (body.hasBeenExecuted()){
 				this.setExecuted(false);
@@ -36,18 +37,21 @@ public class WhileStatement<T extends IBooleanExpression> extends Statement{
 		}
 		if (condition.evaluateBoolean(c)){
 			this.isEvaluated = true;
-			body.executeNext(c);
+			if (!body.executeNext(c)){
+				this.setExecuted(true);
+			}
 			return true;
 		}
 		else {
 			this.setExecuted(true);
+			return true;
 		}
-		return true;
 	}
 	
 	@Override
 	public void setExecuted(Boolean b){
 		super.setExecuted(b);
+		this.isEvaluated = false;
 		this.body.setExecuted(b);
 	}
 	

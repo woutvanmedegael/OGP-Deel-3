@@ -3,9 +3,9 @@ package hillbillies.model.world;
 import java.util.HashSet;
 import java.util.Set;
 
+import hillbillies.model.exceptions.WorldException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
-import hillbillies.model.scheduler.Scheduler;
-import hillbillies.model.scheduler.Task;
+import hillbillies.model.task.Task;
 /**
  * @value
  * @author Wout Van Medegael & Adriaan Van Gerven

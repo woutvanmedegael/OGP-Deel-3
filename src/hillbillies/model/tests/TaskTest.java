@@ -12,23 +12,29 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import hillbillies.model.Position;
-import hillbillies.model.TaskFactory;
+import hillbillies.model.exceptions.WorldException;
+import hillbillies.model.exceptions.WrongVariableException;
 import hillbillies.model.expressions.AndExpression;
 import hillbillies.model.expressions.EnemyExpression;
 import hillbillies.model.expressions.Expression;
 import hillbillies.model.expressions.FalseExpression;
 import hillbillies.model.expressions.IBooleanExpression;
+import hillbillies.model.expressions.ReadVariableExpression;
 import hillbillies.model.expressions.TrueExpression;
 import hillbillies.model.hillbilliesobject.CurrentState;
 import hillbillies.model.hillbilliesobject.unit.Unit;
-import hillbillies.model.scheduler.Task;
+import hillbillies.model.statement.AssignStatement;
+import hillbillies.model.statement.BreakStatement;
 import hillbillies.model.statement.IfThenElseStatement;
 import hillbillies.model.statement.MultipleStatement;
 import hillbillies.model.statement.NullStatement;
 import hillbillies.model.statement.Statement;
+import hillbillies.model.statement.WhileStatement;
+import hillbillies.model.task.ContextWrapper;
+import hillbillies.model.task.Task;
+import hillbillies.model.task.TaskFactory;
+import hillbillies.model.util.Position;
 import hillbillies.model.world.World;
-import hillbillies.model.world.WorldException;
 import hillbillies.part2.listener.TerrainChangeListener;
 
 public class TaskTest {
@@ -42,14 +48,6 @@ public class TaskTest {
 	static int[][][] smallWorld = new int[3][3][3];
 	static int[][][] bigWorld = new int[15][15][15];
 	TaskFactory taskFactory = new TaskFactory();
-
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -74,10 +72,6 @@ public class TaskTest {
 		 }
 		test = new Unit(0,0,1,"Adri'aan en W\"out", 50, 50, 50, 50, false);
 
-	}
-
-	@After
-	public void tearDown() throws Exception {
 	}
 
 	@Test
@@ -383,6 +377,35 @@ public class TaskTest {
 		for (int i = 0; i<steps;i++){
 			unit.advanceTime(0.01);
 		}
+	}
+	
+	@Test
+	public void testBreakInWhile() throws WorldException, WrongVariableException{
+		Expression<?> t = taskFactory.createTrue(null);
+		Expression<?> f = taskFactory.createFalse(null);
+		Statement assign = taskFactory.createAssignment("b", f, null);
+		Statement assign2 = taskFactory.createAssignment("b", t, null);
+		Expression<?> r = taskFactory.createReadVariable("b", null);
+		Statement b = taskFactory.createBreak(null);
+		Statement body = taskFactory.createIf(r, assign, b, null);
+		Statement w = taskFactory.createWhile(t, body, null);
+		ArrayList<Statement> list = new ArrayList<>();
+		list.add(assign2);
+		list.add(w);
+		Statement stat = taskFactory.createSequence(list, null);
+		ContextWrapper c = new ContextWrapper();
+		
+		// Boolean variable has been assigned to true.
+		stat.executeNext(c);
+		assert (assign2.hasBeenExecuted());
+		
+		// Variable changed to false.
+		stat.executeNext(c);
+		assert (assign.hasBeenExecuted());
+		
+		// BreakStatement has been called, statement ended.
+		stat.executeNext(c);
+		assert (stat.hasBeenExecuted());
 	}
 
 }

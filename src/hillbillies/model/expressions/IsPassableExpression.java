@@ -1,9 +1,9 @@
 package hillbillies.model.expressions;
 
-import hillbillies.model.ContextWrapper;
-import hillbillies.model.Position;
-import hillbillies.model.statement.WrongVariableException;
-import hillbillies.model.world.WorldException;
+import hillbillies.model.exceptions.WorldException;
+import hillbillies.model.exceptions.WrongVariableException;
+import hillbillies.model.task.ContextWrapper;
+import hillbillies.model.util.Position;
 
 public class IsPassableExpression<T extends IPositionExpression> extends BooleanExpression{
 

@@ -1,4 +1,4 @@
-package hillbillies.model.world;
+package hillbillies.model.exceptions;
 /**
  * Class used to throw exceptions in concerning the game world.
  * @value

@@ -1,8 +1,8 @@
-package hillbillies.model;
+package hillbillies.model.util;
 import java.util.ArrayList;
 import java.util.function.Predicate;
 
-import hillbillies.model.hillbilliesobject.unit.UnitException;
+import hillbillies.model.exceptions.UnitException;
 import hillbillies.model.world.Cube;
 import hillbillies.model.world.World;
 /**

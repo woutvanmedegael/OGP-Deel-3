@@ -1,7 +1,8 @@
 package hillbillies.model.statement;
 
-import hillbillies.model.ContextWrapper;
-import hillbillies.model.world.WorldException;
+import hillbillies.model.exceptions.WorldException;
+import hillbillies.model.exceptions.WrongVariableException;
+import hillbillies.model.task.ContextWrapper;
 
 public class NullStatement extends Statement{
 

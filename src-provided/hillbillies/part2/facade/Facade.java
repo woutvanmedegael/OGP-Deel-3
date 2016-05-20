@@ -2,16 +2,16 @@ package hillbillies.part2.facade;
 
 import java.util.Set;
 
-import hillbillies.model.TaskInterruptionException;
+import hillbillies.model.exceptions.IllegalNameException;
+import hillbillies.model.exceptions.TaskInterruptionException;
+import hillbillies.model.exceptions.UnitException;
+import hillbillies.model.exceptions.WorldException;
 import hillbillies.model.hillbilliesobject.Boulder;
 import hillbillies.model.hillbilliesobject.CurrentState;
 import hillbillies.model.hillbilliesobject.Log;
-import hillbillies.model.hillbilliesobject.unit.IllegalNameException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
-import hillbillies.model.hillbilliesobject.unit.UnitException;
 import hillbillies.model.world.Faction;
 import hillbillies.model.world.World;
-import hillbillies.model.world.WorldException;
 import hillbillies.part2.listener.TerrainChangeListener;
 import ogp.framework.util.ModelException;
 

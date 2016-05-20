@@ -9,9 +9,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import hillbillies.model.hillbilliesobject.unit.Unit;
-import hillbillies.model.scheduler.Scheduler;
-import hillbillies.model.scheduler.Task;
+import hillbillies.model.task.Task;
 import hillbillies.model.world.Faction;
+import hillbillies.model.world.Scheduler;
 import hillbillies.model.world.World;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 import hillbillies.part3.facade.Facade;

@@ -1,8 +1,10 @@
-package hillbillies.model;
+package hillbillies.model.task;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import hillbillies.model.exceptions.UnitException;
+import hillbillies.model.exceptions.WorldException;
 import hillbillies.model.expressions.AndExpression;
 import hillbillies.model.expressions.AnyExpression;
 import hillbillies.model.expressions.BooleanExpression;
@@ -31,8 +33,6 @@ import hillbillies.model.expressions.ThisExpression;
 import hillbillies.model.expressions.TrueExpression;
 import hillbillies.model.expressions.UnitExpression;
 import hillbillies.model.expressions.WorkshopExpression;
-import hillbillies.model.hillbilliesobject.unit.UnitException;
-import hillbillies.model.scheduler.Task;
 import hillbillies.model.statement.AssignStatement;
 import hillbillies.model.statement.AttackStatement;
 import hillbillies.model.statement.BreakStatement;
@@ -44,7 +44,7 @@ import hillbillies.model.statement.PrintStatement;
 import hillbillies.model.statement.Statement;
 import hillbillies.model.statement.WhileStatement;
 import hillbillies.model.statement.WorkStatement;
-import hillbillies.model.world.WorldException;
+import hillbillies.model.util.Position;
 import hillbillies.part3.programs.ITaskFactory;
 import hillbillies.part3.programs.SourceLocation;
 

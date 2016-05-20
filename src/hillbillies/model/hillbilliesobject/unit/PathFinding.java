@@ -6,7 +6,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Predicate;
 
-import hillbillies.model.Position;
+import hillbillies.model.exceptions.UnitException;
+import hillbillies.model.util.Position;
 import hillbillies.model.world.Cube;
 import hillbillies.model.world.World;
 /**

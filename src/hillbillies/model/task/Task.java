@@ -1,4 +1,4 @@
-package hillbillies.model.scheduler;
+package hillbillies.model.task;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -6,14 +6,13 @@ import java.util.Set;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
-import hillbillies.model.ContextWrapper;
-import hillbillies.model.Position;
-import hillbillies.model.SubType;
+import hillbillies.model.exceptions.WorldException;
+import hillbillies.model.exceptions.WrongVariableException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.statement.Statement;
-import hillbillies.model.statement.WrongVariableException;
+import hillbillies.model.util.Position;
+import hillbillies.model.world.Scheduler;
 import hillbillies.model.world.World;
-import hillbillies.model.world.WorldException;
 /**
  * A class Task used to represent a Task object
  * @author Wout Van Medegael & Adriaan Van Gerven
@@ -245,7 +244,7 @@ public class Task {
 	 * 		  The new Priority
 	 * @post new.priority = newPrio
 	 */
-	public void setPriority(int newPrio) {
+	private void setPriority(int newPrio) {
 		this.priority = newPrio;
 		
 	}

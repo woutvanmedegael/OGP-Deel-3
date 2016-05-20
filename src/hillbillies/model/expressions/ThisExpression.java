@@ -1,8 +1,8 @@
 package hillbillies.model.expressions;
 
-import hillbillies.model.ContextWrapper;
+import hillbillies.model.exceptions.WorldException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
-import hillbillies.model.world.WorldException;
+import hillbillies.model.task.ContextWrapper;
 
 public class ThisExpression extends UnitExpression{
 	

@@ -1,9 +1,10 @@
 package hillbillies.model.statement;
 
-import hillbillies.model.ContextWrapper;
-import hillbillies.model.TaskInterruptionException;
+import hillbillies.model.exceptions.TaskInterruptionException;
+import hillbillies.model.exceptions.WorldException;
+import hillbillies.model.exceptions.WrongVariableException;
 import hillbillies.model.expressions.IUnitExpression;
-import hillbillies.model.world.WorldException;
+import hillbillies.model.task.ContextWrapper;
 
 public class AttackStatement<T extends IUnitExpression> extends ActionStatement{
 	

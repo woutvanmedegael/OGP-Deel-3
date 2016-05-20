@@ -1,5 +1,5 @@
 
-package hillbillies.model;
+package hillbillies.model.util;
 
 /**
  * A class used to compare different numbers.

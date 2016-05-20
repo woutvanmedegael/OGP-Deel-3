@@ -1,8 +1,8 @@
 package hillbillies.model.expressions;
 
-import hillbillies.model.ContextWrapper;
-import hillbillies.model.Position;
-import hillbillies.model.world.WorldException;
+import hillbillies.model.exceptions.WorldException;
+import hillbillies.model.task.ContextWrapper;
+import hillbillies.model.util.Position;
 
 public class SelectedExpression extends PositionExpression{
 

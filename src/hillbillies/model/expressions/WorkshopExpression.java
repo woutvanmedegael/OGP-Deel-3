@@ -1,10 +1,9 @@
 package hillbillies.model.expressions;
 
-import hillbillies.model.ContextWrapper;
-import hillbillies.model.Dijkstra;
-import hillbillies.model.Position;
-import hillbillies.model.TaskInterruptionException;
-import hillbillies.model.world.WorldException;
+import hillbillies.model.exceptions.TaskInterruptionException;
+import hillbillies.model.exceptions.WorldException;
+import hillbillies.model.task.ContextWrapper;
+import hillbillies.model.util.Position;
 
 public class WorkshopExpression extends PositionExpression{
 	

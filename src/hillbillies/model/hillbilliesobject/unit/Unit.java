@@ -8,20 +8,22 @@ import java.util.Random;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
-import hillbillies.model.NbCompare;
-import hillbillies.model.Position;
-import hillbillies.model.TaskInterruptionException;
+import hillbillies.model.exceptions.IllegalNameException;
+import hillbillies.model.exceptions.TaskInterruptionException;
+import hillbillies.model.exceptions.UnitException;
+import hillbillies.model.exceptions.WorldException;
 import hillbillies.model.hillbilliesobject.Boulder;
 import hillbillies.model.hillbilliesobject.CurrentState;
 import hillbillies.model.hillbilliesobject.HillbilliesObject;
 import hillbillies.model.hillbilliesobject.Load;
 import hillbillies.model.hillbilliesobject.Log;
-import hillbillies.model.scheduler.Task;
+import hillbillies.model.task.Task;
+import hillbillies.model.util.NbCompare;
+import hillbillies.model.util.Position;
 import hillbillies.model.world.Cube;
 import hillbillies.model.world.Faction;
 import hillbillies.model.world.TerrainType;
 import hillbillies.model.world.World;
-import hillbillies.model.world.WorldException;
 
 /**
  * @author Wout Van Medegael & Adriaan Van Gerven
@@ -1367,6 +1369,9 @@ public void advanceTime(double dt) throws WorldException{
 	}
 	double timeSinceRest =  (this.getMyTimeState().getTimeSinceRest()+dt);
 	if (timeSinceRest>180){
+		if (this.getMyState()!=CurrentState.NEUTRAL && this.getMyTask()!=null){
+			this.interrupt();
+		}
 		this.setMyState(CurrentState.RESTING);
 		timeSinceRest -= 180;
 	}
@@ -2504,7 +2509,7 @@ public Unit getTargetUnit() {
  * 		| new.targetUnit = target
  * @param targetUnit
  */
-public void setTargetUnit(Unit target) {
+private void setTargetUnit(Unit target) {
 	this.targetUnit = target;
 }
 

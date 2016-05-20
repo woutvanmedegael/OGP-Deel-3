@@ -2,12 +2,12 @@ package hillbillies.part1.facade;
 
 
 
-import hillbillies.model.TaskInterruptionException;
+import hillbillies.model.exceptions.IllegalNameException;
+import hillbillies.model.exceptions.TaskInterruptionException;
+import hillbillies.model.exceptions.UnitException;
+import hillbillies.model.exceptions.WorldException;
 import hillbillies.model.hillbilliesobject.CurrentState;
-import hillbillies.model.hillbilliesobject.unit.IllegalNameException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
-import hillbillies.model.hillbilliesobject.unit.UnitException;
-import hillbillies.model.world.WorldException;
 import ogp.framework.util.ModelException;
 
 

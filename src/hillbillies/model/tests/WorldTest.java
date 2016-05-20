@@ -3,12 +3,12 @@ package hillbillies.model.tests;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import hillbillies.model.Position;
+import hillbillies.model.exceptions.WorldException;
 import hillbillies.model.hillbilliesobject.Boulder;
 import hillbillies.model.hillbilliesobject.Log;
+import hillbillies.model.util.Position;
 import hillbillies.model.world.Faction;
 import hillbillies.model.world.World;
-import hillbillies.model.world.WorldException;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 /**
  * Tests different aspects of the world.

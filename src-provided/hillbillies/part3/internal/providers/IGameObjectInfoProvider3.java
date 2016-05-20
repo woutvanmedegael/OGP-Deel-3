@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import hillbillies.model.hillbilliesobject.unit.Unit;
-import hillbillies.model.scheduler.Task;
+import hillbillies.model.task.Task;
 import hillbillies.model.world.Faction;
 import hillbillies.part2.internal.providers.IGameObjectInfoProvider;
 

@@ -1,9 +1,9 @@
 package hillbillies.model.expressions;
 
-import hillbillies.model.ContextWrapper;
+import hillbillies.model.exceptions.WorldException;
+import hillbillies.model.exceptions.WrongVariableException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
-import hillbillies.model.statement.WrongVariableException;
-import hillbillies.model.world.WorldException;
+import hillbillies.model.task.ContextWrapper;
 
 public class IsAliveExpression<T extends IUnitExpression> extends BooleanExpression {
 	

@@ -3,13 +3,13 @@ package hillbillies.model.expressions;
 import java.util.ArrayList;
 import java.util.Random;
 
-import hillbillies.model.ContextWrapper;
-import hillbillies.model.Position;
-import hillbillies.model.TaskInterruptionException;
+import hillbillies.model.exceptions.TaskInterruptionException;
+import hillbillies.model.exceptions.WorldException;
+import hillbillies.model.exceptions.WrongVariableException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
-import hillbillies.model.statement.WrongVariableException;
+import hillbillies.model.task.ContextWrapper;
+import hillbillies.model.util.Position;
 import hillbillies.model.world.World;
-import hillbillies.model.world.WorldException;
 
 public class NextToExpression<T extends IPositionExpression> extends PositionExpression{
 	

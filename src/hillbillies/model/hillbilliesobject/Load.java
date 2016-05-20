@@ -6,10 +6,10 @@ import java.util.Random;
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
-import hillbillies.model.Position;
-import hillbillies.model.hillbilliesobject.unit.UnitException;
+import hillbillies.model.exceptions.UnitException;
+import hillbillies.model.exceptions.WorldException;
+import hillbillies.model.util.Position;
 import hillbillies.model.world.World;
-import hillbillies.model.world.WorldException;
 
 /**
  * @value

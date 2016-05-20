@@ -1,4 +1,4 @@
-package hillbillies.model.statement;
+package hillbillies.model.exceptions;
 
 public class WrongVariableException extends Exception {
 

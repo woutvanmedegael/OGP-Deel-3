@@ -1,6 +1,4 @@
-package hillbillies.model;
-
-import hillbillies.model.world.WorldException;
+package hillbillies.model.exceptions;
 
 public class TaskInterruptionException extends WorldException {
 

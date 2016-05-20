@@ -1,16 +1,18 @@
 package hillbillies.model.statement;
 
-import hillbillies.model.ContextWrapper;
+import hillbillies.model.exceptions.WorldException;
+import hillbillies.model.exceptions.WrongVariableException;
+import hillbillies.model.expressions.Expression;
 import hillbillies.model.expressions.IBooleanExpression;
 import hillbillies.model.expressions.IExpression;
 import hillbillies.model.expressions.IPositionExpression;
 import hillbillies.model.expressions.IUnitExpression;
-import hillbillies.model.world.WorldException;
+import hillbillies.model.task.ContextWrapper;
 
 public class AssignStatement extends Statement{
 
 	private final String variableName;
-	private final IExpression expr;
+	private final Expression<?> expr;
 	
 	
 
@@ -34,7 +36,7 @@ public class AssignStatement extends Statement{
 		return this.variableName;
 	}
 	
-	public AssignStatement(String variable, IExpression expr) throws WorldException{
+	public AssignStatement(String variable, Expression<?> expr) throws WorldException{
 		if (variable==null || expr == null){
 			throw new WorldException();
 		}

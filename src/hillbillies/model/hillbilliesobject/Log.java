@@ -1,8 +1,8 @@
 package hillbillies.model.hillbilliesobject;
 
-import hillbillies.model.Position;
+import hillbillies.model.exceptions.WorldException;
+import hillbillies.model.util.Position;
 import hillbillies.model.world.World;
-import hillbillies.model.world.WorldException;
 
 /**
  * A class log used to represent a boulder.
