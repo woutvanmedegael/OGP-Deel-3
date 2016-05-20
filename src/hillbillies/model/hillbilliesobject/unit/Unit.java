@@ -1350,6 +1350,7 @@ private void calculateLocalTarget() throws UnitException{
  * If the unit is attacking and has already been attacking for a second, it will execute it's attack.
  * 	if it hasn't been attacking for a second yet, it will wait to attack.
  * If the unit is falling, it continues to fall for dt seconds.
+ * If the unit is folliwing, it continues to follow for dt seconds.
  * @throws WorldException 
  */
 public void advanceTime(double dt) throws WorldException{
@@ -1368,14 +1369,10 @@ public void advanceTime(double dt) throws WorldException{
 		this.setMyState(CurrentState.RESTING);
 		timeSinceRest -= 180;
 	}
-	this.getMyTimeState().setTimeSinceRest(timeSinceRest);
-	//nieuw voor A3 testen
-	
+	this.getMyTimeState().setTimeSinceRest(timeSinceRest);	
 	switch (this.getMyState()){
 	
 	
-		//nieuw voor A3 testen
-
 	
 		case FOLLOWING:
 			this.follow(dt);
@@ -1770,7 +1767,7 @@ public void startAttacking(Unit defender) throws UnitException, TaskInterruption
 }
 
 /**
- * Checks whether a unit is falling
+ * Checks whether this unit is falling.
  * @return
  * 		this.getMyState()==CurrentState.FALLING
  */
@@ -1779,7 +1776,7 @@ public boolean isFalling(){
 }
 
 /**
- * Checks whether defender is within reach of this unit
+ * Checks whether defender is within reach of this unit.
  * @param defender
  * 			The unit to be in reach.
  * @return True if and only if defender is on a neighbouring cube of this unit.
@@ -1995,6 +1992,7 @@ private void rest(double dt){
 	
 }
 /**
+ * Heals the HP of this unit depending on the notYetUsedRestTime.
  * @param notYetUsedRestTime
  * 			The time the unit has been resting and that hasn't been taken into account yet.
  * @effect If the HP isn't fully recovered and the not yet used rest time is bigger than or equals the timeToHeal1HP.
@@ -2019,6 +2017,7 @@ private double healHPAndCalculateNotYetUsedRestTime(double notYetUsedRestTime) {
 	}
 }
 /**
+ * Heals the SP of this unit depending on the notYetUsedRestTime.
  * @param notYetUsedRestTime
  * 			The time the unit has been resting and that hasn't been taken into account yet.
  * @effect If the SP isn't fully recovered and the not yet used rest time is bigger than or equals the timeToHeal1SP.
@@ -2188,12 +2187,6 @@ private void attack(Unit defender) throws WorldException{
 }
 
 
-//PART TWO IMPLEMENTATION
-
-
-
-
-
 /**
  * Return the experiencePoints of this unit.
  */
@@ -2299,7 +2292,7 @@ private Load getLoad() {
 /**
  * Checks whether this unit is carrying a log.
  * @return
- *  this.getLoad()!=null && this.getLoad() instanceof Log
+ *  result == this.getLoad()!=null && this.getLoad() instanceof Log
  */
 public boolean isCarryingLog(){
 	return (this.getLoad()!=null && this.getLoad() instanceof Log);
@@ -2473,7 +2466,6 @@ public void startFalling() throws UnitException{
  * Returns whether this unit is moving.
  * @return
  *		this.getMyState()==CurrentState.MOVING || this.getMyState()==CurrentState.ATTACK_PENDING || (this.getMyState()==CurrentState.RESTING && !this.getMyPosition().Equals(localTarget))
-
  */
 public boolean isMoving(){
 	return (this.getMyState()==CurrentState.MOVING || (this.getMyState()==CurrentState.RESTING && !this.getMyPosition().Equals(this.getLocalTarget()))
