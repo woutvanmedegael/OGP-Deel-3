@@ -1,7 +1,6 @@
 package hillbillies.model.task;
 import java.util.ArrayList;
 
-import hillbillies.model.expressions.Expression;
 import hillbillies.model.expressions.IExpression;
 import hillbillies.model.expressions.ReadVariableExpression;
 import hillbillies.model.expressions.SelectedExpression;

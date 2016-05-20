@@ -11,7 +11,6 @@ import hillbillies.model.exceptions.UnitException;
 import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.util.Position;
 import hillbillies.model.world.Cube;
-import hillbillies.model.world.World;
 
 public class Dijkstra {
 	

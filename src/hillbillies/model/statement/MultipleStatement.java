@@ -5,12 +5,7 @@ import java.util.List;
 
 import hillbillies.model.exceptions.WorldException;
 import hillbillies.model.exceptions.WrongVariableException;
-import hillbillies.model.expressions.IBooleanExpression;
-import hillbillies.model.expressions.IExpression;
-import hillbillies.model.hillbilliesobject.unit.Unit;
 import hillbillies.model.task.ContextWrapper;
-import hillbillies.model.util.Position;
-import hillbillies.model.world.World;
 
 public class MultipleStatement extends Statement{
 

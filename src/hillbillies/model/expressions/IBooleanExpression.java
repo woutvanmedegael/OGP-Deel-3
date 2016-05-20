@@ -1,6 +1,5 @@
 package hillbillies.model.expressions;
 
-import hillbillies.model.exceptions.TaskInterruptionException;
 import hillbillies.model.exceptions.WorldException;
 import hillbillies.model.exceptions.WrongVariableException;
 import hillbillies.model.task.ContextWrapper;

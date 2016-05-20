@@ -2,7 +2,6 @@ package hillbillies.model.tests;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,13 +14,9 @@ import org.junit.Test;
 import hillbillies.model.exceptions.WorldException;
 import hillbillies.model.exceptions.WrongVariableException;
 import hillbillies.model.expressions.BooleanExpression;
-import hillbillies.model.expressions.CarriesItemExpression;
 import hillbillies.model.expressions.Expression;
 import hillbillies.model.expressions.PositionExpression;
-import hillbillies.model.expressions.ThisExpression;
-import hillbillies.model.expressions.UnitExpression;
 import hillbillies.model.hillbilliesobject.unit.Unit;
-import hillbillies.model.statement.Statement;
 import hillbillies.model.task.ContextWrapper;
 import hillbillies.model.task.Task;
 import hillbillies.model.task.TaskFactory;
@@ -33,7 +28,6 @@ import hillbillies.part3.programs.TaskParser;
 
 public class TestStatementsAndExpressions {
 
-	private static final int TYPE_AIR = 0;
 	private static final int TYPE_ROCK = 1;
 	private static final int TYPE_TREE = 2;
 	private static final int TYPE_WORKSHOP = 3;

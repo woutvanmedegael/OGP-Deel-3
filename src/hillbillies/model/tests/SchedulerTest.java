@@ -5,13 +5,9 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
-
-import static org.junit.Assert.*;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -29,11 +25,9 @@ import hillbillies.model.world.Scheduler;
 import hillbillies.model.world.World;
 import hillbillies.part2.listener.DefaultTerrainChangeListener;
 import hillbillies.part3.facade.Facade;
-import hillbillies.part3.programs.TaskParser;
 import ogp.framework.util.ModelException;
 
 public class SchedulerTest {
-	private static final int TYPE_AIR = 0;
 	private static final int TYPE_ROCK = 1;
 	private static final int TYPE_TREE = 2;
 	private static final int TYPE_WORKSHOP = 3;
@@ -246,9 +240,9 @@ public class SchedulerTest {
 		unit.advanceTime(0.001);
 		assertTrue(unit.getFaction().getNextTask(unit) == task2);
 		Unit enemy = facade.spawnUnit(world, true);
-		Unit dummy1 = facade.spawnUnit(world, true);
-		Unit dummy2 = facade.spawnUnit(world, true);
-		Unit dummy3 = facade.spawnUnit(world, true);
+		facade.spawnUnit(world, true);
+		facade.spawnUnit(world, true);
+		facade.spawnUnit(world, true);
 		Unit friend = facade.spawnUnit(world, true);
 		assert (friend.getFaction()==unit.getFaction());
 		Scheduler scheduler2 = enemy.getFaction().getScheduler();

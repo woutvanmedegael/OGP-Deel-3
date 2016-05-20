@@ -4,11 +4,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.function.Predicate;
-
 import hillbillies.model.exceptions.UnitException;
 import hillbillies.model.util.Position;
-import hillbillies.model.world.Cube;
 import hillbillies.model.world.World;
 /**
  * @value
@@ -18,11 +15,6 @@ import hillbillies.model.world.World;
  * Class to calculate the path from position start to position target through the given world.
  */
 public class PathFinding {
-	
-	/**
-	 * Variable registering the world.
-	 */
-	private World world;
 	
 	/**
 	 * List registering the path to take.
@@ -43,7 +35,6 @@ public class PathFinding {
 	 * Sets the world, and starts the pathfinding algorithm.
 	 */
 	public PathFinding(World world, Position start, Position target, Boolean followPath) throws UnitException{
-		this.world = world;
 		Position pos = new Position(start.getxpos(),start.getypos(),start.getzpos(),world);
 		pos.setToMiddleOfCube();
 		Position targ = new Position(target.getxpos(),target.getypos(),target.getzpos(),world);

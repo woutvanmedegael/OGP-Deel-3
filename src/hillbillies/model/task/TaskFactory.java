@@ -3,7 +3,6 @@ package hillbillies.model.task;
 import java.util.ArrayList;
 import java.util.List;
 
-import hillbillies.model.exceptions.UnitException;
 import hillbillies.model.exceptions.WorldException;
 import hillbillies.model.expressions.AndExpression;
 import hillbillies.model.expressions.AnyExpression;

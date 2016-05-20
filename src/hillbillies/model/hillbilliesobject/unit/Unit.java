@@ -18,7 +18,6 @@ import hillbillies.model.hillbilliesobject.HillbilliesObject;
 import hillbillies.model.hillbilliesobject.Load;
 import hillbillies.model.hillbilliesobject.Log;
 import hillbillies.model.task.Task;
-import hillbillies.model.util.NbCompare;
 import hillbillies.model.util.Position;
 import hillbillies.model.world.Cube;
 import hillbillies.model.world.Faction;
@@ -284,12 +283,6 @@ public void setDefaultBehaviourEnabled(boolean enabled){
 public boolean getDefaultBehaviourEnabled(){
 	return this.defaultBehaviourEnabled;
 }
-
-/**
- * Variable used for comparing different float numbers
- */
-private final NbCompare nbComp = new NbCompare();
-
 
 /**
  * Return the xpos of this Unit.

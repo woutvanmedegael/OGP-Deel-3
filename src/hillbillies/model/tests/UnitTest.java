@@ -3,26 +3,17 @@ package hillbillies.model.tests;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Random;
 
-import javax.swing.event.TreeSelectionEvent;
-
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import hillbillies.model.exceptions.IllegalNameException;
 import hillbillies.model.exceptions.UnitException;
 import hillbillies.model.exceptions.WorldException;
 import hillbillies.model.expressions.Expression;
-import hillbillies.model.expressions.SelectedExpression;
 import hillbillies.model.hillbilliesobject.CurrentState;
 import hillbillies.model.hillbilliesobject.unit.Unit;
-import hillbillies.model.statement.MoveStatement;
 import hillbillies.model.statement.NullStatement;
 import hillbillies.model.statement.Statement;
 import hillbillies.model.task.Task;
