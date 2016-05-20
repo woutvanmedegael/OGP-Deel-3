@@ -345,7 +345,7 @@ public class Facade implements IFacade {
 
 	@Override
 	public boolean isAlive(Unit unit) throws ModelException {
-		return !(unit.getCurrentHP()==0);
+		return unit.isTerminated();
 	}
 
 	@Override

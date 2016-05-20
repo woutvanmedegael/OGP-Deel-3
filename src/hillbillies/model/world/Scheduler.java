@@ -134,8 +134,9 @@ public class Scheduler{
 	/**
 	 * Returns the task  with the highest priority in the tasks of this scheduler that is not assigned to another unit.
 	 * @param u
+	 * 		The unit requesting a new task
 	 * @return 
-	 *TODO:
+	 * 		max(tasks.getPriority() | (task.getAssignedUnit()==u || task.getAssignedUnit()==null))
 	 */
 	
 	public Task getHighestPrioNonActiveTask(Unit u) {
